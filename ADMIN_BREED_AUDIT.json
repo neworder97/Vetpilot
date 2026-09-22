@@ -1,0 +1,16 @@
+{
+  "breed_counts": {
+    "cat": 25,
+    "dog": 54,
+    "total": 79
+  },
+  "critical_examples": {
+    "cat_4kg_BSA_m2": 0.25198420997897464,
+    "dexmedetomidine_cat_4kg_40mcgkg_0_5mgml_mL": 0.32,
+    "dog_10kg_BSA_m2": 0.4688004721948906,
+    "lidocaine_20kg_middle_52_5mcgkgmin_20mgml_mLhr": 3.15
+  },
+  "errors": [],
+  "rounding_cases": 15,
+  "status": "PASS"
+}
