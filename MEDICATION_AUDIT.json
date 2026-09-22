@@ -1,0 +1,29 @@
+{
+  "concentration_contract": {
+    "electrolyte": "mEq/mL",
+    "insulin": "units/mL",
+    "mass": "mg/mL"
+  },
+  "critical_examples": {
+    "dexmedetomidine_cat_4kg_40mcgkg_0_5mgml_mL": 0.32,
+    "fentanyl_dog_20kg_0_01mgkghr_0_05mgml_mLhr": 4.0,
+    "glargine_cat_1U_U100_mL": 0.01,
+    "lidocaine_dog_20kg_25_80mcgkgmin_20mgml_mLhr": [
+      1.5,
+      4.8
+    ]
+  },
+  "errors": [],
+  "files": {
+    "BuiltInProtocolCatalog.swift": "6bc25f457ddef5521382476936fec406c77443a966080c0b92574e71b75aab27",
+    "DoseView.swift": "65c2ce442418d8c6778f246bf7755c4aabb94e8acaaa7da19f6a1593640bf7d3",
+    "MedicationPreloadTests.swift": "059881aead3bea7c6bda174472d9329c65bf1a9b65a09f602e0c36fac2e025fb",
+    "ProtocolMedicationStore.swift": "340a883dd94209c562dd5bd188afd6a90f29340ebe8e6dfac4343e8bbf8f9fde"
+  },
+  "independent_arithmetic_cases": 831,
+  "preset_count": 307,
+  "status": "PASS",
+  "unique_id_count": 307,
+  "unique_medication_count": 114,
+  "warnings": []
+}

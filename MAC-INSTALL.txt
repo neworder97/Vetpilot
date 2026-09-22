@@ -1,0 +1,45 @@
+Ferguson VetPilot — Install on a physical iPhone
+
+This package contains the native iPhone source used by the green GitHub build.
+
+IMPORTANT
+The .app produced by GitHub's iPhone Simulator tests is a simulator build and cannot be installed on a physical iPhone.
+A real iPhone installation must be signed with your Apple ID / Apple Development certificate.
+
+ON YOUR MAC
+1. Install Xcode from the Mac App Store.
+2. Open Terminal.
+3. Install XcodeGen:
+   brew install xcodegen
+
+   If Homebrew is not installed, install it first from https://brew.sh
+
+4. In Terminal, go into this package's ios-vetpilot folder.
+5. Run:
+   xcodegen generate
+
+6. Open:
+   FergusonVetPilot.xcodeproj
+
+7. In Xcode:
+   - Select the FergusonVetPilot target.
+   - Open Signing & Capabilities.
+   - Enable Automatically manage signing.
+   - Select your Apple ID / Personal Team.
+   - If Xcode asks for a unique Bundle Identifier, change com.ferguson.vetpilot to something unique such as com.yourname.fergusonvetpilot.
+
+8. Connect your iPhone to the Mac with USB-C/Lightning or enable wireless development.
+9. Unlock the iPhone and trust the Mac if prompted.
+10. If prompted on the iPhone, enable Developer Mode under Settings > Privacy & Security > Developer Mode.
+11. In Xcode's device selector, choose your iPhone.
+12. Press Run (the triangle button).
+
+Xcode will build, sign, and install Ferguson VetPilot directly on your iPhone.
+
+FREE APPLE ID
+A free Apple ID can normally be used for personal-device development signing, but the development provisioning may need to be renewed periodically. A paid Apple Developer Program membership is used for longer-lived distribution/TestFlight/App Store builds.
+
+PROJECT
+Branch: vetpilot-dev
+Bundle ID currently: com.ferguson.vetpilot
+Minimum iOS: 17.0
