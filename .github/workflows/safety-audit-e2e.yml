@@ -1,0 +1,70 @@
+name: VetPilot Safety Audit and End-to-End Simulator
+
+on:
+  push:
+    branches: [vetpilot-safety-audit-e2e]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vetpilot-safety-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  simulator-audit:
+    runs-on: macos-15
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record source and environment
+        run: |
+          mkdir -p audit-evidence
+          git rev-parse HEAD | tee audit-evidence/source-commit.txt
+          xcodebuild -version | tee audit-evidence/xcode-version.txt
+      - name: Download and verify real canine radiograph test fixture
+        run: |
+          mkdir -p FergusonVetPilotTests/Fixtures
+          curl --fail --location --retry 2 --max-time 90 'https://upload.wikimedia.org/wikipedia/commons/e/e1/Radiographie_thoracique_ventro-dorsale.jpg' -o FergusonVetPilotTests/Fixtures/dog_thorax_vd_test.jpg
+          echo '4ceffb1d1ce052cdaeb52d08d8142fc1b62975ab  FergusonVetPilotTests/Fixtures/dog_thorax_vd_test.jpg' | shasum -a 1 -c -
+      - name: Run existing independent audit scripts
+        run: |
+          set -o pipefail
+          python3 Scripts/second_audit.py . | tee audit-evidence/medication-audit.json
+          python3 Scripts/administration_audit.py . | tee audit-evidence/administration-audit.json
+          python3 Scripts/nutrition_audit.py . | tee audit-evidence/nutrition-audit.json
+      - name: Generate Xcode project
+        run: |
+          brew list xcodegen >/dev/null 2>&1 || brew install xcodegen
+          xcodegen generate
+      - name: Boot iPhone Simulator and import the real radiograph into Photos
+        run: |
+          SIMULATOR_ID=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; d=json.load(sys.stdin)["devices"]; print(next(v["udid"] for group in d.values() for v in group if v.get("isAvailable") and "iPhone" in v.get("name", "")))')
+          test -n "$SIMULATOR_ID"
+          echo "SIMULATOR_ID=$SIMULATOR_ID" >> "$GITHUB_ENV"
+          xcrun simctl boot "$SIMULATOR_ID" || true
+          xcrun simctl bootstatus "$SIMULATOR_ID" -b
+          xcrun simctl addmedia "$SIMULATOR_ID" FergusonVetPilotTests/Fixtures/dog_thorax_vd_test.jpg
+          xcrun simctl list devices | tee audit-evidence/simulators.txt
+      - name: Run all unit and end-to-end UI tests
+        run: |
+          set -o pipefail
+          xcodebuild test -project FergusonVetPilot.xcodeproj -scheme FergusonVetPilot -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -parallel-testing-enabled NO -resultBundlePath audit-evidence/SafetyE2E.xcresult CODE_SIGNING_ALLOWED=NO | tee audit-evidence/xcodebuild-test.log
+      - name: Export test summary and simulator screenshots
+        if: always()
+        run: |
+          if [ -d audit-evidence/SafetyE2E.xcresult ]; then
+            xcrun xcresulttool get test-results summary --path audit-evidence/SafetyE2E.xcresult > audit-evidence/test-summary.json || true
+            xcrun xcresulttool export attachments --path audit-evidence/SafetyE2E.xcresult --output-path audit-evidence/screenshots || true
+          fi
+          if [ -n "${SIMULATOR_ID:-}" ]; then
+            xcrun simctl io "$SIMULATOR_ID" screenshot audit-evidence/final-simulator-screen.png || true
+          fi
+      - name: Upload audit evidence including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: VetPilot-Safety-E2E-Evidence-${{ github.run_number }}
+          path: audit-evidence
+          retention-days: 30
