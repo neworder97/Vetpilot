@@ -224,6 +224,7 @@ private struct DoseCalculatorSheet: View {
     @State private var patientWeightUnit: String
     @State private var selectedStrengthIndex = 0
     @State private var concentration = ""
+    @State private var infusionConcentrationConfirmed = false
     @State private var result: DoseResult?
     @State private var supplyDays: Int?
     @State private var priorCourseDoses = 0
@@ -334,6 +335,13 @@ private struct DoseCalculatorSheet: View {
         if let issue = MedicationSafety.insulinConcentrationIssue(
             presetID: selectedBuiltInPreset?.id, concentration: MedicationSafety.parsePositive(entered)) {
             return issue
+        }
+        if let issue = MedicationSafety.buprenorphineConcentrationIssue(
+            presetID: selectedBuiltInPreset?.id, concentration: MedicationSafety.parsePositive(entered)) {
+            return issue
+        }
+        if protocolDefinition?.doseBasis.isRate == true && !entered.isEmpty && !infusionConcentrationConfirmed {
+            return "Confirm that this is the final prepared infusion concentration before calculating a pump rate."
         }
         return nil
     }
@@ -524,7 +532,7 @@ private struct DoseCalculatorSheet: View {
                     }
                 } else if (needsProtocolConcentration || needsMedicationConcentration) && medication.generic != "Mirtazapine transdermal" {
                     let concentrationUnit = protocolDefinition?.doseBasis.concentrationLabel ?? "mg/mL"
-                    Section("Concentration (\(concentrationUnit)) — verify product") {
+                    Section(protocolDefinition?.doseBasis.isRate == true ? "Final infusion concentration (\(concentrationUnit))" : "Concentration (\(concentrationUnit)) — verify product") {
                         TextField(concentrationUnit, text: $concentration)
                             .keyboardType(.decimalPad)
                             .accessibilityIdentifier("dose.concentration")
@@ -532,9 +540,17 @@ private struct DoseCalculatorSheet: View {
                             Text(error).foregroundStyle(AppTheme.orange)
                                 .accessibilityIdentifier("dose.concentration.error")
                         }
-                        Text("Enter the exact product concentration in \(concentrationUnit).")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
+                        if protocolDefinition?.doseBasis.isRate == true {
+                            Text("Enter the concentration of the final prepared infusion in \(concentrationUnit), including any dilution. Stock vial concentration is not the pump concentration after dilution.")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                            Toggle("Final prepared infusion concentration verified", isOn: $infusionConcentrationConfirmed)
+                                .accessibilityIdentifier("dose.infusion.concentration.verified")
+                        } else {
+                            Text("Enter the exact product concentration in \(concentrationUnit).")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
 
@@ -817,9 +833,14 @@ private struct DoseCalculatorSheet: View {
                 selectedFrequency = .recommended
             }
             .onChange(of: concentration) { _, _ in
+                infusionConcentrationConfirmed = false
                 result = nil
                 supplyDays = nil
                 selectedFrequency = .recommended
+            }
+            .onChange(of: infusionConcentrationConfirmed) { _, _ in
+                result = nil
+                supplyDays = nil
             }
             .sheet(isPresented: $showProtocolEditor) {
                 ProtocolMedicationEditorView(
@@ -836,6 +857,7 @@ private struct DoseCalculatorSheet: View {
                 supplyDays = nil
             }
             .onChange(of: selectedPresetIndex) { _, _ in
+                infusionConcentrationConfirmed = false
                 result = nil
                 supplyDays = nil
                 selectedFrequency = .recommended
@@ -847,6 +869,7 @@ private struct DoseCalculatorSheet: View {
                 }
             }
             .onChange(of: protocolStore.definitions) { _, _ in
+                infusionConcentrationConfirmed = false
                 result = nil
                 selectedStrengthIndex = 0
                 if let c = protocolDefinition?.concentration {

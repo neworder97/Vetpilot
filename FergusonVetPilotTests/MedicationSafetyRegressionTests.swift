@@ -2,6 +2,17 @@ import XCTest
 @testable import FergusonVetPilot
 
 final class MedicationSafetyRegressionTests: XCTestCase {
+    func testBuprenorphineProductSpecificProtocolsRejectSubstitution() throws {
+        for id in ["buprenorphine-cat-4", "buprenorphine-cat-1", "buprenorphine-dog-1"] {
+            let p = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == id })
+            for strength in [0.3, 1.8, 20.0] {
+                let result = ProtocolDoseCalculator.calculate(definition: p.definition,
+                    kg: 4, strength: nil, concentration: strength)
+                XCTAssertEqual(result.available, strength == p.concentration, id)
+                if !result.available { XCTAssertTrue(result.formulation.isEmpty) }
+            }
+        }
+    }
     func testDigoxinWeightBandsAndMaximumAmount() throws {
         for (id, kg, allowed) in [
             ("digoxin-cat-1", 2.999, true), ("digoxin-cat-1", 3.0, false),

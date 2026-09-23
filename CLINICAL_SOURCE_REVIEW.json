@@ -6,7 +6,8 @@
     "Canine AAHA insulin instructions need ideal-weight and whole-unit-rounding context; notes now state it.",
     "Removed oral tablet strength metadata from three non-oral furosemide branches.",
     "Potassium lower-range and final-dilution workflow remain pending; a maximum infusion rate alone is not a complete protocol.",
-    "8d2e22d arithmetic candidate: zero numeric/rendered mismatches. SwiftPM 74/75 passed; stale mixed-route fixture corrected for next run."
+    "8d2e22d arithmetic candidate: zero numeric/rendered mismatches. SwiftPM 74/75 passed; stale mixed-route fixture corrected for next run.",
+    "Added explicit final-infusion concentration verification in UI and buprenorphine product-specific concentration guards; next CI required."
   ],
   "entries": [
     {
@@ -530,8 +531,8 @@
     },
     {
       "id": "alprazolam-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/common-drugs-used-to-treat-behavior-problems-in-dogs"
     },
     {
       "id": "alprazolam-cat-1",
@@ -965,9 +966,9 @@
     },
     {
       "id": "digoxin-dog-2",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": null,
-      "finding": "Enforced source weight bands and canine per-dose maximum."
+      "status": "SOURCE_DIVERGENCE_REQUIRES_INDIVIDUAL_REVIEW",
+      "source": "https://www.msdvetmanual.com/multimedia/table/commonly-used-cardiovascular-drugs-and-dosages",
+      "finding": "This broader source range differs from the conservative cardiac table; do not claim the conservative branch ceiling was applied to this separate branch. High-risk administration remains blocked."
     },
     {
       "id": "digoxin-cat-1",
@@ -1162,13 +1163,13 @@
     },
     {
       "id": "clomipramine-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/common-drugs-used-to-treat-behavior-problems-in-dogs"
     },
     {
       "id": "sertraline-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/common-drugs-used-to-treat-behavior-problems-in-dogs"
     },
     {
       "id": "sertraline-cat-1",
@@ -1177,8 +1178,8 @@
     },
     {
       "id": "paroxetine-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/common-drugs-used-to-treat-behavior-problems-in-dogs"
     },
     {
       "id": "paroxetine-cat-1",
@@ -1187,8 +1188,8 @@
     },
     {
       "id": "buspirone-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/common-drugs-used-to-treat-behavior-problems-in-dogs"
     },
     {
       "id": "buspirone-cat-1",
@@ -1197,8 +1198,8 @@
     },
     {
       "id": "clonidine-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/common-drugs-used-to-treat-behavior-problems-in-dogs"
     },
     {
       "id": "selegiline-dog-1",

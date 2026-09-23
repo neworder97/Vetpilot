@@ -21,6 +21,7 @@ struct DoseSheetLogicProbe {
  var kg: Double = 10
  var selectedStrengthIndex = 0
  var concentration = ""
+ var infusionConcentrationConfirmed = false
  var selectedFrequency: FrequencyChoice = .recommended
  var selectedDoseLevel: DoseSelectionLevel = .middle
  var solidRounding: SolidDoseRounding = .nearest

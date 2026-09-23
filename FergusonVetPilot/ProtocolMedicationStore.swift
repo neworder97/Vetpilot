@@ -229,6 +229,13 @@ enum ProtocolDoseCalculator {
                 math: "", formulation: "", warning: issue)
         }
 
+        if let issue = MedicationSafety.buprenorphineConcentrationIssue(
+            presetID: builtInPreset?.id ?? MedicationSafety.builtinID(d.medicationKey),
+            concentration: concentration ?? d.concentration) {
+            return DoseResult(available: false, headline: "Buprenorphine product mismatch",
+                math: "", formulation: "", warning: issue)
+        }
+
         guard kg.isFinite, kg >= 0, (!d.doseBasis.requiresWeight || kg > 0) else {
             return DoseResult(
                 available: false,

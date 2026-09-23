@@ -185,3 +185,22 @@ extension MedicationSafety {
         builtinID(key) == "digoxin-dog-1" ? 0.25 : nil
     }
 }
+
+extension MedicationSafety {
+    /// SIMBADOL's labeled feline regimen is formulation-specific.
+    /// Conventional immediate-dose presets intentionally name 0.3 mg/mL.
+    /// CRI presets use a separately prepared final infusion concentration.
+    static func buprenorphineConcentrationIssue(presetID: String?, concentration: Double?) -> String? {
+        let expected: Double
+        switch presetID {
+        case "buprenorphine-cat-4": expected = 1.8
+        case "buprenorphine-dog-1", "buprenorphine-dog-2",
+             "buprenorphine-cat-1", "buprenorphine-cat-2": expected = 0.3
+        default: return nil
+        }
+        guard let c = concentration, positiveFinite(c), c == expected else {
+            return "This buprenorphine product-specific regimen requires \(display(expected)) mg/mL. Select a separately reviewed regimen for another product; concentration substitution alone is not sufficient."
+        }
+        return nil
+    }
+}

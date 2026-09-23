@@ -29,6 +29,19 @@ final class DoseSheetLogicRegressionTests: XCTestCase {
         p.selectedFrequency = .q8h
         XCTAssertEqual(try XCTUnwrap(p.administrationSelection).selected,330,accuracy:1e-12)
     }
+    func testInfusionVolumeNeedsVerifiedFinalConcentration() throws {
+        let m=try XCTUnwrap(ClinicalData.medications.first { $0.generic=="Potassium chloride" })
+        let preset=try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id=="potassium-chloride-dog-1" })
+        var p=DoseSheetLogicProbe(medication:m,protocolDefinition:preset.definition,selectedBuiltInPreset:preset,kg:10,concentration:"0.04")
+        XCTAssertNotNil(p.concentrationInputError)
+        XCTAssertNil(p.selectedAdministrationVolume)
+        p.infusionConcentrationConfirmed=true
+        XCTAssertNil(p.concentrationInputError)
+        // High end 0.5 mEq/kg/hr × 10 kg / 0.04 mEq/mL = 125 mL/hr.
+        p.selectedDoseLevel = .high
+        XCTAssertEqual(try XCTUnwrap(p.selectedAdministrationVolume).value,125,accuracy:1e-12)
+        XCTAssertTrue(try XCTUnwrap(p.administrationReviewReason).contains("High-risk"))
+    }
     func testInvalidConcentrationDoesNotFallbackInUIPath() throws {
         let m=try XCTUnwrap(ClinicalData.medications.first { $0.brand=="Metacam maintenance" })
         for entry in ["", "0", "-5", "nan", "inf", "wrong", "1,5"] {
