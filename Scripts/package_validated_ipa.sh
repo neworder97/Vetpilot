@@ -3,7 +3,7 @@ set -euo pipefail
 APP=$(find .build/Build/Products/Release-iphoneos -maxdepth 1 -name '*.app' -print -quit)
 test -n "$APP"
 EXECUTABLE=$(/usr/libexec/PlistBuddy -c 'Print CFBundleExecutable' "$APP/Info.plist")
-lipo -verify_arch arm64 "$APP/$EXECUTABLE"
+lipo "$APP/$EXECUTABLE" -verify_arch arm64
 for F in PreservedOriginalBundleResources/*; do cmp "$F" "$APP/$(basename "$F")"; done
 mkdir -p ReleaseArtifacts
 STAGING=$(mktemp -d)
