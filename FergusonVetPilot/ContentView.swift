@@ -37,10 +37,10 @@ private struct BrandHeader: View {
         HStack(spacing: 12) {
             ShepherdLogo(size: 52)
             VStack(alignment: .leading, spacing: 2) {
-                Text("Ferguson VetPilot")
+                Text("VetPilot")
                     .font(.title3.bold())
                     .foregroundStyle(.white)
-                Text("Ferguson Animal Hospital • Clinical support")
+                Text("Veterinary clinical support")
                     .font(.caption)
                     .foregroundStyle(Color.white.opacity(0.85))
             }
@@ -51,3 +51,4 @@ private struct BrandHeader: View {
         .background(AppTheme.blue)
     }
 }
+

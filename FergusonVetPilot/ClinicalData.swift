@@ -97,8 +97,8 @@ enum ClinicalData {
                 math: "No automatic equation is enabled for this entry.",
                 formulation: "",
                 warning: m.controlled
-                    ? "Controlled/high-risk medication. Verify indication, patient factors, legal requirements, and Ferguson clinic protocol."
-                    : "Verify the current Ferguson clinic formulary or an authoritative veterinary reference."
+                    ? "Controlled/high-risk medication. Verify indication, patient factors, legal requirements, and clinic protocol."
+                    : "Verify the current clinic formulary or an authoritative veterinary reference."
             )
         }
 
@@ -243,7 +243,7 @@ enum ClinicalData {
         r.append(Medication(generic: "Trazodone", brand: "Desyrel", drugClass: "Serotonergic anxiolytic", species: cat, form: .tablet, indication: "Feline situational anxiety before stressful event — MSD reference dose", kind: .fixedMg, minDose: 50, maxDose: 100, frequency: "once ~90 min before stress", route: "PO", notes: "Extra-label veterinary use. MSD describes 50–100 mg/cat for situational anxiety. Review serotonergic interactions, sedation, and patient-specific factors.", source: "MSD Veterinary Manual — Behavior Problems of Cats (50–100 mg/cat once ~90 min before stress; accessed 2026-09-20)", strengths: [50,100,150], concentration: nil, controlled: false))
 
         func ref(_ generic: String, _ brand: String, _ drugClass: String, _ species: Set<Species>, _ form: MedicationForm, _ indication: String, _ controlled: Bool = false) {
-            r.append(Medication(generic: generic, brand: brand, drugClass: drugClass, species: species, form: form, indication: indication, kind: .protocolOnly, minDose: 0, maxDose: 0, frequency: "", route: "", notes: "Dose depends on indication, route, patient status, product, or clinic protocol.", source: "Ferguson clinic formulary / authoritative veterinary reference required", strengths: [], concentration: nil, controlled: controlled))
+            r.append(Medication(generic: generic, brand: brand, drugClass: drugClass, species: species, form: form, indication: indication, kind: .protocolOnly, minDose: 0, maxDose: 0, frequency: "", route: "", notes: "Dose depends on indication, route, patient status, product, or clinic protocol.", source: "clinic formulary / authoritative veterinary reference required", strengths: [], concentration: nil, controlled: controlled))
         }
 
         ref("Metronidazole","Flagyl","Nitroimidazole",both,.tablet,"Selected anaerobic/protozoal indications")
@@ -469,3 +469,4 @@ enum ClinicalData {
         }
     }
 }
+

@@ -652,7 +652,7 @@ private final class RadiologyEvidenceService {
         do {
             var request = URLRequest(url: searchURL)
             request.timeoutInterval = 12
-            request.setValue("FergusonVetPilot/0.2", forHTTPHeaderField: "User-Agent")
+            request.setValue("VetPilot/0.4.2", forHTTPHeaderField: "User-Agent")
             let (data, response) = try await URLSession.shared.data(for: request)
             guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
                 throw URLError(.badServerResponse)
@@ -673,7 +673,7 @@ private final class RadiologyEvidenceService {
 
             var summaryRequest = URLRequest(url: summaryURL)
             summaryRequest.timeoutInterval = 12
-            summaryRequest.setValue("FergusonVetPilot/0.2", forHTTPHeaderField: "User-Agent")
+            summaryRequest.setValue("VetPilot/0.4.2", forHTTPHeaderField: "User-Agent")
             let (summaryData, summaryResponse) = try await URLSession.shared.data(for: summaryRequest)
             guard let summaryHTTP = summaryResponse as? HTTPURLResponse, (200...299).contains(summaryHTTP.statusCode) else {
                 throw URLError(.badServerResponse)
@@ -745,7 +745,7 @@ private final class RadiologyEvidenceService {
             URLQueryItem(name: "retmax", value: "4"),
             URLQueryItem(name: "sort", value: "relevance"),
             URLQueryItem(name: "term", value: query),
-            URLQueryItem(name: "tool", value: "FergusonVetPilot")
+            URLQueryItem(name: "tool", value: "VetPilot")
         ]
         return components?.url
     }
@@ -756,7 +756,7 @@ private final class RadiologyEvidenceService {
             URLQueryItem(name: "db", value: "pubmed"),
             URLQueryItem(name: "retmode", value: "json"),
             URLQueryItem(name: "id", value: ids.joined(separator: ",")),
-            URLQueryItem(name: "tool", value: "FergusonVetPilot")
+            URLQueryItem(name: "tool", value: "VetPilot")
         ]
         return components?.url
     }
@@ -802,3 +802,4 @@ private final class RadiologyEvidenceService {
         return references
     }
 }
+

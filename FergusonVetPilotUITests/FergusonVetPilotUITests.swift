@@ -48,7 +48,7 @@ final class FergusonVetPilotUITests: XCTestCase {
     }
 
     func testCoreVetPilotFlow() throws {
-        XCTAssertTrue(app.staticTexts["Ferguson VetPilot"].exists)
+        XCTAssertTrue(app.staticTexts["VetPilot"].exists)
         XCTAssertTrue(app.tabBars.buttons["Dose"].exists)
         XCTAssertTrue(app.tabBars.buttons["X-Ray"].exists)
         XCTAssertTrue(app.tabBars.buttons["Breeds"].exists)

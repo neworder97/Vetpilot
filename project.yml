@@ -7,8 +7,8 @@ options:
 settings:
   base:
     SWIFT_VERSION: 5.0
-    MARKETING_VERSION: 0.4.1
-    CURRENT_PROJECT_VERSION: 5
+    MARKETING_VERSION: 0.4.2
+    CURRENT_PROJECT_VERSION: 6
 
 targets:
   FergusonVetPilot:
@@ -23,14 +23,15 @@ targets:
     info:
       path: FergusonVetPilot/Info.plist
       properties:
-        CFBundleDisplayName: Ferguson VetPilot
+        CFBundleDisplayName: VetPilot
+        CFBundleName: VetPilot
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         CFBundleIconName: AppIcon
         UIUserInterfaceStyle: Light
         UILaunchScreen: {}
-        NSCameraUsageDescription: Ferguson VetPilot uses the camera to capture veterinary radiographs for clinical review.
-        NSPhotoLibraryUsageDescription: Ferguson VetPilot uses your photo library to import veterinary radiographs for clinical review.
+        NSCameraUsageDescription: VetPilot uses the camera to capture veterinary radiographs for clinical review.
+        NSPhotoLibraryUsageDescription: VetPilot uses your photo library to import veterinary radiographs for clinical review.
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         UIRequiresFullScreen: false

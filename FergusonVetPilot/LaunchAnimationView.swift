@@ -33,9 +33,9 @@ struct LaunchAnimationView: View {
                     )
 
                 VStack(spacing: 6) {
-                    Text("Ferguson VetPilot")
+                    Text("VetPilot")
                         .font(.system(size: 30, weight: .bold, design: .rounded))
-                    Text("Ferguson Animal Hospital")
+                    Text("Veterinary clinical support")
                         .font(.subheadline.weight(.medium))
                         .opacity(0.86)
                 }
@@ -88,3 +88,4 @@ struct AnimatedRootView: View {
         }
     }
 }
+
