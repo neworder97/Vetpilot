@@ -10,6 +10,43 @@ final class FergusonVetPilotUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Automatic dose calculator"].waitForExistence(timeout: 8))
     }
 
+    override func tearDownWithError() throws {
+        if testRun?.hasSucceeded == false { print("UI_FAILURE_HIERARCHY=\(app.debugDescription)") }
+        let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+
+    func testLabworkSearchAndPreparation() throws {
+        app.tabBars.buttons["Labwork"].tap()
+        let search = app.searchFields.firstMatch
+        XCTAssertTrue(search.waitForExistence(timeout: 5))
+        search.tap()
+        search.typeText("20011")
+        let thyroid = app.buttons["labwork.test.MSU-20011"]
+        XCTAssertTrue(thyroid.waitForExistence(timeout: 4))
+        thyroid.tap()
+        XCTAssertTrue(app.staticTexts["labwork.amount"].waitForExistence(timeout: 4))
+        XCTAssertEqual(app.staticTexts["labwork.amount"].label, "2 mL")
+        let preparation = app.staticTexts["labwork.preparation"]
+        for _ in 0..<5 where !preparation.exists { app.swipeUp() }
+        XCTAssertTrue(preparation.label.contains("30–60"))
+    }
+
+    func testNutritionOversizedInputDoesNotCrash() throws {
+        app.tabBars.buttons["Nutrition"].tap()
+        app.segmentedControls.buttons["kg"].tap()
+        let weight = app.textFields["nutrition.weight"]
+        weight.tap()
+        weight.typeText("1000000000000000000000000")
+        app.buttons["nutrition.keyboard.done"].tap()
+        let invalid = app.staticTexts["Enter a valid weight to calculate calories"]
+        for _ in 0..<8 where !invalid.exists { app.swipeUp() }
+        XCTAssertTrue(invalid.exists)
+        XCTAssertEqual(app.state, .runningForeground)
+    }
+
     func testCoreVetPilotFlow() throws {
         XCTAssertTrue(app.staticTexts["Ferguson VetPilot"].exists)
         XCTAssertTrue(app.tabBars.buttons["Dose"].exists)
@@ -52,7 +89,8 @@ final class FergusonVetPilotUITests: XCTestCase {
         XCTAssertTrue(doseResult.waitForExistence(timeout: 3))
 
         let q12 = app.buttons["dose.frequency.q12h"]
-        if !q12.waitForExistence(timeout: 2) {
+        for _ in 0..<12 {
+            if q12.exists && q12.isHittable { break }
             app.swipeUp()
         }
         XCTAssertTrue(q12.waitForExistence(timeout: 3))
@@ -135,7 +173,7 @@ final class FergusonVetPilotUITests: XCTestCase {
         expectation(for: pickerDismissed, evaluatedWith: photosNav)
         waitForExpectations(timeout: 10)
 
-        let gate = app.staticTexts["radiology.xrayGate"]
+        let gate = app.descendants(matching: .any).matching(identifier: "radiology.xrayGate").firstMatch
         XCTAssertTrue(gate.waitForExistence(timeout: 20), "Production X-ray precheck did not finish")
         XCTAssertFalse(gate.label.contains("Does not look like"), "Real radiograph was rejected by production precheck")
 
@@ -198,7 +236,8 @@ final class FergusonVetPilotUITests: XCTestCase {
         calculate.tap()
 
         let injectableNotice = app.staticTexts["dose.injectable.single"]
-        if !injectableNotice.waitForExistence(timeout: 2) {
+        for _ in 0..<12 {
+            if injectableNotice.exists { break }
             app.swipeUp()
         }
         XCTAssertTrue(injectableNotice.waitForExistence(timeout: 3))
@@ -250,12 +289,13 @@ final class FergusonVetPilotUITests: XCTestCase {
     func testNutritionTabDogAndCatSmokeFlow() throws {
         app.tabBars.buttons["Nutrition"].tap()
         XCTAssertTrue(app.staticTexts["Nutrition & weight plan"].waitForExistence(timeout: 4))
-        let weight = app.textFields["Weight"]
+        let weight = app.textFields["nutrition.weight"]
         XCTAssertTrue(weight.exists)
         app.segmentedControls.buttons["kg"].tap()
         weight.tap()
         weight.typeText("12")
-        let score = app.buttons.containing(.staticText, identifier: "7").firstMatch
+        app.buttons["nutrition.keyboard.done"].tap()
+        let score = app.buttons["nutrition.bcs.7"]
         for _ in 0..<6 where !score.isHittable { app.swipeUp() }
         XCTAssertTrue(score.isHittable)
         score.tap()
@@ -270,6 +310,7 @@ final class FergusonVetPilotUITests: XCTestCase {
         let prior = weight.value as? String ?? "12"
         weight.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: prior.count))
         weight.typeText("6")
+        app.buttons["nutrition.keyboard.done"].tap()
         for _ in 0..<6 where !calories.isHittable { app.swipeUp() }
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "187 kcal/day")).firstMatch.exists)
     }
