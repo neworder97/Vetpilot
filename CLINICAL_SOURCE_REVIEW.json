@@ -195,33 +195,37 @@
     },
     {
       "id": "spironolactone-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
+      "finding": "Interval choices combine different source regimens; needs dose/interval coupling."
     },
     {
       "id": "spironolactone-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
+      "finding": "Interval choices are not clearly separated; reconcile branch intent."
     },
     {
       "id": "spironolactone-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
+      "finding": "Current cited table lacks a feline spironolactone row; obtain a species-specific source."
     },
     {
       "id": "benazepril-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
     },
     {
       "id": "benazepril-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
+      "finding": "Lower dose paired with the longest interval is not supported by the cited table; separate regimens."
     },
     {
       "id": "enalapril-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
     },
     {
       "id": "methimazole-transdermal-cat-1",
@@ -845,68 +849,71 @@
     },
     {
       "id": "amlodipine-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
+      "finding": "Dose range combines schedules; lowest value at the selected daily interval needs correction or another source."
     },
     {
       "id": "amlodipine-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
+      "finding": "Starting and titrated maintenance doses are combined; clarify initiation versus titration."
     },
     {
       "id": "atenolol-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
     },
     {
       "id": "atenolol-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
     },
     {
       "id": "atenolol-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
     },
     {
       "id": "diltiazem-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
     },
     {
       "id": "diltiazem-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
     },
     {
       "id": "diltiazem-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
     },
     {
       "id": "diltiazem-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
     },
     {
       "id": "clopidogrel-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
     },
     {
       "id": "clopidogrel-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
     },
     {
       "id": "clopidogrel-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
     },
     {
       "id": "digoxin-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
+      "finding": "Numerical source range matches; enforce the stated per-patient ceiling."
     },
     {
       "id": "digoxin-dog-2",
@@ -915,53 +922,58 @@
     },
     {
       "id": "digoxin-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
+      "finding": "Numerical source rule matches; enforce the required weight band."
     },
     {
       "id": "digoxin-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
+      "finding": "Numerical source rule matches; enforce the required weight band."
     },
     {
       "id": "digoxin-cat-3",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
+      "finding": "Numerical source rule matches; enforce the required weight band."
     },
     {
       "id": "sildenafil-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
     },
     {
       "id": "sildenafil-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
     },
     {
       "id": "hydralazine-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
+      "finding": "Initial branch frequency is ambiguous; source specifies a single starting dose."
     },
     {
       "id": "hydralazine-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
     },
     {
       "id": "hydralazine-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
+      "finding": "Remove oral strength metadata and specify monitored repeat conditions."
     },
     {
       "id": "telmisartan-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
     },
     {
       "id": "telmisartan-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
     },
     {
       "id": "telmisartan-cat-3",
@@ -970,18 +982,19 @@
     },
     {
       "id": "torsemide-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
     },
     {
       "id": "torsemide-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
     },
     {
       "id": "torsemide-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
+      "finding": "Fixed amount matches; the source interval is absent from the preset."
     },
     {
       "id": "levothyroxine-dog-1",
@@ -1543,5 +1556,13 @@
       "status": "NOT_YET_REVIEWED",
       "source": null
     }
-  ]
+  ],
+  "last_validated_source": "65786643f03b77c8c3f6178ee575061ee8b6cd53",
+  "current_candidate": "eadbe53cb1ddd561b138e61dd8dda0d7d200ef99",
+  "validation": {
+    "arithmetic_run": 35805829287,
+    "arithmetic": "passed",
+    "ios_run": 35805829280,
+    "ios": "in_progress_at_checkpoint"
+  }
 }
