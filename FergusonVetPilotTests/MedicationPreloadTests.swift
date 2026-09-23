@@ -103,17 +103,18 @@ final class MedicationPreloadTests: XCTestCase {
         let med = try XCTUnwrap(ClinicalData.medications.first { $0.kind == .protocolOnly && $0.generic == "Potassium chloride" })
         let species = try XCTUnwrap(Species.allCases.first { med.supports($0) })
         let preset = try XCTUnwrap(BuiltInProtocolCatalog.presets(for: med, species: species).first { $0.doseBasis == .mEqKgHr })
-        let concentration = preset.concentration ?? 2.0
+        let concentration = 0.04 // Final prepared infusion, not stock KCl.
         let result = ProtocolDoseCalculator.calculate(
             definition: preset.definition,
             kg: 10,
             strength: nil,
             concentration: concentration,
-            builtInPreset: preset
+            builtInPreset: preset,
+            prescribedRate: 0.1
         )
         XCTAssertTrue(result.available)
         XCTAssertTrue(result.headline.contains("/hr"))
-        XCTAssertTrue(result.formulation.contains("mL/hr"))
+        XCTAssertTrue(result.formulation.contains("25 mL/hr"))
     }
 
     func testManualClinicOverridePathRemainsAvailable() {
