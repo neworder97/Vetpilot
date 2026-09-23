@@ -1,0 +1,24 @@
+{
+  "source_commit": "65786643f03b77c8c3f6178ee575061ee8b6cd53",
+  "date": "2026-09-23",
+  "technical_checks": {
+    "arithmetic": "passed",
+    "ios_unit_tests": {
+      "passed": 86,
+      "failed": 0
+    },
+    "ios_ui_tests": {
+      "passed": 8,
+      "failed": 0
+    },
+    "device_target_compile": "passed",
+    "original_resources": "passed"
+  },
+  "release_status": "NOT_CLINICALLY_CLEARED",
+  "unresolved": [
+    "Current-source clinical verification of every medication regimen",
+    "Validated radiology lesion/disease model and accuracy evaluation",
+    "Physical iPhone installation and device testing"
+  ],
+  "ipa_created": false
+}
