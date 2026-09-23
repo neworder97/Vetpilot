@@ -1,14 +1,14 @@
 {
-  "source_commit": "7bdcf59854049b99eed2e66c0960e45d158be1c6",
+  "source_commit": "e7939b7c9f87bcc3c87569ba49419f38ddd10b22",
   "date": "2026-09-23",
   "release_status": "UNSIGNED_IPA_READY_FOR_AUTHORIZED_SIGNING",
-  "version": "0.4.1",
-  "build": "5",
+  "version": "0.4.2",
+  "build": "6",
   "ipa_created": true,
-  "ipa_sha256": "1bc22b54069eebf30e5ef4554e94415233f28b2bdb12f97290167182870901d7",
-  "ipa_artifact_id": 10730394743,
+  "ipa_sha256": "5b7f96a6e28f41de238ae5ec4149aad3353f2c521f94f7952b1c9a80ab50207d",
+  "ipa_artifact_id": 10731889075,
   "arithmetic": {
-    "run_id": 35814903576,
+    "run_id": 35816914013,
     "status": "success",
     "extracted_core_tests": 96,
     "preset_branches": 307,
@@ -21,7 +21,7 @@
     "volume_cases": 3030
   },
   "ios": {
-    "run_id": 35814903592,
+    "run_id": 35816914049,
     "status": "success",
     "unit_tests": 98,
     "ui_tests": 10,
@@ -48,5 +48,6 @@
   "xray_scope": "Exploratory high/low uncalibrated confidence; real-image import and production processing tested, diagnostic accuracy not established.",
   "labwork_scope": "28 selected entries: 15 IDEXX and 13 MSU, including two unavailable tests. Search, specimens and preparation; not full directories.",
   "physical_device_installation": "Not tested; unsigned IPA needs Signulous or another authorized signing route.",
-  "readability_upgrade": "Added selected tablet/capsule equivalent or mL/mL per hour and schedule beneath the existing results. Preserved equations, selectors, rounding and safety warnings. Added five quantity regression tests and a simulator UI assertion."
+  "readability_upgrade": "Added selected tablet/capsule equivalent or mL/mL per hour and schedule beneath the existing results. Preserved equations, selectors, rounding and safety warnings. Added five quantity regression tests and a simulator UI assertion.",
+  "branding_upgrade": "Visible app and launch title, display/bundle name, permission prompts and clinic-reference wording now use VetPilot without hospital branding."
 }

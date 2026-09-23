@@ -1,3 +1,15 @@
+# VetPilot 0.4.2 (6) — general VetPilot branding
+
+Validated source: `e7939b7c9f87bcc3c87569ba49419f38ddd10b22`.
+
+Visible home and launch titles now say VetPilot. Hospital-specific subtitles and formulary wording were replaced with general veterinary/clinic wording. iOS display name, bundle display name and permission prompts also use VetPilot. Existing medication equations and features remain intact.
+
+[Release validation](https://github.com/neworder97/Vetpilot/actions/runs/35816914049) passed, including 98 iOS unit tests, 10 UI tests, the arithmetic gate, device compilation, resource comparisons and IPA checks. Downloaded IPA metadata independently confirms VetPilot for both display and bundle names, version 0.4.2, build 6.
+
+Unsigned [IPA artifact](https://github.com/neworder97/Vetpilot/actions/runs/35816914049/artifacts/10731889075), SHA-256: `5b7f96a6e28f41de238ae5ec4149aad3353f2c521f94f7952b1c9a80ab50207d`. Authorized signing is required. Prior clinical and physical-device validation limits still apply.
+
+---
+
 # VetPilot 0.4.1 (5) — additive quantity display
 
 Validated source: `7bdcf59854049b99eed2e66c0960e45d158be1c6`.
