@@ -1,0 +1,55 @@
+import Foundation
+var rows: [[String: Any]] = []
+let weights: [Double] = [0.1,0.5,1,2.5,4,6,10,20,60,100]
+func resultJSON(_ r: DoseResult) -> [String:Any] { ["available":r.available,"headline":r.headline,"math":r.math,"formulation":r.formulation] }
+for p in BuiltInProtocolCatalog.all {
+    var row: [String: Any] = ["id":p.id,"generic":p.generic,"species":p.species.rawValue,"label":p.label,"basis":p.doseBasis.rawValue,"min":p.minDose,"max":p.maxDose,"frequency":p.frequency,"route":p.route,"strengths":p.strengths,"source":p.sourceReference,"notes":p.notes,"highRisk":p.highRisk,"confidence":p.confidence]
+    if let c=p.concentration { row["concentration"]=c; row["formattedConcentration"]=ClinicalData.format(c) }
+    var cases:[[String:Any]]=[]
+    for kg in weights {
+        for level in DoseSelectionLevel.allCases {
+            var c:[String:Any] = ["kg":kg,"level":level.rawValue]
+            if let s=AdministrationMath.selection(for:p.definition,kg:kg,level:level) {
+                c["low"]=s.low;c["high"]=s.high;c["selected"]=s.selected;c["unit"]=s.unit
+                if let v=AdministrationMath.volume(selection:s,basis:p.doseBasis,concentration:p.concentration) { c["volume"]=v.value;c["volumeUnit"]=v.unit;c["displayedVolume"]=ClinicalData.format(v.value) }
+                c["displayedAmount"]=ClinicalData.format(s.selected)
+                var solids:[[String:Any]]=[]
+                if p.doseBasis.supportsStrength {
+                    for strength in p.strengths {
+                        for mode in SolidDoseRounding.allCases {
+                            if let a=AdministrationMath.solidPlan(targetMg:s.selected,strengthMg:strength,rounding:mode) {
+                                solids.append(["strength":strength,"rounding":mode.rawValue,"raw":a.rawUnits,"rounded":a.roundedUnits,"delivered":a.deliveredMg])
+                            }
+                        }
+                    }
+                }
+                c["solids"]=solids
+            }
+            c["engine"]=resultJSON(ProtocolDoseCalculator.calculate(definition:p.definition,kg:kg,strength:p.strengths.first,concentration:p.concentration,builtInPreset:p))
+            cases.append(c)
+        }
+    }
+    row["cases"]=cases; rows.append(row)
+}
+var automatic:[[String:Any]]=[]
+for (i,m) in ClinicalData.medications.enumerated() where m.kind != .protocolOnly {
+    var row:[String:Any] = ["index":i,"name":m.displayName,"species":m.species.map(\.rawValue).sorted(),"kind":String(describing:m.kind),"min":m.minDose,"max":m.maxDose,"frequency":m.frequency,"strengths":m.strengths,"source":m.source,"route":m.route,"notes":m.notes]
+    if let c=m.concentration {row["concentration"]=c}
+    row["cases"]=weights.map { kg in ["kg":kg,"result":resultJSON(ClinicalData.calculate(medication:m,kg:kg,strength:m.strengths.first,concentration:m.concentration))] as [String:Any] }
+    automatic.append(row)
+}
+let probePreset = BuiltInProtocolCatalog.all.first!
+var invalid = [[String:Any]]()
+for (label,kg) in [("zero",0.0),("negative",-1.0),("nan",Double.nan),("infinity",Double.infinity)] {
+    invalid.append(["input":label,"result":resultJSON(ProtocolDoseCalculator.calculate(definition:probePreset.definition,kg:kg,strength:nil,concentration:nil,builtInPreset:probePreset))])
+}
+var reversed=probePreset.definition; reversed.minDose=10;reversed.maxDose=1
+invalid.append(["input":"reversed dose range 10..1","result":resultJSON(ProtocolDoseCalculator.calculate(definition:reversed,kg:10,strength:nil,concentration:nil))])
+var unknown=probePreset.definition;unknown.doseBasisRaw="unknown unit"
+invalid.append(["input":"unknown dose basis","result":resultJSON(ProtocolDoseCalculator.calculate(definition:unknown,kg:10,strength:nil,concentration:nil))])
+var neg=probePreset.definition;neg.minDose = -5;neg.maxDose = -1
+invalid.append(["input":"negative dose","result":resultJSON(ProtocolDoseCalculator.calculate(definition:neg,kg:10,strength:nil,concentration:nil))])
+let library: [[String: Any]] = ClinicalData.medications.map { m in ["name":m.displayName,"generic":m.generic,"kind":String(describing:m.kind),"form":m.form.rawValue,"species":m.species.map(\.rawValue).sorted(),"presetsBySpecies":Dictionary(uniqueKeysWithValues:m.species.map { ($0.rawValue,BuiltInProtocolCatalog.presets(for:m,species:$0).map(\.id)) })] }
+let output: [String:Any] = ["library":library,"presets":rows,"automaticMedications":automatic,"invalidInputs":invalid,"formatProbes":[0.0004,0.0025,0.011,0.0125,0.00001,1.23456789].map { ["input":$0,"display":ClinicalData.format($0)] as [String:Any] }]
+let data=try JSONSerialization.data(withJSONObject:output,options:[.sortedKeys])
+FileHandle.standardOutput.write(data)
