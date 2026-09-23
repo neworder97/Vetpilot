@@ -36,7 +36,7 @@ jobs:
       - name: Save unsigned IPA and release manifest
         uses: actions/upload-artifact@v4
         with:
-          name: VetPilot-0.4.2-Signulous-IPA
+          name: VetPilot-0.4.3-Signulous-IPA
           path: ReleaseArtifacts/
           if-no-files-found: error
       - name: Save validation evidence

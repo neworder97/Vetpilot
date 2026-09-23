@@ -290,34 +290,165 @@ final class FergusonVetPilotUITests: XCTestCase {
         sleep(3)
     }
 
-    // Prepared for the next real iOS Simulator run; not a claim of execution.
     func testNutritionTabDogAndCatSmokeFlow() throws {
         app.tabBars.buttons["Nutrition"].tap()
         XCTAssertTrue(app.staticTexts["Nutrition & weight plan"].waitForExistence(timeout: 4))
         let weight = app.textFields["nutrition.weight"]
         XCTAssertTrue(weight.exists)
         app.segmentedControls.buttons["kg"].tap()
-        weight.tap()
-        weight.typeText("12")
-        app.buttons["nutrition.keyboard.done"].tap()
+        replaceNutritionText(weight, with: "12")
         let score = app.buttons["nutrition.bcs.7"]
-        for _ in 0..<6 where !score.isHittable { app.swipeUp() }
-        XCTAssertTrue(score.isHittable)
+        scrollNutritionTo(score)
         score.tap()
-        let calories = app.staticTexts["Recommended starting calories"]
-        for _ in 0..<6 where !calories.isHittable { app.swipeUp() }
-        XCTAssertTrue(calories.exists)
-        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "394 kcal/day")).firstMatch.exists)
+        let status = app.staticTexts["nutrition.result.status"]
+        scrollNutritionTo(status)
+        XCTAssertEqual(status.label, "Obese (PNA)")
+        XCTAssertEqual(app.staticTexts["nutrition.result.idealWeight"].label, "~10 kg / 22.05 lb")
+        assertNutritionCalories("315 kcal/day")
         let cat = app.segmentedControls.buttons["Cat"]
-        for _ in 0..<6 where !cat.isHittable { app.swipeDown() }
+        scrollNutritionTo(cat, towardTop: true)
         cat.tap()
-        weight.tap()
-        let prior = weight.value as? String ?? "12"
-        weight.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: prior.count))
-        weight.typeText("6")
-        app.buttons["nutrition.keyboard.done"].tap()
-        for _ in 0..<6 where !calories.isHittable { app.swipeUp() }
-        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "187 kcal/day")).firstMatch.exists)
+        replaceNutritionText(weight, with: "6")
+        scrollNutritionTo(status)
+        XCTAssertEqual(status.label, "Obese (PNA)")
+        XCTAssertEqual(app.staticTexts["nutrition.result.idealWeight"].label, "~5 kg / 11.03 lb")
+        assertNutritionCalories("187 kcal/day")
+    }
+
+    func testNutritionReproductiveStatusAndWeightUnitConversion() throws {
+        app.tabBars.buttons["Nutrition"].tap()
+        app.segmentedControls.buttons["kg"].tap()
+        let weight = app.textFields["nutrition.weight"]
+        replaceNutritionText(weight, with: "10")
+        assertNutritionCalories("551 kcal/day")
+
+        let intact = app.segmentedControls.buttons["Intact"]
+        scrollNutritionTo(intact, towardTop: true)
+        intact.tap()
+        assertNutritionCalories("630 kcal/day")
+
+        let pounds = app.segmentedControls.buttons["lb"]
+        scrollNutritionTo(pounds, towardTop: true)
+        pounds.tap()
+        XCTAssertEqual(Double(weight.value as? String ?? "") ?? .nan, 22.05, accuracy: 0.00001)
+        let currentWeight = app.staticTexts["nutrition.result.weight"]
+        scrollNutritionTo(currentWeight)
+        XCTAssertEqual(currentWeight.label, "22.05 lb / 10 kg")
+        assertNutritionCalories("630 kcal/day")
+
+        let cat = app.segmentedControls.buttons["Cat"]
+        scrollNutritionTo(cat, towardTop: true)
+        cat.tap()
+        app.segmentedControls.buttons["kg"].tap()
+        replaceNutritionText(weight, with: "4")
+        assertNutritionCalories("277 kcal/day")
+        let neutered = app.segmentedControls.buttons["Spayed / Neutered"]
+        scrollNutritionTo(neutered, towardTop: true)
+        neutered.tap()
+        let status = app.staticTexts["nutrition.result.status"]
+        scrollNutritionTo(status)
+        XCTAssertEqual(status.label, "Ideal range")
+        XCTAssertEqual(app.staticTexts["nutrition.result.idealWeight"].label, "~4 kg / 8.82 lb")
+        assertNutritionCalories("238 kcal/day")
+    }
+
+    func testNutritionUnderweightNeedsClinicalPlanEvenWithTarget() throws {
+        app.tabBars.buttons["Nutrition"].tap()
+        app.segmentedControls.buttons["kg"].tap()
+        replaceNutritionText(app.textFields["nutrition.weight"], with: "10")
+        assertNutritionCalories("551 kcal/day")
+
+        let thin = app.buttons["nutrition.bcs.3"]
+        scrollNutritionTo(thin, towardTop: true)
+        thin.tap()
+        let status = app.staticTexts["nutrition.result.status"]
+        scrollNutritionTo(status)
+        XCTAssertEqual(status.label, "Underweight")
+        XCTAssertTrue(app.staticTexts["nutrition.result.idealUnavailable"].exists)
+        let unavailable = app.staticTexts["nutrition.result.unavailable"]
+        scrollNutritionTo(unavailable)
+        XCTAssertFalse(app.staticTexts["nutrition.result.calories"].exists)
+
+        let target = app.textFields["nutrition.clinicianTarget"]
+        scrollNutritionTo(target, towardTop: true)
+        replaceNutritionText(target, with: "12")
+        let recordedTarget = app.staticTexts["nutrition.result.clinicianTarget"]
+        scrollNutritionTo(recordedTarget)
+        XCTAssertEqual(recordedTarget.label, "12 kg / 26.46 lb")
+        scrollNutritionTo(unavailable)
+        XCTAssertFalse(app.staticTexts["nutrition.result.calories"].exists)
+
+        // Species changes must not turn an underweight patient's reference
+        // target or target RER into an automatic calorie prescription.
+        let cat = app.segmentedControls.buttons["Cat"]
+        scrollNutritionTo(cat, towardTop: true)
+        cat.tap()
+        scrollNutritionTo(status)
+        XCTAssertEqual(status.label, "Underweight")
+        scrollNutritionTo(unavailable)
+        XCTAssertFalse(app.staticTexts["nutrition.result.calories"].exists)
+    }
+
+    func testNutritionIntakeOverrideFloorAndRecovery() throws {
+        app.tabBars.buttons["Nutrition"].tap()
+        app.segmentedControls.buttons["kg"].tap()
+        replaceNutritionText(app.textFields["nutrition.weight"], with: "12")
+        let score = app.buttons["nutrition.bcs.7"]
+        scrollNutritionTo(score)
+        score.tap()
+        assertNutritionCalories("315 kcal/day")
+
+        let intake = app.textFields["nutrition.currentCalories"]
+        scrollNutritionTo(intake, towardTop: true)
+        replaceNutritionText(intake, with: "600")
+        assertNutritionCalories("480 kcal/day")
+
+        scrollNutritionTo(intake, towardTop: true)
+        replaceNutritionText(intake, with: "100")
+        scrollNutritionTo(app.staticTexts["nutrition.result.unavailable"])
+        XCTAssertFalse(app.staticTexts["nutrition.result.calories"].exists,
+                       "A below-floor intake must clear the previous calorie recommendation")
+        let caution = app.staticTexts["nutrition.result.caution"]
+        scrollNutritionTo(caution)
+        XCTAssertTrue(caution.label.contains("60%"))
+
+        scrollNutritionTo(intake, towardTop: true)
+        replaceNutritionText(intake, with: "")
+        assertNutritionCalories("315 kcal/day")
+        XCTAssertFalse(app.staticTexts["nutrition.result.unavailable"].exists)
+    }
+
+    private func scrollNutritionTo(_ element: XCUIElement, towardTop: Bool = false,
+                                   file: StaticString = #filePath, line: UInt = #line) {
+        for _ in 0..<8 {
+            if element.exists && element.isHittable { return }
+            if towardTop { app.swipeDown() } else { app.swipeUp() }
+        }
+        XCTAssertTrue(element.exists && element.isHittable,
+                      "Nutrition control did not become visible: \(element)", file: file, line: line)
+    }
+
+    private func replaceNutritionText(_ field: XCUIElement, with text: String,
+                                      file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertTrue(field.isHittable, file: file, line: line)
+        field.tap()
+        let prior = field.value as? String ?? ""
+        // An empty TextField reports its placeholder as value on some iOS
+        // versions; only erase an actual numeric entry.
+        if !prior.isEmpty && Double(prior) != nil {
+            field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: prior.count))
+        }
+        if !text.isEmpty { field.typeText(text) }
+        let done = app.buttons["nutrition.keyboard.done"]
+        XCTAssertTrue(done.waitForExistence(timeout: 3), file: file, line: line)
+        done.tap()
+    }
+
+    private func assertNutritionCalories(_ expected: String,
+                                        file: StaticString = #filePath, line: UInt = #line) {
+        let calories = app.staticTexts["nutrition.result.calories"]
+        scrollNutritionTo(calories, file: file, line: line)
+        XCTAssertEqual(calories.label, expected, file: file, line: line)
     }
 
     func testInsulinStrengthMismatchCannotCalculate() throws {
@@ -402,4 +533,3 @@ final class FergusonVetPilotUITests: XCTestCase {
         XCTAssertFalse(app.segmentedControls["dose.level"].exists)
     }
 }
-
