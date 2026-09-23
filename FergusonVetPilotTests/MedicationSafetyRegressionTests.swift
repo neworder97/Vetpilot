@@ -30,6 +30,33 @@ final class MedicationSafetyRegressionTests: XCTestCase {
             }
         }
     }
+    func testPraziquantelOralRangeCannotExceedPerDogCeiling() throws {
+        let p = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == "praziquantel-dog-1" })
+        for (kg, high) in [(10.0, 125.0), (20.0, 170.0), (34.0, 170.0)] {
+            let selected = try XCTUnwrap(AdministrationMath.selection(for:p.definition, kg:kg, level:.high))
+            XCTAssertEqual(selected.high, high, accuracy:1e-12)
+            XCTAssertTrue(ProtocolDoseCalculator.calculate(definition:p.definition, kg:kg,
+                strength:nil, concentration:nil).available)
+        }
+        for kg in [34.001, 60.0, 100.0] {
+            XCTAssertNil(AdministrationMath.selection(for:p.definition, kg:kg, level:.high))
+            XCTAssertFalse(ProtocolDoseCalculator.calculate(definition:p.definition, kg:kg,
+                strength:nil, concentration:nil).available)
+        }
+    }
+    func testDoxorubicinSizeProtocolsCannotBeAppliedAcrossBands() throws {
+        for (id, kg, eligible) in [
+            ("doxorubicin-dog-1", 5.0, false), ("doxorubicin-dog-1", 10.0, false),
+            ("doxorubicin-dog-1", 10.001, true), ("doxorubicin-dog-1", 30.0, true),
+            ("doxorubicin-dog-2", 0.0, false), ("doxorubicin-dog-2", 5.0, true),
+            ("doxorubicin-dog-2", 10.0, true), ("doxorubicin-dog-2", 10.001, false)
+        ] {
+            let p = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == id })
+            XCTAssertEqual(ProtocolDoseCalculator.calculate(definition: p.definition, kg: kg,
+                strength: nil, concentration: nil).available, eligible, id)
+            XCTAssertEqual(AdministrationMath.selection(for:p.definition, kg:kg, level:.high) != nil, eligible, id)
+        }
+    }
     func testOptimmuneUsesOintmentStripWithoutMassOrVolumeConversion() throws {
         let p = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == "cyclosporine-ophthalmic-dog-1" })
         XCTAssertEqual(p.doseBasis, .ribbonInch)
@@ -37,7 +64,7 @@ final class MedicationSafetyRegressionTests: XCTestCase {
             let result = ProtocolDoseCalculator.calculate(definition: p.definition, kg: kg,
                 strength: 100, concentration: 2, builtInPreset: p)
             XCTAssertTrue(result.available)
-            XCTAssertEqual(result.headline, "0.25 inch ribbon/eye")
+            XCTAssertEqual(result.headline, "0.25 inch ribbon/eye q12h")
             XCTAssertTrue(result.formulation.isEmpty)
             let selection = try XCTUnwrap(AdministrationMath.selection(for: p.definition, kg: kg, level: .high))
             XCTAssertEqual(selection.selected, 0.25)

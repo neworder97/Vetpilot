@@ -6,6 +6,9 @@ final class MedicationPreloadTests: XCTestCase {
     private func expectedEligibility(_ id: String, weight: Double) -> Bool {
         switch id {
         case "levetiracetam-cat-2": return false
+        case "praziquantel-dog-1": return weight > 0 && weight <= 34
+        case "doxorubicin-dog-1": return weight > 10
+        case "doxorubicin-dog-2": return weight > 0 && weight <= 10
         case "digoxin-cat-1": return weight > 0 && weight < 3
         case "digoxin-cat-2": return weight >= 3 && weight <= 6
         case "digoxin-cat-3": return weight > 6

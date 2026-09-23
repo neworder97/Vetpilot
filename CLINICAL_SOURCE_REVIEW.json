@@ -10,7 +10,8 @@
     "Added explicit final-infusion concentration verification in UI and buprenorphine product-specific concentration guards; next CI required.",
     "dc35c0d9967d46a698c2ea8d6398cf331219134d passed arithmetic run 35807452217 and iOS run 35807452287: 90 unit and 9 UI tests; device-target compile passed. Source matching does not establish clinical clearance.",
     "Additional source review confirmed TMP-sulfamethoxazole skin regimens are explicitly present in the antistaphylococcal table; prior search snippets omitted that row. Added canine mirtazapine weight-band enforcement (7 kg source gap intentionally not guessed), and fixed-volume product-concentration engine guard.",
-    "Replaced canine commercial cyclosporine drops with a separate ointment-strip dose basis; mass and volume conversions disabled. Corrected ketamine/pregabalin indication wording and removed oral strengths from IV methocarbamol. Weight-band protocols now require weight in view validation even for fixed-mg arithmetic."
+    "Replaced canine commercial cyclosporine drops with a separate ointment-strip dose basis; mass and volume conversions disabled. Corrected ketamine/pregabalin indication wording and removed oral strengths from IV methocarbamol. Weight-band protocols now require weight in view validation even for fixed-mg arithmetic.",
+    "Canine doxorubicin >10 kg versus <=10 kg now enforced in both calculators and independently tested. Fenbendazole single-dose and three-day courses separated. Canine praziquantel 170 mg ceiling enforced; weights whose lower range exceeds ceiling require product-table review. Canine pyrantel 5 mg/kg corresponds to Nemex-2 base-dose label; MSD small-dog 10 mg/kg is a distinct alternative, not a universal correction. Credelio dog source and food instruction corrected."
   ],
   "entries": [
     {
@@ -908,27 +909,31 @@
     },
     {
       "id": "mirtazapine-oral-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/drugs-used-to-stimulate-appetite",
-      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression pending."
+      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression pending.",
+      "validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892"
     },
     {
       "id": "mirtazapine-oral-dog-2",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/drugs-used-to-stimulate-appetite",
-      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression pending."
+      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression pending.",
+      "validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892"
     },
     {
       "id": "mirtazapine-oral-dog-3",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/drugs-used-to-stimulate-appetite",
-      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression pending."
+      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression pending.",
+      "validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892"
     },
     {
       "id": "mirtazapine-oral-dog-4",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/drugs-used-to-stimulate-appetite",
-      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression pending."
+      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression pending.",
+      "validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892"
     },
     {
       "id": "dexamethasone-dog-1",
@@ -1525,15 +1530,17 @@
     },
     {
       "id": "calcium-gluconate-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/urinary-system/urolithiasis-in-small-animals/urethral-obstruction-in-small-animals",
-      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression pending."
+      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression pending.",
+      "validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892"
     },
     {
       "id": "calcium-gluconate-cat-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/urinary-system/urolithiasis-in-small-animals/urethral-obstruction-in-small-animals",
-      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression pending."
+      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression pending.",
+      "validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892"
     },
     {
       "id": "dextrose-dog-1",
@@ -1561,38 +1568,38 @@
     },
     {
       "id": "fenbendazole-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk"
     },
     {
       "id": "fenbendazole-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk"
     },
     {
       "id": "fenbendazole-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk"
     },
     {
       "id": "pyrantel-pamoate-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d2d6dcd1-7835-4c7b-bbae-d14752d9983b"
     },
     {
       "id": "pyrantel-pamoate-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.msdvetmanual.com/multimedia/table/core-feline-vaccination-and-antiparasitic-administration-in-shelter-medicine"
     },
     {
       "id": "praziquantel-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk"
     },
     {
       "id": "praziquantel-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk"
     },
     {
       "id": "ivermectin-dog-1",
@@ -1651,13 +1658,13 @@
     },
     {
       "id": "lotilaner-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=427f2ebc-ce24-452b-bbb3-43d4ef8b63b0"
     },
     {
       "id": "lotilaner-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=365b701f-e9a8-458f-90ff-33ca1fb947ca"
     },
     {
       "id": "toceranib-phosphate-dog-1",
@@ -1719,13 +1726,13 @@
     },
     {
       "id": "doxorubicin-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.msdvetmanual.com/reproductive-system/canine-transmissible-venereal-tumor/canine-transmissible-venereal-tumor"
     },
     {
       "id": "doxorubicin-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.msdvetmanual.com/reproductive-system/canine-transmissible-venereal-tumor/canine-transmissible-venereal-tumor"
     },
     {
       "id": "doxorubicin-cat-1",
@@ -1743,12 +1750,14 @@
       "source": null
     }
   ],
-  "last_validated_source": "65786643f03b77c8c3f6178ee575061ee8b6cd53",
-  "current_candidate": "eadbe53cb1ddd561b138e61dd8dda0d7d200ef99",
+  "last_validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892",
+  "current_candidate": "next commit: ointment assertion fix, doxorubicin bands, praziquantel ceiling, parasite labels",
   "validation": {
-    "arithmetic_run": 35805829287,
-    "arithmetic": "passed",
-    "ios_run": 35805829280,
-    "ios": "in_progress_at_checkpoint"
+    "last_passing_arithmetic_run": 35808837676,
+    "last_passing_ios_run": 35808837678,
+    "unit_tests": 92,
+    "ui_tests": 9,
+    "latest_failed_source": "4d7915b3cc7d41a0ba926d4cc9edc3b9d3a5f794",
+    "failure": "Ointment test expected text omitted correct q12h interval; corrected in next candidate. SwiftPM failure details will print on the next run."
   }
 }

@@ -8,6 +8,9 @@ number=r'(?:[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)'
 lead=re.compile('^('+number+')(?:–('+number+'))? ')
 def source_ineligible(identifier, kg):
  return (identifier == 'levetiracetam-cat-2' or
+         (identifier == 'praziquantel-dog-1' and kg > 34) or
+         (identifier == 'doxorubicin-dog-1' and not (kg > 10)) or
+         (identifier == 'doxorubicin-dog-2' and not (0 < kg <= 10)) or
          (identifier == 'digoxin-cat-1' and not (0 < kg < 3)) or
          (identifier == 'digoxin-cat-2' and not (3 <= kg <= 6)) or
          (identifier == 'digoxin-cat-3' and not (kg > 6)) or
@@ -42,6 +45,7 @@ def audit(data, restrictions=False):
                     check(not c['engine']['available'] and not c['engine']['formulation'],{'case':key,'error':'ineligible protocol must not calculate'})
                     continue
                 if restrictions and p['id']=='digoxin-dog-1':high=min(high,D('.25'))
+                if restrictions and p['id']=='praziquantel-dog-1':high=min(high,D(170))
                 e=c['engine'];check(e['available'],{'case':key,'error':'unexpected unavailable'})
                 if not e['available']:continue
                 compare_range(e['headline'],low,high,key+':headline',units[b])

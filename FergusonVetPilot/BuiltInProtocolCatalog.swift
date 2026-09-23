@@ -1901,51 +1901,51 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "fenbendazole-dog-1", generic: "Fenbendazole", species: .dog,
-            label: "50 mg/kg q24h ×3; some dog labels 100 mg/kg once — 50 mg/kg branch", doseBasis: .mgKg, minDose: 50.0, maxDose: 50.0,
-            frequency: "q24h, once", route: "PO", strengths: [], concentration: nil,
-            sourceReference: "MSD parasitology.", notes: "Parasite/product-specific Label vs extra-label duration varies Research preload rule: 50 mg/kg q24h for common GI parasite courses; parasite-specific branches",
+            label: "Selected intestinal helminths: 50 mg/kg daily for 3 days", doseBasis: .mgKg, minDose: 50.0, maxDose: 50.0,
+            frequency: "q24h for 3 days", route: "PO", strengths: [], concentration: nil,
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk", notes: "Three-day intestinal helminth course. Confirm parasite and local product authorization; feline regimen is UK-labeled and extra-label in the US. Other parasites can require different durations.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "fenbendazole-dog-2", generic: "Fenbendazole", species: .dog,
-            label: "50 mg/kg q24h ×3; some dog labels 100 mg/kg once — 100 mg/kg branch", doseBasis: .mgKg, minDose: 100.0, maxDose: 100.0,
-            frequency: "q24h, once", route: "PO", strengths: [], concentration: nil,
-            sourceReference: "MSD parasitology.", notes: "Parasite/product-specific Label vs extra-label duration varies Research preload rule: 50 mg/kg q24h for common GI parasite courses; parasite-specific branches",
+            label: "UK intestinal helminth single-dose regimen", doseBasis: .mgKg, minDose: 100.0, maxDose: 100.0,
+            frequency: "once", route: "PO", strengths: [], concentration: nil,
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk", notes: "UK regimen: 100 mg/kg once. Do not repeat daily as the 50 mg/kg three-day course. Confirm parasite and local product label.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "fenbendazole-cat-1", generic: "Fenbendazole", species: .cat,
-            label: "50 mg/kg q24h ×3 described for selected feline infections", doseBasis: .mgKg, minDose: 50.0, maxDose: 50.0,
-            frequency: "q24h", route: "PO", strengths: [], concentration: nil,
-            sourceReference: "MSD parasitology.", notes: "Parasite/product-specific Label vs extra-label duration varies Research preload rule: 50 mg/kg q24h for common GI parasite courses; parasite-specific branches",
+            label: "Selected intestinal helminths: 50 mg/kg daily for 3 days", doseBasis: .mgKg, minDose: 50.0, maxDose: 50.0,
+            frequency: "q24h for 3 days", route: "PO", strengths: [], concentration: nil,
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk", notes: "Three-day intestinal helminth course. Confirm parasite and local product authorization; feline regimen is UK-labeled and extra-label in the US. Other parasites can require different durations.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "pyrantel-pamoate-dog-1", generic: "Pyrantel pamoate", species: .dog,
-            label: "Common canine pyrantel-base dose", doseBasis: .mgKg, minDose: 5, maxDose: 5,
+            label: "Canine pyrantel-base regimen (Nemex-2 label equivalent)", doseBasis: .mgKg, minDose: 5, maxDose: 5,
             frequency: "once", route: "PO", strengths: [], concentration: nil,
-            sourceReference: "MSD parasitology.", notes: "Must distinguish base vs pamoate/embonate Product concentration/dose-expression validation Research preload rule: About 5 mg/kg **pyrantel base** for common cat protocol; canine label branch",
+            sourceReference: "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d2d6dcd1-7835-4c7b-bbae-d14752d9983b", notes: "Dose and entered concentration must both express pyrantel BASE, not mass of pamoate salt. Nemex-2 contains 4.54 mg base/mL; its exact volume instruction is 5 mL per 10 lb. Shake thoroughly. The MSD alternative 10 mg/kg for dogs at or below 2.3 kg is a separate regimen, not this product-label branch.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "pyrantel-pamoate-cat-1", generic: "Pyrantel pamoate", species: .cat,
-            label: "Common feline pyrantel-base dose", doseBasis: .mgKg, minDose: 5, maxDose: 5,
+            label: "Feline shelter intestinal nematode regimen", doseBasis: .mgKg, minDose: 5, maxDose: 5,
             frequency: "once", route: "PO", strengths: [], concentration: nil,
-            sourceReference: "MSD parasitology.", notes: "Must distinguish base vs pamoate/embonate Product concentration/dose-expression validation Research preload rule: About 5 mg/kg **pyrantel base** for common cat protocol; canine label branch",
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/core-feline-vaccination-and-antiparasitic-administration-in-shelter-medicine", notes: "5 mg/kg pyrantel BASE orally once; repeat in 7–14 days under the parasite-control plan. Enter concentration in mg of pyrantel base/mL, not pamoate salt. Extra-label feline use; do not substitute combination-product dosing.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "praziquantel-dog-1", generic: "Praziquantel", species: .dog,
             label: "Common cestode treatment", doseBasis: .mgKg, minDose: 5, maxDose: 12.5,
             frequency: "once", route: "PO", strengths: [], concentration: nil,
-            sourceReference: "MSD parasitology.", notes: "Product/parasite specificity Product/combination-product label matters Research preload rule: Dog 5–12.5; cat 4.6–10 mg/kg once for common cestodes",
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk", notes: "General oral reference range only; maximum 170 mg per dog. Product weight tables determine the actual dispensed tablet regimen. If even 5 mg/kg exceeds the ceiling, this range calculator blocks and requires a reviewed product-table regimen. Oral, injectable and combination products have different instructions.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "praziquantel-cat-1", generic: "Praziquantel", species: .cat,
             label: "Common cestode treatment", doseBasis: .mgKg, minDose: 4.6, maxDose: 10,
             frequency: "once", route: "PO", strengths: [], concentration: nil,
-            sourceReference: "MSD parasitology.", notes: "Product/parasite specificity Product/combination-product label matters Research preload rule: Dog 5–12.5; cat 4.6–10 mg/kg once for common cestodes",
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk", notes: "General oral reference range; select the exact product weight-table dose. This is not the injectable or topical regimen. Combination products require their own complete label.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
@@ -2028,15 +2028,15 @@ enum BuiltInProtocolCatalog {
         BuiltInProtocolPreset(
             id: "lotilaner-dog-1", generic: "Lotilaner", species: .dog,
             label: "Canine minimum exposure", doseBasis: .mgKg, minDose: 20, maxDose: 20,
-            frequency: "q30d", route: "PO", strengths: [], concentration: nil,
-            sourceReference: "Current Elanco feline label gives 12 mg for 2–4 lb and 48 mg for 4.1–17 lb cats.", notes: "Never interchange dog/cat rules Dog/cat bands differ Research preload rule: Dog ≥20 mg/kg; cat ≥6 mg/kg, q30d with food",
+            frequency: "monthly with food", route: "PO", strengths: [], concentration: nil,
+            sourceReference: "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=427f2ebc-ce24-452b-bbb3-43d4ef8b63b0", notes: "Minimum exposure reference, not a tablet count. Use the species-specific CREDELIO product weight table and age/weight eligibility. Give with food; do not interchange dog and cat tablets.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "lotilaner-cat-1", generic: "Lotilaner", species: .cat,
             label: "Feline minimum exposure", doseBasis: .mgKg, minDose: 6, maxDose: 6,
-            frequency: "q30d with food", route: "PO", strengths: [], concentration: nil,
-            sourceReference: "Current Elanco feline label gives 12 mg for 2–4 lb and 48 mg for 4.1–17 lb cats.", notes: "Never interchange dog/cat rules Dog/cat bands differ Research preload rule: Dog ≥20 mg/kg; cat ≥6 mg/kg, q30d with food",
+            frequency: "monthly with food", route: "PO", strengths: [], concentration: nil,
+            sourceReference: "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=365b701f-e9a8-458f-90ff-33ca1fb947ca", notes: "Minimum exposure reference, not a tablet count. Use the species-specific CREDELIO product weight table and age/weight eligibility. Give with food; do not interchange dog and cat tablets.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
@@ -2118,16 +2118,16 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "doxorubicin-dog-1", generic: "Doxorubicin", species: .dog,
-            label: "Dogs >10 kg oncology protocol", doseBasis: .mgM2, minDose: 30, maxDose: 30,
+            label: "TVT rescue after vincristine failure; dogs >10 kg", doseBasis: .mgM2, minDose: 30, maxDose: 30,
             frequency: "q3wk protocol", route: "IV", strengths: [], concentration: 2.0,
-            sourceReference: "MSD specifies these canine size-based rules and notes cumulative canine cardiotoxicity around a 180 mg/m² lifetime exposure ceiling.", notes: "Vesicant; cardiac/renal species-specific monitoring Cardiac/cumulative-dose and small-dog protocol issues Research preload rule: Dog >10 kg 30 mg/m²; ≤10 kg and cat ~1 mg/kg; q3wk protocol branch",
+            sourceReference: "https://www.msdvetmanual.com/reproductive-system/canine-transmissible-venereal-tumor/canine-transmissible-venereal-tumor", notes: "Specialist TVT rescue regimen: every 3 weeks for 5–6 treatments. The >10 kg BSA regimen and ≤10 kg weight regimen cannot be interchanged. Vesicant: controlled IV administration with pretreatment blood counts, cardiac assessment and cumulative exposure tracking. Other tumors require their own oncology protocol.",
             confidence: "High for arithmetic", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "doxorubicin-dog-2", generic: "Doxorubicin", species: .dog,
-            label: "Dogs <=10 kg small-patient protocol", doseBasis: .mgKg, minDose: 1, maxDose: 1,
+            label: "TVT rescue after vincristine failure; dogs ≤10 kg", doseBasis: .mgKg, minDose: 1, maxDose: 1,
             frequency: "q3wk protocol", route: "IV", strengths: [], concentration: 2.0,
-            sourceReference: "MSD specifies these canine size-based rules and notes cumulative canine cardiotoxicity around a 180 mg/m² lifetime exposure ceiling.", notes: "Vesicant; cardiac/renal species-specific monitoring Cardiac/cumulative-dose and small-dog protocol issues Research preload rule: Dog >10 kg 30 mg/m²; ≤10 kg and cat ~1 mg/kg; q3wk protocol branch",
+            sourceReference: "https://www.msdvetmanual.com/reproductive-system/canine-transmissible-venereal-tumor/canine-transmissible-venereal-tumor", notes: "Specialist TVT rescue regimen: every 3 weeks for 5–6 treatments. The >10 kg BSA regimen and ≤10 kg weight regimen cannot be interchanged. Vesicant: controlled IV administration with pretreatment blood counts, cardiac assessment and cumulative exposure tracking. Other tumors require their own oncology protocol.",
             confidence: "High for arithmetic", highRisk: true
         ),
         BuiltInProtocolPreset(

@@ -178,6 +178,8 @@ extension MedicationSafety {
         }
         let eligible: Bool
         switch id {
+        case "doxorubicin-dog-1": eligible = positiveFinite(kg) && kg > 10
+        case "doxorubicin-dog-2": eligible = positiveFinite(kg) && kg <= 10
         case "digoxin-cat-1": eligible = positiveFinite(kg) && kg < 3
         case "digoxin-cat-2": eligible = positiveFinite(kg) && kg >= 3 && kg <= 6
         case "digoxin-cat-3": eligible = positiveFinite(kg) && kg > 6
@@ -192,7 +194,11 @@ extension MedicationSafety {
     }
 
     static func maximumProtocolAmount(key: String) -> Double? {
-        builtinID(key) == "digoxin-dog-1" ? 0.25 : nil
+        switch builtinID(key) {
+        case "digoxin-dog-1": return 0.25
+        case "praziquantel-dog-1": return 170
+        default: return nil
+        }
     }
 }
 
