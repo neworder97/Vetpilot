@@ -1,16 +1,16 @@
 {
-  "source_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86",
+  "source_commit": "7bdcf59854049b99eed2e66c0960e45d158be1c6",
   "date": "2026-09-23",
   "release_status": "UNSIGNED_IPA_READY_FOR_AUTHORIZED_SIGNING",
-  "version": "0.4.0",
-  "build": "4",
+  "version": "0.4.1",
+  "build": "5",
   "ipa_created": true,
-  "ipa_sha256": "75d4de3c136825e69bd2aca841ef280b69ceffda611e85bbcd22cdbfed0e5717",
-  "ipa_artifact_id": 10730947026,
+  "ipa_sha256": "1bc22b54069eebf30e5ef4554e94415233f28b2bdb12f97290167182870901d7",
+  "ipa_artifact_id": 10730394743,
   "arithmetic": {
-    "run_id": 35812969532,
+    "run_id": 35814903576,
     "status": "success",
-    "extracted_core_tests": 91,
+    "extracted_core_tests": 96,
     "preset_branches": 307,
     "automatic_medication_entries": 27,
     "weight_branch_level_cases": 9210,
@@ -21,7 +21,7 @@
     "volume_cases": 3030
   },
   "ios": {
-    "run_id": 35812969585,
+    "run_id": 35814903592,
     "status": "success",
     "unit_tests": 98,
     "ui_tests": 10,
@@ -47,5 +47,6 @@
   "scope": "All 307 preset entries have initial dose/source comparison. Full patient eligibility, interactions, contraindications and every marketed/compounded formulation are not exhaustively validated.",
   "xray_scope": "Exploratory high/low uncalibrated confidence; real-image import and production processing tested, diagnostic accuracy not established.",
   "labwork_scope": "28 selected entries: 15 IDEXX and 13 MSU, including two unavailable tests. Search, specimens and preparation; not full directories.",
-  "physical_device_installation": "Not tested; unsigned IPA needs Signulous or another authorized signing route."
+  "physical_device_installation": "Not tested; unsigned IPA needs Signulous or another authorized signing route.",
+  "readability_upgrade": "Added selected tablet/capsule equivalent or mL/mL per hour and schedule beneath the existing results. Preserved equations, selectors, rounding and safety warnings. Added five quantity regression tests and a simulator UI assertion."
 }

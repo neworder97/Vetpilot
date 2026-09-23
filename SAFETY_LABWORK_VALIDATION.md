@@ -1,3 +1,23 @@
+# VetPilot 0.4.1 (5) — additive quantity display
+
+Validated source: `7bdcf59854049b99eed2e66c0960e45d158be1c6`.
+
+[Release validation](https://github.com/neworder97/Vetpilot/actions/runs/35814903592) and [arithmetic audit](https://github.com/neworder97/Vetpilot/actions/runs/35814903576) passed. The suite includes 98 iOS unit tests, 10 UI tests and 96 extracted-core tests. Original visual resources, device-target compilation, IPA structure/version and checksum passed.
+
+The result now adds the selected tablet/capsule equivalent and schedule, or injectable mL and schedule, alongside the existing calculation. It uses the existing selected-dose and per-administration arithmetic. Source equations, low/middle/high choices where applicable, frequency controls, rounding and existing administration details are preserved. Fractional capsules are not authorized for splitting; fractional tablets require product verification. Infusions retain mL/hr, and unresolved/high-risk administration plans retain their warnings.
+
+New regression cases cover dose-level/strength changes, daily-total division, volume/concentration changes, fractional capsules and prescribed infusion rates. The simulator also asserts that the added tablet quantity is rendered beneath the result.
+
+Unsigned IPA: [VetPilot-0.4.1-Signulous-IPA](https://github.com/neworder97/Vetpilot/actions/runs/35814903592/artifacts/10730394743). Authorized signing is required before installation.
+
+SHA-256: `1bc22b54069eebf30e5ef4554e94415233f28b2bdb12f97290167182870901d7`.
+
+This upgrade changes presentation, not medication catalog doses. The clinical limits and four blocked presets described in the original audit still apply. Physical-iPhone installation has not been tested.
+
+---
+
+## Previous release audit
+
 # VetPilot 0.4.0 (4) — validation and release
 
 Validated application source: `0ae2faa91ebb8847670686fd1ef94e578d85da86` on `vetpilot-safety-labwork`. Documentation updates after this commit do not change the IPA's source identity.
