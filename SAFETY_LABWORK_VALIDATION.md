@@ -1,3 +1,17 @@
+# VetPilot 0.4.3 (7) — nutrition correction and expanded IDEXX labs
+
+Validated source: `3b324b2fe6a55cbadbbe357f444c81cbcc111167`.
+
+[Release validation](https://github.com/neworder97/Vetpilot/actions/runs/35870009298) passed: 110 native unit tests, 14 simulator UI tests, device compilation, resource comparison and IPA checks. [Arithmetic validation](https://github.com/neworder97/Vetpilot/actions/runs/35870009485) passed 105 extracted-core tests with zero candidate numeric or rendered-output discrepancies.
+
+Nutrition now follows the reviewed PNA calculator method, with reproductive status, BCS-based weight status, ideal-weight estimates, optional known calorie intake and unsupported-case safeguards. Underweight clinical targets are reference calculations, not automatic feeding prescriptions. See `NUTRITION_PNA_REFERENCE.md` for exact method, source hash and limitations.
+
+IDEXX now includes Young Wellness, Total Health, Total Health Plus, Senior Profile, Senior Screen and Geriatric Profile, each with CBC and CBC-Select variants, plus canine and feline Cardiopet proBNP. Four existing pancreatic-lipase combinations were corrected to their current panel contents. The catalog contains 42 entries (29 IDEXX, 13 MSU), with searchable components and distinct CBC whole-blood versus BNP plasma handling. Current U.S. source records are in `IDEXX_SENDOUT_SOURCE_REVIEW.json`.
+
+Unsigned [IPA artifact](https://github.com/neworder97/Vetpilot/actions/runs/35870009298/artifacts/10755072147), independently downloaded and verified. SHA-256: `027327a9362c8f151de23a4abd8d9beae19bf5482603636f732a1bae73d4f305`. Signulous or another authorized signing route is required. Existing clinical-clearance and physical-device limits remain applicable. Medication catalog/formula source was unchanged in this upgrade.
+
+---
+
 # VetPilot 0.4.2 (6) — general VetPilot branding
 
 Validated source: `e7939b7c9f87bcc3c87569ba49419f38ddd10b22`.
