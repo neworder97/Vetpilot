@@ -56,6 +56,9 @@ final class MedicationSafetyRegressionTests: XCTestCase {
                 let invalid = ProtocolDoseCalculator.calculate(definition: preset.definition,
                     kg: 10, strength: nil, concentration: wrong, builtInPreset: preset)
                 XCTAssertFalse(invalid.available, preset.id)
+                let withoutMetadata = ProtocolDoseCalculator.calculate(definition: preset.definition,
+                    kg: 10, strength: nil, concentration: wrong)
+                XCTAssertFalse(withoutMetadata.available, "Insulin guard must also use the stable definition key: \(preset.id)")
                 XCTAssertEqual(invalid.headline, "Insulin product mismatch")
                 XCTAssertTrue(invalid.formulation.isEmpty)
             }

@@ -348,13 +348,13 @@ private struct DoseCalculatorSheet: View {
             return "Mixed oral/injectable entry: confirm one route and its matching product concentration in a route-specific protocol."
         }
         if let id = selectedBuiltInPreset?.id,
-           let ceiling = ["furosemide-dog-2": 12.0, "furosemide-cat-2": 6.0][id],
+           let ceiling = ["furosemide-dog-2": 12.0, "furosemide-cat-2": 6.0, "enrofloxacin-cat-1": 5.0][id],
            let perDose = administrationSelection, let count = dosesPerDay, kg > 0 {
             // MSD/Merck cardiac table: chronic oral daily ceilings. Do not
             // lower the dose silently; keep reference math and block instructions.
             let delivered = max(perDose.selected, selectedSolidPlan?.deliveredMg ?? perDose.selected)
             if delivered * count / kg > ceiling + 1e-12 {
-                return "Selected dose/frequency exceeds the cited chronic oral furosemide daily ceiling. Review the complete plan."
+                return "Selected dose/frequency exceeds the cited daily ceiling for this protocol. Review the complete plan."
             }
         }
         if selectedBuiltInPreset?.highRisk == true {

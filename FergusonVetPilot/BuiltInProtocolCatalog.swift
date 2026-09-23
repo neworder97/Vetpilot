@@ -145,8 +145,8 @@ enum BuiltInProtocolCatalog {
         BuiltInProtocolPreset(
             id: "famotidine-cat-1", generic: "Famotidine", species: .cat,
             label: "0.5–1 mg/kg PO q12–24h", doseBasis: .mgKg, minDose: 0.5, maxDose: 1.0,
-            frequency: "q12-24h", route: "PO", strengths: [40], concentration: 10.0,
-            sourceReference: "MSD GI pharmacology; prolonged continuous use can develop tachyphylaxis.", notes: "Chronic H2 response can change Extra-label veterinary use Research preload rule: 0.5–1 mg/kg PO q12–24h",
+            frequency: "q12-24h", route: "PO", strengths: [40], concentration: nil,
+            sourceReference: "MSD GI pharmacology; prolonged continuous use can develop tachyphylaxis.", notes: "Oral branch only. Verify the actual oral liquid concentration if used; injectable 10 mg/mL is not an oral default. Response may diminish with repeated H2-blocker use.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
@@ -753,16 +753,16 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "ampicillin-dog-1", generic: "Ampicillin", species: .dog,
-            label: "Common antimicrobial range", doseBasis: .mgKg, minDose: 10, maxDose: 40,
-            frequency: "q6-12h", route: "PO/IV/IM", strengths: [], concentration: nil,
-            sourceReference: "MSD penicillin table.", notes: "Route/renal/interval specific Extra-label/product dependent Research preload rule: Dog 10–40 mg/kg q6–12h; cat 6.6–20 mg/kg q8–12h",
+            label: "Ampicillin sodium injection", doseBasis: .mgKg, minDose: 10, maxDose: 40,
+            frequency: "q6-12h", route: "IV/IM/SC", strengths: [], concentration: nil,
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/dosages-of-penicillins", notes: "Sodium formulation only. Verify reconstitution and route. Ampicillin trihydrate suspension is a different product and must not be given IV.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "ampicillin-cat-1", generic: "Ampicillin", species: .cat,
-            label: "Common antimicrobial range", doseBasis: .mgKg, minDose: 6.6, maxDose: 20,
-            frequency: "q8-12h", route: "PO/IV/IM", strengths: [], concentration: nil,
-            sourceReference: "MSD penicillin table.", notes: "Route/renal/interval specific Extra-label/product dependent Research preload rule: Dog 10–40 mg/kg q6–12h; cat 6.6–20 mg/kg q8–12h",
+            label: "Ampicillin sodium injection", doseBasis: .mgKg, minDose: 6.6, maxDose: 20,
+            frequency: "q8-12h", route: "IV/IM/SC", strengths: [], concentration: nil,
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/dosages-of-penicillins", notes: "Sodium formulation only. Verify reconstitution and route. Ampicillin trihydrate suspension is a different product and must not be given IV.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
@@ -809,16 +809,16 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "cefazolin-dog-1", generic: "Cefazolin", species: .dog,
-            label: "15–35 mg/kg IV/IM/SC q6–8h plus perioperative branch", doseBasis: .mgKg, minDose: 15.0, maxDose: 35.0,
-            frequency: "q6-8h", route: "IV/IM/SC", strengths: [500], concentration: nil,
-            sourceReference: "MSD cephalosporin table.", notes: "Needs surgical redose logic Extra-label Research preload rule: 15–35 mg/kg IV/IM/SC q6–8h plus perioperative branch",
+            label: "Intermittent injectable antimicrobial regimen", doseBasis: .mgKg, minDose: 15.0, maxDose: 35.0,
+            frequency: "q6-8h", route: "IV/IM/SC", strengths: [], concentration: nil,
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/dosages-of-cephalosporins", notes: "Enter reconstituted mg/mL for volume calculation. Vial mass is not a tablet strength. Surgical prophylaxis and intraoperative redosing need their own procedure-specific plan.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "cefazolin-cat-1", generic: "Cefazolin", species: .cat,
-            label: "15–35 mg/kg IV/IM/SC q6–8h plus perioperative branch", doseBasis: .mgKg, minDose: 15.0, maxDose: 35.0,
-            frequency: "q6-8h", route: "IV/IM/SC", strengths: [500], concentration: nil,
-            sourceReference: "MSD cephalosporin table.", notes: "Needs surgical redose logic Extra-label Research preload rule: 15–35 mg/kg IV/IM/SC q6–8h plus perioperative branch",
+            label: "Intermittent injectable antimicrobial regimen", doseBasis: .mgKg, minDose: 15.0, maxDose: 35.0,
+            frequency: "q6-8h", route: "IV/IM/SC", strengths: [], concentration: nil,
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/dosages-of-cephalosporins", notes: "Enter reconstituted mg/mL for volume calculation. Vial mass is not a tablet strength. Surgical prophylaxis and intraoperative redosing need their own procedure-specific plan.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
@@ -838,15 +838,15 @@ enum BuiltInProtocolCatalog {
         BuiltInProtocolPreset(
             id: "enrofloxacin-dog-1", generic: "Enrofloxacin", species: .dog,
             label: "Canine antimicrobial range", doseBasis: .mgKg, minDose: 5, maxDose: 20,
-            frequency: "q24h", route: "PO/IV/IM", strengths: [], concentration: nil,
-            sourceReference: "MSD fluoroquinolone guidance; feline retinal toxicity is dose-related.", notes: "Feline retinal toxicity; stewardship Cat dose guard essential; fluoroquinolone stewardship Research preload rule: Dog 5–20 mg/kg q24h; **cat hard ceiling 5 mg/kg/day**",
+            frequency: "q24h", route: "PO/IV/SC", strengths: [], concentration: nil,
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/dosages-of-quinolones", notes: "Feline retinal toxicity; stewardship Cat dose guard essential; fluoroquinolone stewardship Research preload rule: Dog 5–20 mg/kg q24h; **cat hard ceiling 5 mg/kg/day**",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "enrofloxacin-cat-1", generic: "Enrofloxacin", species: .cat,
             label: "Feline hard maximum", doseBasis: .mgKg, minDose: 5, maxDose: 5,
-            frequency: "q24h", route: "PO/IV/IM", strengths: [], concentration: nil,
-            sourceReference: "MSD fluoroquinolone guidance; feline retinal toxicity is dose-related.", notes: "Feline retinal toxicity; stewardship Cat dose guard essential; fluoroquinolone stewardship Research preload rule: Dog 5–20 mg/kg q24h; **cat hard ceiling 5 mg/kg/day**",
+            frequency: "q24h", route: "PO/IV/SC", strengths: [], concentration: nil,
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/dosages-of-quinolones", notes: "Feline retinal toxicity; stewardship Cat dose guard essential; fluoroquinolone stewardship Research preload rule: Dog 5–20 mg/kg q24h; **cat hard ceiling 5 mg/kg/day**",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
@@ -971,15 +971,15 @@ enum BuiltInProtocolCatalog {
         BuiltInProtocolPreset(
             id: "sucralfate-dog-1", generic: "Sucralfate", species: .dog,
             label: "GI mucosal protectant", doseBasis: .fixedMg, minDose: 500, maxDose: 1000,
-            frequency: "q6-12h", route: "PO", strengths: [], concentration: nil,
-            sourceReference: "MSD GI pharmacology.", notes: "Separate from interacting oral drugs Extra-label veterinary use Research preload rule: Dog 0.5–1 g; cat 0.25–0.5 g q6–12h",
+            frequency: "q6–8h", route: "PO", strengths: [], concentration: nil,
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/antiulcerative-drugs", notes: "Separate from interacting oral drugs Extra-label veterinary use Research preload rule: Dog 0.5–1 g; cat 0.25–0.5 g q6–12h",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "sucralfate-cat-1", generic: "Sucralfate", species: .cat,
             label: "GI mucosal protectant", doseBasis: .fixedMg, minDose: 250, maxDose: 500,
-            frequency: "q6-12h", route: "PO", strengths: [], concentration: nil,
-            sourceReference: "MSD GI pharmacology.", notes: "Separate from interacting oral drugs Extra-label veterinary use Research preload rule: Dog 0.5–1 g; cat 0.25–0.5 g q6–12h",
+            frequency: "q8–12h", route: "PO", strengths: [], concentration: nil,
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/antiulcerative-drugs", notes: "Separate from interacting oral drugs Extra-label veterinary use Research preload rule: Dog 0.5–1 g; cat 0.25–0.5 g q6–12h",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
@@ -999,30 +999,30 @@ enum BuiltInProtocolCatalog {
         BuiltInProtocolPreset(
             id: "metoclopramide-dog-1", generic: "Metoclopramide", species: .dog,
             label: "0.1–0.5 mg/kg q6–8h; CRI 0.01–0.02 mg/kg/h — 0.1-0.5 mg/kg branch", doseBasis: .mgKg, minDose: 0.1, maxDose: 0.5,
-            frequency: "q6–8h", route: "PO/SC/IM/IV", strengths: [10], concentration: 5.0,
-            sourceReference: "MSD antiemetic/prokinetic guidance.", notes: "Intermittent antiemetic/prokinetic branch. Do not use with GI obstruction; route and indication should be selected before administration.",
+            frequency: "q6–8h", route: "PO/SC/IM", strengths: [10], concentration: 5.0,
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs", notes: "Intermittent antiemetic/prokinetic branch. Do not use with GI obstruction; route and indication should be selected before administration.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "metoclopramide-dog-2", generic: "Metoclopramide", species: .dog,
             label: "0.1–0.5 mg/kg q6–8h; CRI 0.01–0.02 mg/kg/h — 0.01-0.02 mg/kg/h branch", doseBasis: .mgKgHr, minDose: 0.01, maxDose: 0.02,
-            frequency: "continuous", route: "IV CRI", strengths: [10], concentration: 5.0,
-            sourceReference: "MSD antiemetic/prokinetic guidance.", notes: "Avoid obstruction; neurologic effects Extra-label Research preload rule: 0.1–0.5 mg/kg q6–8h; CRI 0.01–0.02 mg/kg/h",
-            confidence: "High", highRisk: false
+            frequency: "continuous", route: "IV CRI", strengths: [], concentration: nil,
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs", notes: "Use the final diluted infusion concentration, not stock ampoule concentration, for pump-rate math. Requires a prescribed rate, obstruction exclusion, pump verification and neurologic monitoring.",
+            confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "metoclopramide-cat-1", generic: "Metoclopramide", species: .cat,
             label: "0.1–0.5 mg/kg q6–8h; CRI 0.01–0.02 mg/kg/h — 0.1-0.5 mg/kg branch", doseBasis: .mgKg, minDose: 0.1, maxDose: 0.5,
-            frequency: "q6–8h", route: "PO/SC/IM/IV", strengths: [10], concentration: 5.0,
-            sourceReference: "MSD antiemetic/prokinetic guidance.", notes: "Intermittent antiemetic/prokinetic branch. Do not use with GI obstruction; route and indication should be selected before administration.",
+            frequency: "q6–8h", route: "PO/SC/IM", strengths: [10], concentration: 5.0,
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs", notes: "Intermittent antiemetic/prokinetic branch. Do not use with GI obstruction; route and indication should be selected before administration.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "metoclopramide-cat-2", generic: "Metoclopramide", species: .cat,
             label: "0.1–0.5 mg/kg q6–8h; CRI 0.01–0.02 mg/kg/h — 0.01-0.02 mg/kg/h branch", doseBasis: .mgKgHr, minDose: 0.01, maxDose: 0.02,
-            frequency: "continuous", route: "IV CRI", strengths: [10], concentration: 5.0,
-            sourceReference: "MSD antiemetic/prokinetic guidance.", notes: "Avoid obstruction; neurologic effects Extra-label Research preload rule: 0.1–0.5 mg/kg q6–8h; CRI 0.01–0.02 mg/kg/h",
-            confidence: "High", highRisk: false
+            frequency: "continuous", route: "IV CRI", strengths: [], concentration: nil,
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs", notes: "Use the final diluted infusion concentration, not stock ampoule concentration, for pump-rate math. Requires a prescribed rate, obstruction exclusion, pump verification and neurologic monitoring.",
+            confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "cisapride-dog-1", generic: "Cisapride", species: .dog,
@@ -1607,9 +1607,9 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "chlorpheniramine-dog-1", generic: "Chlorpheniramine", species: .dog,
-            label: "Canine antihistamine", doseBasis: .mgKg, minDose: 0.25, maxDose: 0.5,
-            frequency: "q8h", route: "PO", strengths: [4], concentration: nil,
-            sourceReference: "MSD antihistamine table.", notes: "Sedation Extra-label Research preload rule: Cat 2–4 mg/cat q12h; dog 4–8 mg or 0.25–0.5 mg/kg q8h",
+            label: "AAHA oral canine antihistamine regimen", doseBasis: .mgKg, minDose: 0.4, maxDose: 0.4,
+            frequency: "q12h", route: "PO", strengths: [4], concentration: nil,
+            sourceReference: "https://www.aaha.org/resources/2023-aaha-management-of-allergic-skin-diseases-in-dogs-and-cats-guidelines/table-3-oral-antihistamine-doses-for-dogs/", notes: "Single-ingredient oral product only. Monitor sedation and anticholinergic effects; clinician selects suitability for allergic disease.",
             confidence: "Moderate-high", highRisk: false
         ),
         BuiltInProtocolPreset(

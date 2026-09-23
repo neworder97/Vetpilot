@@ -224,7 +224,7 @@ enum ProtocolDoseCalculator {
         }
 
         if let issue = MedicationSafety.insulinConcentrationIssue(
-            presetID: builtInPreset?.id, concentration: concentration ?? d.concentration) {
+            presetID: builtInPreset?.id ?? MedicationSafety.builtinID(d.medicationKey), concentration: concentration ?? d.concentration) {
             return DoseResult(available: false, headline: "Insulin product mismatch",
                 math: "", formulation: "", warning: issue)
         }
@@ -397,7 +397,7 @@ enum ProtocolDoseCalculator {
         return DoseResult(
             available: true,
             headline: headline,
-            math: "\(basisText) = \(amountText)",
+            math: "\(basisText)\(MedicationSafety.maximumProtocolAmount(key: d.medicationKey) != nil ? "; applying per-patient ceiling" : "") = \(amountText)",
             formulation: formulation,
             warning: warning
         )

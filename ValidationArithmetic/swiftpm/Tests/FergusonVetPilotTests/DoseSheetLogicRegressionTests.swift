@@ -69,9 +69,23 @@ final class DoseSheetLogicRegressionTests: XCTestCase {
     }
     func testMixedRouteDoesNotRecommendAnUnselectedFormulation() throws {
         let m=try XCTUnwrap(ClinicalData.medications.first { $0.generic=="Ondansetron" })
-        let d=try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id=="ondansetron-dog-1" }).definition
+        var d=try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id=="ondansetron-dog-1" }).definition
+        // Explicit malformed clinic fixture: built-in ondansetron is now route-specific.
+        d.route="PO/IV"
         let p=DoseSheetLogicProbe(medication:m,protocolDefinition:d,concentration:"2")
         XCTAssertTrue(try XCTUnwrap(p.administrationReviewReason).contains("Mixed oral/injectable"))
+        XCTAssertFalse(p.canPlanSupply)
+    }
+    func testFelineEnrofloxacinCannotDoubleDailyCeilingByChangingFrequency() throws {
+        let m=try XCTUnwrap(ClinicalData.medications.first { $0.generic=="Enrofloxacin" })
+        let preset=try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id=="enrofloxacin-cat-1" })
+        let p=DoseSheetLogicProbe(medication:m,protocolDefinition:preset.definition,selectedBuiltInPreset:preset,kg:4,selectedFrequency:.q12h,selectedDoseLevel:.high)
+        // Route-specific clinic selection permits evaluation of the daily limit.
+        var oral = preset.definition
+        oral.route = "PO"
+        let selected=DoseSheetLogicProbe(medication:m,protocolDefinition:oral,selectedBuiltInPreset:preset,kg:4,selectedFrequency:.q12h,selectedDoseLevel:.high)
+        XCTAssertTrue(try XCTUnwrap(selected.administrationReviewReason).contains("daily ceiling"))
+        XCTAssertFalse(selected.canPlanSupply)
         XCTAssertFalse(p.canPlanSupply)
     }
     func testFurosemideDailyCeilingBlocksHighDoseAtQ8h() throws {

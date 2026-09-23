@@ -5,33 +5,34 @@
     "Product-specific insulin concentration engine and UI regression passed on eadbe53cb1ddd561b138e61dd8dda0d7d200ef99.",
     "Canine AAHA insulin instructions need ideal-weight and whole-unit-rounding context; notes now state it.",
     "Removed oral tablet strength metadata from three non-oral furosemide branches.",
-    "Potassium lower-range and final-dilution workflow remain pending; a maximum infusion rate alone is not a complete protocol."
+    "Potassium lower-range and final-dilution workflow remain pending; a maximum infusion rate alone is not a complete protocol.",
+    "8d2e22d arithmetic candidate: zero numeric/rendered mismatches. SwiftPM 74/75 passed; stale mixed-route fixture corrected for next run."
   ],
   "entries": [
     {
       "id": "metronidazole-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/pharmacology/antibacterial-agents/nitroimidazoles-use-in-animals"
     },
     {
       "id": "metronidazole-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/digestive-system/giardiasis-giardia/giardiasis-in-animals"
     },
     {
       "id": "metronidazole-dog-3",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/pharmacology/antibacterial-agents/nitroimidazoles-use-in-animals"
     },
     {
       "id": "metronidazole-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/pharmacology/antibacterial-agents/nitroimidazoles-use-in-animals"
     },
     {
       "id": "metronidazole-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/pharmacology/antibacterial-agents/nitroimidazoles-use-in-animals"
     },
     {
       "id": "doxycycline-dog-1",
@@ -115,8 +116,9 @@
     },
     {
       "id": "famotidine-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": null,
+      "finding": "Corrected source intervals or removed mismatched formulation metadata."
     },
     {
       "id": "ondansetron-dog-1",
@@ -144,33 +146,33 @@
     },
     {
       "id": "diphenhydramine-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/antihistamine-dosages-for-integumentary-disease-in-animals"
     },
     {
       "id": "diphenhydramine-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/antihistamine-dosages-for-integumentary-disease-in-animals"
     },
     {
       "id": "cetirizine-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/antihistamine-dosages-for-integumentary-disease-in-animals"
     },
     {
       "id": "cetirizine-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/antihistamine-dosages-for-integumentary-disease-in-animals"
     },
     {
       "id": "cetirizine-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/antihistamine-dosages-for-integumentary-disease-in-animals"
     },
     {
       "id": "cetirizine-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/antihistamine-dosages-for-integumentary-disease-in-animals"
     },
     {
       "id": "furosemide-dog-1",
@@ -273,138 +275,163 @@
     },
     {
       "id": "phenobarbital-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/nervous-system/epilepsy-in-small-animals/epilepsy-in-small-animals"
     },
     {
       "id": "phenobarbital-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/nervous-system/epilepsy-in-small-animals/epilepsy-in-small-animals"
     },
     {
       "id": "tramadol-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-dogs",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "tramadol-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-cats",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "buprenorphine-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-dogs",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "buprenorphine-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-dogs",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "buprenorphine-dog-3",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-dogs",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "buprenorphine-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-cats",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "buprenorphine-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-cats",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "buprenorphine-cat-3",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-cats",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "buprenorphine-cat-4",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-cats",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "butorphanol-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-dogs",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "butorphanol-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-dogs",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "butorphanol-dog-3",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-dogs",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "butorphanol-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-cats",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "butorphanol-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-cats",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "butorphanol-cat-3",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-cats",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "hydromorphone-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-dogs",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "hydromorphone-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-dogs",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "hydromorphone-dog-3",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-dogs",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "hydromorphone-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-cats",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "hydromorphone-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-cats",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "hydromorphone-cat-3",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-cats",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "fentanyl-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-dogs",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "fentanyl-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-dogs",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "fentanyl-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-cats",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "fentanyl-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-cats",
+      "finding": "Numerical dose, route, and interval match species-specific table. Product substitution and final infusion concentration require separate workflow review."
     },
     {
       "id": "ketamine-dog-1",
@@ -558,13 +585,15 @@
     },
     {
       "id": "ampicillin-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-penicillins",
+      "finding": "Corrected formulation/route metadata; feline enrofloxacin daily ceiling now blocks a shortened dosing interval."
     },
     {
       "id": "ampicillin-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-penicillins",
+      "finding": "Corrected formulation/route metadata; feline enrofloxacin daily ceiling now blocks a shortened dosing interval."
     },
     {
       "id": "ampicillin-sulbactam-dog-1",
@@ -598,13 +627,15 @@
     },
     {
       "id": "cefazolin-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.merckvetmanual.com/multimedia/table/dosages-of-cephalosporins",
+      "finding": "Corrected formulation/route metadata; feline enrofloxacin daily ceiling now blocks a shortened dosing interval."
     },
     {
       "id": "cefazolin-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.merckvetmanual.com/multimedia/table/dosages-of-cephalosporins",
+      "finding": "Corrected formulation/route metadata; feline enrofloxacin daily ceiling now blocks a shortened dosing interval."
     },
     {
       "id": "clindamycin-dog-1",
@@ -618,18 +649,20 @@
     },
     {
       "id": "enrofloxacin-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-quinolones",
+      "finding": "Corrected formulation/route metadata; feline enrofloxacin daily ceiling now blocks a shortened dosing interval."
     },
     {
       "id": "enrofloxacin-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-quinolones",
+      "finding": "Corrected formulation/route metadata; feline enrofloxacin daily ceiling now blocks a shortened dosing interval."
     },
     {
       "id": "marbofloxacin-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-quinolones"
     },
     {
       "id": "marbofloxacin-dog-2",
@@ -638,28 +671,28 @@
     },
     {
       "id": "marbofloxacin-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-quinolones"
     },
     {
       "id": "orbifloxacin-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-quinolones"
     },
     {
       "id": "orbifloxacin-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-quinolones"
     },
     {
       "id": "orbifloxacin-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-quinolones"
     },
     {
       "id": "orbifloxacin-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-quinolones"
     },
     {
       "id": "azithromycin-dog-1",
@@ -713,13 +746,15 @@
     },
     {
       "id": "sucralfate-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.msdvetmanual.com/multimedia/table/antiulcerative-drugs",
+      "finding": "Corrected source intervals or removed mismatched formulation metadata."
     },
     {
       "id": "sucralfate-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.msdvetmanual.com/multimedia/table/antiulcerative-drugs",
+      "finding": "Corrected source intervals or removed mismatched formulation metadata."
     },
     {
       "id": "pantoprazole-dog-1",
@@ -733,23 +768,27 @@
     },
     {
       "id": "metoclopramide-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs",
+      "finding": "Corrected source intervals or removed mismatched formulation metadata."
     },
     {
       "id": "metoclopramide-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs",
+      "finding": "Corrected source intervals or removed mismatched formulation metadata."
     },
     {
       "id": "metoclopramide-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs",
+      "finding": "Corrected source intervals or removed mismatched formulation metadata."
     },
     {
       "id": "metoclopramide-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs",
+      "finding": "Corrected source intervals or removed mismatched formulation metadata."
     },
     {
       "id": "cisapride-dog-1",
@@ -1073,18 +1112,18 @@
     },
     {
       "id": "zonisamide-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/nervous-system/epilepsy-in-small-animals/epilepsy-in-small-animals"
     },
     {
       "id": "zonisamide-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/nervous-system/epilepsy-in-small-animals/epilepsy-in-small-animals"
     },
     {
       "id": "potassium-bromide-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/nervous-system/epilepsy-in-small-animals/epilepsy-in-small-animals"
     },
     {
       "id": "pregabalin-dog-1",
@@ -1168,23 +1207,24 @@
     },
     {
       "id": "hydroxyzine-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/antihistamine-dosages-for-integumentary-disease-in-animals"
     },
     {
       "id": "hydroxyzine-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/antihistamine-dosages-for-integumentary-disease-in-animals"
     },
     {
       "id": "chlorpheniramine-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.aaha.org/resources/2023-aaha-management-of-allergic-skin-diseases-in-dogs-and-cats-guidelines/table-3-oral-antihistamine-doses-for-dogs/",
+      "finding": "Replaced incompletely weight-banded range with the explicit AAHA oral canine regimen."
     },
     {
       "id": "chlorpheniramine-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/antihistamine-dosages-for-integumentary-disease-in-animals"
     },
     {
       "id": "lokivetmab-dog-1",
@@ -1378,13 +1418,15 @@
     },
     {
       "id": "potassium-chloride-dog-1",
-      "status": "MAXIMUM_RATE_SUPPORTED_OTHER_PARAMETERS_PENDING",
-      "source": "https://www.aaha.org/resources/2024-aaha-fluid-therapy-guidelines-for-dogs-and-cats/section-5-fluid-therapy-in-ill-patients/"
+      "status": "SOURCE_RANGE_MATCHES_WORKFLOW_REVIEW_PENDING",
+      "source": "https://www.aaha.org/resources/2024-aaha-fluid-therapy-guidelines-for-dogs-and-cats/section-5-fluid-therapy-in-ill-patients/",
+      "finding": "AAHA Table 11 supports numerical range by serum-K band. A single selectable range does not replace serum-K-specific prescription; final diluted concentration workflow still needs explicit UI."
     },
     {
       "id": "potassium-chloride-cat-1",
-      "status": "MAXIMUM_RATE_SUPPORTED_OTHER_PARAMETERS_PENDING",
-      "source": "https://www.aaha.org/resources/2024-aaha-fluid-therapy-guidelines-for-dogs-and-cats/section-5-fluid-therapy-in-ill-patients/"
+      "status": "SOURCE_RANGE_MATCHES_WORKFLOW_REVIEW_PENDING",
+      "source": "https://www.aaha.org/resources/2024-aaha-fluid-therapy-guidelines-for-dogs-and-cats/section-5-fluid-therapy-in-ill-patients/",
+      "finding": "AAHA Table 11 supports numerical range by serum-K band. A single selectable range does not replace serum-K-specific prescription; final diluted concentration workflow still needs explicit UI."
     },
     {
       "id": "fenbendazole-dog-1",
