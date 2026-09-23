@@ -39,31 +39,31 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "doxycycline-dog-1", generic: "Doxycycline", species: .dog,
-            label: "5 mg/kg q12h or 10 mg/kg q24h — 5 mg/kg branch", doseBasis: .mgKg, minDose: 5.0, maxDose: 5.0,
-            frequency: "q12h, q24h", route: "PO", strengths: [100], concentration: nil,
-            sourceReference: "MSD/ACVIM-supported Lyme regimen is 10 mg/kg q12–24h; cats require liquid/food after solid doses.", notes: "Cats need food/water after tablets/capsules; duration organism-specific Extra-label branches; antimicrobial stewardship Research preload rule: 5–10 mg/kg PO q12–24h; 10 mg/kg q12h for selected vector/Wolbachia protocols",
+            label: "Respiratory bacterial indication: divided daily regimen", doseBasis: .mgKg, minDose: 5.0, maxDose: 5.0,
+            frequency: "q12h", route: "PO", strengths: [100], concentration: nil,
+            sourceReference: "https://doi.org/10.1111/jvim.14627", notes: "Cats need food/water after tablets/capsules; duration organism-specific Extra-label branches; antimicrobial stewardship Research preload rule: 5–10 mg/kg PO q12–24h; 10 mg/kg q12h for selected vector/Wolbachia protocols",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "doxycycline-dog-2", generic: "Doxycycline", species: .dog,
-            label: "5 mg/kg q12h or 10 mg/kg q24h — 10 mg/kg branch", doseBasis: .mgKg, minDose: 10.0, maxDose: 10.0,
-            frequency: "q12h, q24h", route: "PO", strengths: [100], concentration: nil,
-            sourceReference: "MSD/ACVIM-supported Lyme regimen is 10 mg/kg q12–24h; cats require liquid/food after solid doses.", notes: "Cats need food/water after tablets/capsules; duration organism-specific Extra-label branches; antimicrobial stewardship Research preload rule: 5–10 mg/kg PO q12–24h; 10 mg/kg q12h for selected vector/Wolbachia protocols",
+            label: "Respiratory bacterial indication: once-daily regimen", doseBasis: .mgKg, minDose: 10.0, maxDose: 10.0,
+            frequency: "q24h", route: "PO", strengths: [100], concentration: nil,
+            sourceReference: "https://doi.org/10.1111/jvim.14627", notes: "Cats need food/water after tablets/capsules; duration organism-specific Extra-label branches; antimicrobial stewardship Research preload rule: 5–10 mg/kg PO q12–24h; 10 mg/kg q12h for selected vector/Wolbachia protocols",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "doxycycline-cat-1", generic: "Doxycycline", species: .cat,
-            label: "5–10 mg/kg PO q12–24h; 10 mg/kg q12h for selected vector/Wolbachia protocols — 5-10 mg/kg branch", doseBasis: .mgKg, minDose: 5.0, maxDose: 10.0,
-            frequency: "q12-24h, q12h", route: "PO", strengths: [100], concentration: nil,
-            sourceReference: "MSD/ACVIM-supported Lyme regimen is 10 mg/kg q12–24h; cats require liquid/food after solid doses.", notes: "Cats need food/water after tablets/capsules; duration organism-specific Extra-label branches; antimicrobial stewardship Research preload rule: 5–10 mg/kg PO q12–24h; 10 mg/kg q12h for selected vector/Wolbachia protocols",
+            label: "Respiratory bacterial indication: divided daily regimen", doseBasis: .mgKg, minDose: 5, maxDose: 5,
+            frequency: "q12h", route: "PO", strengths: [100], concentration: nil,
+            sourceReference: "https://doi.org/10.1111/jvim.14627", notes: "Cats need food/water after tablets/capsules; duration organism-specific Extra-label branches; antimicrobial stewardship Research preload rule: 5–10 mg/kg PO q12–24h; 10 mg/kg q12h for selected vector/Wolbachia protocols",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "doxycycline-cat-2", generic: "Doxycycline", species: .cat,
-            label: "5–10 mg/kg PO q12–24h; 10 mg/kg q12h for selected vector/Wolbachia protocols — 10 mg/kg branch", doseBasis: .mgKg, minDose: 10.0, maxDose: 10.0,
-            frequency: "q12-24h, q12h", route: "PO", strengths: [100], concentration: nil,
-            sourceReference: "MSD/ACVIM-supported Lyme regimen is 10 mg/kg q12–24h; cats require liquid/food after solid doses.", notes: "Cats need food/water after tablets/capsules; duration organism-specific Extra-label branches; antimicrobial stewardship Research preload rule: 5–10 mg/kg PO q12–24h; 10 mg/kg q12h for selected vector/Wolbachia protocols",
-            confidence: "High", highRisk: false
+            label: "Selected feline heartworm/Wolbachia regimen", doseBasis: .mgKg, minDose: 10.0, maxDose: 10.0,
+            frequency: "q12h for 28 days", route: "PO", strengths: [100], concentration: nil,
+            sourceReference: "https://www.msdvetmanual.com/circulatory-system/heartworm-disease/heartworm-disease-in-dogs-cats-and-ferrets", notes: "Cats need food/water after tablets/capsules; duration organism-specific Extra-label branches; antimicrobial stewardship Research preload rule: 5–10 mg/kg PO q12–24h; 10 mg/kg q12h for selected vector/Wolbachia protocols",
+            confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "prednisone-prednisolone-dog-1", generic: "Prednisone/prednisolone", species: .dog,
@@ -109,10 +109,10 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "levetiracetam-cat-2", generic: "Levetiracetam", species: .cat,
-            label: "Extended-release 30 mg/kg", doseBasis: .mgKg, minDose: 30, maxDose: 30,
+            label: "Specialist protocol required — feline ER regimen unverified", doseBasis: .mgKg, minDose: 30, maxDose: 30,
             frequency: "q12h", route: "PO — ER tablet whole", strengths: [500, 750], concentration: nil,
-            sourceReference: "MSD Veterinary Manual epilepsy guidance.", notes: "Extended-release branch; use only when the dosage form can be administered intact and is appropriate for the patient.",
-            confidence: "High", highRisk: false
+            sourceReference: "https://pmc.ncbi.nlm.nih.gov/articles/PMC5980453/", notes: "Automatic calculation blocked pending species-specific regimen review. Healthy-cat pharmacokinetic studies are not evidence of clinical seizure efficacy; ER tablets cannot be split.",
+            confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "levetiracetam-cat-3", generic: "Levetiracetam", species: .cat,
@@ -151,31 +151,31 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "ondansetron-dog-1", generic: "Ondansetron", species: .dog,
-            label: "PO 0.1–0.2 mg/kg; IV approximately 0.1–0.5 mg/kg q8–12h — 0.1-0.2 mg/kg branch", doseBasis: .mgKg, minDose: 0.1, maxDose: 0.2,
-            frequency: "q8-12h", route: "PO/IV", strengths: [8], concentration: 2.0,
-            sourceReference: "MSD antiemetic guidance.", notes: "Route/indication and QT risk need rule Extra-label veterinary use Research preload rule: PO 0.1–0.2 mg/kg; IV approximately 0.1–0.5 mg/kg q8–12h",
+            label: "Oral antiemetic regimen", doseBasis: .mgKg, minDose: 0.1, maxDose: 0.2,
+            frequency: "q12–24h", route: "PO", strengths: [8], concentration: nil,
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs", notes: "Route/indication and QT risk need rule Extra-label veterinary use Research preload rule: PO 0.1–0.2 mg/kg; IV approximately 0.1–0.5 mg/kg q8–12h",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "ondansetron-dog-2", generic: "Ondansetron", species: .dog,
-            label: "PO 0.1–0.2 mg/kg; IV approximately 0.1–0.5 mg/kg q8–12h — 0.1-0.5 mg/kg branch", doseBasis: .mgKg, minDose: 0.1, maxDose: 0.5,
-            frequency: "q8-12h", route: "PO/IV", strengths: [8], concentration: 2.0,
-            sourceReference: "MSD antiemetic guidance.", notes: "Route/indication and QT risk need rule Extra-label veterinary use Research preload rule: PO 0.1–0.2 mg/kg; IV approximately 0.1–0.5 mg/kg q8–12h",
-            confidence: "High", highRisk: false
+            label: "Intravenous antiemetic regimen", doseBasis: .mgKg, minDose: 0.1, maxDose: 0.15,
+            frequency: "q8–12h", route: "IV", strengths: [], concentration: 2.0,
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs", notes: "Route/indication and QT risk need rule Extra-label veterinary use Research preload rule: PO 0.1–0.2 mg/kg; IV approximately 0.1–0.5 mg/kg q8–12h",
+            confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "ondansetron-cat-1", generic: "Ondansetron", species: .cat,
-            label: "PO 0.1–0.2 mg/kg; IV approximately 0.1–0.5 mg/kg q8–12h — 0.1-0.2 mg/kg branch", doseBasis: .mgKg, minDose: 0.1, maxDose: 0.2,
-            frequency: "q8-12h", route: "PO/IV", strengths: [8], concentration: 2.0,
-            sourceReference: "MSD antiemetic guidance.", notes: "Route/indication and QT risk need rule Extra-label veterinary use Research preload rule: PO 0.1–0.2 mg/kg; IV approximately 0.1–0.5 mg/kg q8–12h",
+            label: "Oral antiemetic regimen", doseBasis: .mgKg, minDose: 0.1, maxDose: 0.2,
+            frequency: "q12–24h", route: "PO", strengths: [8], concentration: nil,
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs", notes: "Route/indication and QT risk need rule Extra-label veterinary use Research preload rule: PO 0.1–0.2 mg/kg; IV approximately 0.1–0.5 mg/kg q8–12h",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "ondansetron-cat-2", generic: "Ondansetron", species: .cat,
-            label: "PO 0.1–0.2 mg/kg; IV approximately 0.1–0.5 mg/kg q8–12h — 0.1-0.5 mg/kg branch", doseBasis: .mgKg, minDose: 0.1, maxDose: 0.5,
-            frequency: "q8-12h", route: "PO/IV", strengths: [8], concentration: 2.0,
-            sourceReference: "MSD antiemetic guidance.", notes: "Route/indication and QT risk need rule Extra-label veterinary use Research preload rule: PO 0.1–0.2 mg/kg; IV approximately 0.1–0.5 mg/kg q8–12h",
-            confidence: "High", highRisk: false
+            label: "Intravenous antiemetic regimen", doseBasis: .mgKg, minDose: 0.1, maxDose: 0.15,
+            frequency: "q8–12h", route: "IV", strengths: [], concentration: 2.0,
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs", notes: "Route/indication and QT risk need rule Extra-label veterinary use Research preload rule: PO 0.1–0.2 mg/kg; IV approximately 0.1–0.5 mg/kg q8–12h",
+            confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "diphenhydramine-dog-1", generic: "Diphenhydramine", species: .dog,
@@ -263,23 +263,23 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "spironolactone-dog-1", generic: "Spironolactone", species: .dog,
-            label: "1–2 mg/kg q12h or 2 mg/kg q24h — 1-2 mg/kg branch", doseBasis: .mgKg, minDose: 1.0, maxDose: 2.0,
-            frequency: "q12h, q24h", route: "PO", strengths: [100], concentration: nil,
-            sourceReference: "MSD cardiovascular/diuretic guidance.", notes: "K/renal monitoring Extra-label branches; electrolyte monitoring Research preload rule: 1–2 mg/kg q12–24h; dog diuretic range up to 4 mg/kg/day",
+            label: "Adjunctive CHF: twice-daily regimen", doseBasis: .mgKg, minDose: 1.0, maxDose: 2.0,
+            frequency: "q12h", route: "PO", strengths: [100], concentration: nil,
+            sourceReference: "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-cardiovascular-system/diuretics-for-use-in-animals", notes: "K/renal monitoring Extra-label branches; electrolyte monitoring Research preload rule: 1–2 mg/kg q12–24h; dog diuretic range up to 4 mg/kg/day",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "spironolactone-dog-2", generic: "Spironolactone", species: .dog,
-            label: "1–2 mg/kg q12h or 2 mg/kg q24h — 2 mg/kg branch", doseBasis: .mgKg, minDose: 2.0, maxDose: 2.0,
-            frequency: "q12h, q24h", route: "PO", strengths: [100], concentration: nil,
-            sourceReference: "MSD cardiovascular/diuretic guidance.", notes: "K/renal monitoring Extra-label branches; electrolyte monitoring Research preload rule: 1–2 mg/kg q12–24h; dog diuretic range up to 4 mg/kg/day",
+            label: "Adjunctive CHF: once-daily regimen", doseBasis: .mgKg, minDose: 2.0, maxDose: 2.0,
+            frequency: "q24h", route: "PO", strengths: [100], concentration: nil,
+            sourceReference: "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-cardiovascular-system/diuretics-for-use-in-animals", notes: "K/renal monitoring Extra-label branches; electrolyte monitoring Research preload rule: 1–2 mg/kg q12–24h; dog diuretic range up to 4 mg/kg/day",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "spironolactone-cat-1", generic: "Spironolactone", species: .cat,
             label: "1–2 mg/kg q12–24h", doseBasis: .mgKg, minDose: 1.0, maxDose: 2.0,
             frequency: "q12-24h", route: "PO", strengths: [100], concentration: nil,
-            sourceReference: "MSD cardiovascular/diuretic guidance.", notes: "K/renal monitoring Extra-label branches; electrolyte monitoring Research preload rule: 1–2 mg/kg q12–24h; dog diuretic range up to 4 mg/kg/day",
+            sourceReference: "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-cardiovascular-system/diuretics-for-use-in-animals", notes: "K/renal monitoring Extra-label branches; electrolyte monitoring Research preload rule: 1–2 mg/kg q12–24h; dog diuretic range up to 4 mg/kg/day",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
@@ -291,9 +291,9 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "benazepril-cat-1", generic: "Benazepril", species: .cat,
-            label: "~0.25–0.5 mg/kg", doseBasis: .mgKg, minDose: 0.25, maxDose: 0.5,
-            frequency: "q12-24h", route: "PO", strengths: [40], concentration: nil,
-            sourceReference: "MSD cardiovascular guidance.", notes: "Creatinine/K/BP Extra-label branches Research preload rule: 0.25–0.5 mg/kg PO q12–24h",
+            label: "Twice-daily cardiac regimen", doseBasis: .mgKg, minDose: 0.25, maxDose: 0.5,
+            frequency: "q12h", route: "PO", strengths: [40], concentration: nil,
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats", notes: "Creatinine/K/BP Extra-label branches Research preload rule: 0.25–0.5 mg/kg PO q12–24h",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
@@ -1173,16 +1173,16 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "amlodipine-dog-1", generic: "Amlodipine", species: .dog,
-            label: "Hypertension", doseBasis: .mgKg, minDose: 0.1, maxDose: 0.4,
+            label: "Once-daily hypertension regimen", doseBasis: .mgKg, minDose: 0.2, maxDose: 0.4,
             frequency: "q24h", route: "PO", strengths: [10], concentration: nil,
-            sourceReference: "MSD cardiovascular guidance.", notes: "BP monitoring FDA-approved feline product now exists; small-patient/product restrictions matter Research preload rule: Dog 0.1–0.4 mg/kg/day; cat ~0.125–0.5 mg/kg/day",
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats", notes: "BP monitoring FDA-approved feline product now exists; small-patient/product restrictions matter Research preload rule: Dog 0.1–0.4 mg/kg/day; cat ~0.125–0.5 mg/kg/day",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "amlodipine-cat-1", generic: "Amlodipine", species: .cat,
-            label: "Hypertension", doseBasis: .mgKg, minDose: 0.125, maxDose: 0.5,
+            label: "Initial long-term hypertension dose", doseBasis: .mgKg, minDose: 0.125, maxDose: 0.125,
             frequency: "q24h", route: "PO", strengths: [10], concentration: nil,
-            sourceReference: "MSD cardiovascular guidance.", notes: "BP monitoring FDA-approved feline product now exists; small-patient/product restrictions matter Research preload rule: Dog 0.1–0.4 mg/kg/day; cat ~0.125–0.5 mg/kg/day",
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats", notes: "Starting dose only. Blood-pressure response determines gradual weekly titration; a higher maintenance dose requires an explicitly reviewed protocol.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
@@ -1306,9 +1306,9 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "hydralazine-dog-1", generic: "Hydralazine", species: .dog,
-            label: "Initial oral dose", doseBasis: .mgKg, minDose: 0.5, maxDose: 0.5,
-            frequency: "start/titrate", route: "PO", strengths: [100], concentration: nil,
-            sourceReference: "MSD cardiac guidance.", notes: "Close BP monitoring BP-guided; no one-size default Research preload rule: Dog 0.5 mg/kg start → 1–3 q12h; acute feline branch",
+            label: "Initial oral dose; subsequent titration requires review", doseBasis: .mgKg, minDose: 0.5, maxDose: 0.5,
+            frequency: "once", route: "PO", strengths: [100], concentration: nil,
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats", notes: "Close BP monitoring BP-guided; no one-size default Research preload rule: Dog 0.5 mg/kg start → 1–3 q12h; acute feline branch",
             confidence: "Moderate", highRisk: false
         ),
         BuiltInProtocolPreset(
@@ -1321,9 +1321,9 @@ enum BuiltInProtocolCatalog {
         BuiltInProtocolPreset(
             id: "hydralazine-cat-1", generic: "Hydralazine", species: .cat,
             label: "Acute feline hypertension", doseBasis: .fixedMg, minDose: 0.2, maxDose: 0.5,
-            frequency: "repeat per BP response", route: "SC", strengths: [100], concentration: nil,
-            sourceReference: "MSD cardiac guidance.", notes: "Close BP monitoring BP-guided; no one-size default Research preload rule: Dog 0.5 mg/kg start → 1–3 q12h; acute feline branch",
-            confidence: "Moderate", highRisk: false
+            frequency: "once; may repeat after 15 min if needed", route: "SC", strengths: [], concentration: nil,
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats", notes: "Close BP monitoring BP-guided; no one-size default Research preload rule: Dog 0.5 mg/kg start → 1–3 q12h; acute feline branch",
+            confidence: "Moderate", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "telmisartan-cat-1", generic: "Telmisartan", species: .cat,
@@ -1363,8 +1363,8 @@ enum BuiltInProtocolCatalog {
         BuiltInProtocolPreset(
             id: "torsemide-cat-2", generic: "Torsemide", species: .cat,
             label: "Feline fixed-dose alternative", doseBasis: .fixedMg, minDose: 1.25, maxDose: 1.25,
-            frequency: "per protocol", route: "PO", strengths: [100], concentration: nil,
-            sourceReference: "MSD cardiac guidance.", notes: "Renal/electrolyte monitoring Extra-label/product dependent Research preload rule: Dog 0.1–0.4; cat 0.05–0.25 mg/kg q12–24h",
+            frequency: "q12–24h", route: "PO", strengths: [100], concentration: nil,
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats", notes: "Renal/electrolyte monitoring Extra-label/product dependent Research preload rule: Dog 0.1–0.4; cat 0.05–0.25 mg/kg q12–24h",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(

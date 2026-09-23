@@ -2,7 +2,7 @@
   "reviewed_on": "2026-09-23",
   "scope": "Dose basis, numerical range, interval, route and insulin concentration checked for marked entries. Full patient eligibility, interactions, all available formulations, and clinical validation remain incomplete.",
   "findings": [
-    "Insulin concentration substitution previously retained the source regimen. Added product-specific engine and UI checks with regression coverage; validation pending on this revision.",
+    "Product-specific insulin concentration engine and UI regression passed on eadbe53cb1ddd561b138e61dd8dda0d7d200ef99.",
     "Canine AAHA insulin instructions need ideal-weight and whole-unit-rounding context; notes now state it.",
     "Removed oral tablet strength metadata from three non-oral furosemide branches.",
     "Potassium lower-range and final-dilution workflow remain pending; a maximum infusion rate alone is not a complete protocol."
@@ -35,23 +35,27 @@
     },
     {
       "id": "doxycycline-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://doi.org/10.1111/jvim.14627",
+      "finding": "Corrected regimen metadata against cited source; regression pending."
     },
     {
       "id": "doxycycline-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://doi.org/10.1111/jvim.14627",
+      "finding": "Corrected regimen metadata against cited source; regression pending."
     },
     {
       "id": "doxycycline-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://doi.org/10.1111/jvim.14627",
+      "finding": "Corrected regimen metadata against cited source; regression pending."
     },
     {
       "id": "doxycycline-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.msdvetmanual.com/circulatory-system/heartworm-disease/heartworm-disease-in-dogs-cats-and-ferrets",
+      "finding": "Corrected regimen metadata against cited source; regression pending."
     },
     {
       "id": "prednisone-prednisolone-dog-1",
@@ -85,8 +89,9 @@
     },
     {
       "id": "levetiracetam-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "AUTOMATIC_CALCULATION_BLOCKED_PENDING_SPECIALIST_REVIEW",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5980453/",
+      "finding": "Species-specific automatic ER regimen not established."
     },
     {
       "id": "levetiracetam-cat-3",
@@ -115,23 +120,27 @@
     },
     {
       "id": "ondansetron-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs",
+      "finding": "Corrected regimen metadata against cited source; regression pending."
     },
     {
       "id": "ondansetron-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs",
+      "finding": "Corrected regimen metadata against cited source; regression pending."
     },
     {
       "id": "ondansetron-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs",
+      "finding": "Corrected regimen metadata against cited source; regression pending."
     },
     {
       "id": "ondansetron-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs",
+      "finding": "Corrected regimen metadata against cited source; regression pending."
     },
     {
       "id": "diphenhydramine-dog-1",
@@ -195,21 +204,21 @@
     },
     {
       "id": "spironolactone-dog-1",
-      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
-      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
-      "finding": "Interval choices combine different source regimens; needs dose/interval coupling."
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-cardiovascular-system/diuretics-for-use-in-animals",
+      "finding": "Corrected regimen metadata against cited source; regression pending."
     },
     {
       "id": "spironolactone-dog-2",
-      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
-      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
-      "finding": "Interval choices are not clearly separated; reconcile branch intent."
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-cardiovascular-system/diuretics-for-use-in-animals",
+      "finding": "Corrected regimen metadata against cited source; regression pending."
     },
     {
       "id": "spironolactone-cat-1",
-      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
-      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
-      "finding": "Current cited table lacks a feline spironolactone row; obtain a species-specific source."
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-cardiovascular-system/diuretics-for-use-in-animals",
+      "finding": "Corrected regimen metadata against cited source; regression pending."
     },
     {
       "id": "benazepril-dog-1",
@@ -218,9 +227,9 @@
     },
     {
       "id": "benazepril-cat-1",
-      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
-      "finding": "Lower dose paired with the longest interval is not supported by the cited table; separate regimens."
+      "finding": "Corrected regimen metadata against cited source; regression pending."
     },
     {
       "id": "enalapril-dog-1",
@@ -849,15 +858,15 @@
     },
     {
       "id": "amlodipine-dog-1",
-      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
-      "finding": "Dose range combines schedules; lowest value at the selected daily interval needs correction or another source."
+      "finding": "Corrected regimen metadata against cited source; regression pending."
     },
     {
       "id": "amlodipine-cat-1",
-      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
-      "finding": "Starting and titrated maintenance doses are combined; clarify initiation versus titration."
+      "finding": "Corrected regimen metadata against cited source; regression pending."
     },
     {
       "id": "atenolol-dog-1",
@@ -911,32 +920,33 @@
     },
     {
       "id": "digoxin-dog-1",
-      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
-      "finding": "Numerical source range matches; enforce the stated per-patient ceiling."
+      "finding": "Enforced source weight bands and canine per-dose maximum."
     },
     {
       "id": "digoxin-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": null,
+      "finding": "Enforced source weight bands and canine per-dose maximum."
     },
     {
       "id": "digoxin-cat-1",
-      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
-      "finding": "Numerical source rule matches; enforce the required weight band."
+      "finding": "Enforced source weight bands and canine per-dose maximum."
     },
     {
       "id": "digoxin-cat-2",
-      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
-      "finding": "Numerical source rule matches; enforce the required weight band."
+      "finding": "Enforced source weight bands and canine per-dose maximum."
     },
     {
       "id": "digoxin-cat-3",
-      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
-      "finding": "Numerical source rule matches; enforce the required weight band."
+      "finding": "Enforced source weight bands and canine per-dose maximum."
     },
     {
       "id": "sildenafil-dog-1",
@@ -950,9 +960,9 @@
     },
     {
       "id": "hydralazine-dog-1",
-      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
-      "finding": "Initial branch frequency is ambiguous; source specifies a single starting dose."
+      "finding": "Corrected regimen metadata against cited source; regression pending."
     },
     {
       "id": "hydralazine-dog-2",
@@ -961,9 +971,9 @@
     },
     {
       "id": "hydralazine-cat-1",
-      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
-      "finding": "Remove oral strength metadata and specify monitored repeat conditions."
+      "finding": "Corrected regimen metadata against cited source; regression pending."
     },
     {
       "id": "telmisartan-cat-1",
@@ -992,9 +1002,9 @@
     },
     {
       "id": "torsemide-cat-2",
-      "status": "SOURCE_OR_WORKFLOW_DISCREPANCY_PENDING_FIX",
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
-      "finding": "Fixed amount matches; the source interval is absent from the preset."
+      "finding": "Corrected regimen metadata against cited source; regression pending."
     },
     {
       "id": "levothyroxine-dog-1",

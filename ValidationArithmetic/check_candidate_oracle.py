@@ -9,13 +9,23 @@ def check(actual,expected,label):
  global n
  n+=1
  if not math.isclose(float(actual),float(expected),rel_tol=2e-10,abs_tol=1e-11):errors.append({'case':label,'actual':actual,'expected':str(expected)})
+def source_ineligible(identifier, kg):
+ return (identifier == 'levetiracetam-cat-2' or
+         (identifier == 'digoxin-cat-1' and not (0 < kg < 3)) or
+         (identifier == 'digoxin-cat-2' and not (3 <= kg <= 6)) or
+         (identifier == 'digoxin-cat-3' and not (kg > 6)))
 for r in p['presets']:
  for c in r['cases']:
   kg=D(c['kg']);basis=r['basis']
+  if source_ineligible(r['id'], kg):
+   check(c['engine']['available'],False,r['id']+':must-be-blocked')
+   if 'selected' in c:errors.append({'case':r['id'],'error':'blocked protocol exposed a selection'})
+   continue
   with localcontext() as ctx:
    ctx.prec=45
    factor=Decimal(1) if basis.startswith('Fixed') or basis=='drops/eye' else (kg**(Decimal(2)/Decimal(3)) * D('.101' if r['species']=='Dog' else '.100') if basis=='mg/m²' else (kg/D('0.45359237') if basis=='mg/lb' else kg))
    lo=D(r['min'])*factor;hi=D(r['max'])*factor
+   if r['id']=='digoxin-dog-1':hi=min(hi,D('.25'))
    target=lo+((hi-lo)*{'Low':D(0),'Middle':D('.5'),'High':D(1)}[c['level']])
    check(c['low'],lo,r['id']+':low');check(c['high'],hi,r['id']+':high');check(c['selected'],target,r['id']+':'+c['level'])
    if 'volume' in c:

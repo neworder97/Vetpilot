@@ -239,9 +239,12 @@ enum ProtocolDoseCalculator {
             )
         }
 
+        if let issue = MedicationSafety.protocolEligibilityIssue(key: d.medicationKey, kg: kg) {
+            return DoseResult(available: false, headline: "Protocol eligibility not met", math: "", formulation: "", warning: issue)
+        }
         let maxDose = d.maxDose > 0 ? d.maxDose : d.minDose
         let low: Double
-        let high: Double
+        var high: Double
         let basisText: String
         let unit = d.doseBasis.amountUnit
 
@@ -286,6 +289,13 @@ enum ProtocolDoseCalculator {
                 (abs(d.minDose - maxDose) < 0.0000001 ? "" : "–\(ClinicalData.format(maxDose))") + " \(d.doseBasis.rawValue)"
         }
 
+        if let ceiling = MedicationSafety.maximumProtocolAmount(key: d.medicationKey) {
+            guard low <= ceiling else {
+                return DoseResult(available: false, headline: "Protocol ceiling exceeded", math: "", formulation: "",
+                    warning: "Even the lower end exceeds the per-patient ceiling. A separately reviewed plan is required.")
+            }
+            high = min(high, ceiling)
+        }
         guard MedicationSafety.positiveFinite(low), MedicationSafety.positiveFinite(high), high >= low else {
             return DoseResult(available: false, headline: "Calculation outside numeric limits", math: "", formulation: "", warning: "No dose has been produced.")
         }

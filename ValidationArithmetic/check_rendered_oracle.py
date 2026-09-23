@@ -6,7 +6,12 @@ root=Path(__file__).parent
 D=lambda x:Decimal(str(x))
 number=r'(?:[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)'
 lead=re.compile('^('+number+')(?:–('+number+'))? ')
-def audit(data):
+def source_ineligible(identifier, kg):
+ return (identifier == 'levetiracetam-cat-2' or
+         (identifier == 'digoxin-cat-1' and not (0 < kg < 3)) or
+         (identifier == 'digoxin-cat-2' and not (3 <= kg <= 6)) or
+         (identifier == 'digoxin-cat-3' and not (kg > 6)))
+def audit(data, restrictions=False):
     failures=[]; checks=0; automatic_checked=0
     def check(condition,detail):
         nonlocal checks
@@ -29,6 +34,10 @@ def audit(data):
                 ctx.prec=45
                 factor=D(1) if b.startswith('Fixed') or b=='drops/eye' else kg/D('0.45359237') if b=='mg/lb' else (D('.101' if p['species']=='Dog' else '.100')*kg**(D(2)/D(3))) if b=='mg/m²' else kg
                 low=D(p['min'])*factor;high=D(p['max'])*factor
+                if restrictions and source_ineligible(p['id'], kg):
+                    check(not c['engine']['available'] and not c['engine']['formulation'],{'case':key,'error':'ineligible protocol must not calculate'})
+                    continue
+                if restrictions and p['id']=='digoxin-dog-1':high=min(high,D('.25'))
                 e=c['engine'];check(e['available'],{'case':key,'error':'unexpected unavailable'})
                 if not e['available']:continue
                 compare_range(e['headline'],low,high,key+':headline',units[b])
@@ -61,6 +70,6 @@ def audit(data):
 if __name__=='__main__':
     for version in ['baseline','candidate']:
         data=json.loads((root/(version+'-engine-results.json')).read_text())
-        result=audit(data)
+        result=audit(data, restrictions=version=='candidate')
         (root/(version+'-rendered-oracle.json')).write_text(json.dumps(result,indent=2))
         print(version,{k:v for k,v in result.items() if k!='failures'});print('Examples',result['failures'][:3])

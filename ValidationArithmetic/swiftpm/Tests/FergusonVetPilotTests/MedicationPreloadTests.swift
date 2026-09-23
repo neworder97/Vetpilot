@@ -2,6 +2,17 @@ import XCTest
 @testable import FergusonVetPilot
 
 final class MedicationPreloadTests: XCTestCase {
+    // Expected clinical eligibility is asserted independently of the engine.
+    private func expectedEligibility(_ id: String, weight: Double) -> Bool {
+        switch id {
+        case "levetiracetam-cat-2": return false
+        case "digoxin-cat-1": return weight > 0 && weight < 3
+        case "digoxin-cat-2": return weight >= 3 && weight <= 6
+        case "digoxin-cat-3": return weight > 6
+        default: return true
+        }
+    }
+
     func testProtocolOnlyLibraryHasFull114MedicationCoverage() {
         let protocolMeds = ClinicalData.medications.filter { $0.kind == .protocolOnly }
         XCTAssertEqual(protocolMeds.count, 114)
@@ -29,7 +40,8 @@ final class MedicationPreloadTests: XCTestCase {
                 concentration: definition.concentration,
                 builtInPreset: preset
             )
-            if !result.available {
+            let weight = preset.species == .dog ? 20.0 : 4.0
+            if expectedEligibility(preset.id, weight: weight) != result.available {
                 failures.append(preset.id)
             }
         }
@@ -145,7 +157,7 @@ final class MedicationPreloadTests: XCTestCase {
                     builtInPreset: preset
                 )
                 let combined = [result.headline, result.math, result.formulation].joined(separator: " ").lowercased()
-                if !result.available || combined.contains("nan") || combined.contains(" inf ") || combined.hasPrefix("inf") {
+                if result.available != expectedEligibility(preset.id, weight: weight) || combined.contains("nan") || combined.contains(" inf ") || combined.hasPrefix("inf") {
                     failures.append("\(preset.id)@\(weight)kg")
                 }
             }

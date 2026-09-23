@@ -160,3 +160,28 @@ extension MedicationSafety {
         return nil
     }
 }
+
+extension MedicationSafety {
+    static func builtinID(_ key: String) -> String? {
+        key.hasPrefix("builtin|") ? String(key.dropFirst(8)) : nil
+    }
+
+    static func protocolEligibilityIssue(key: String, kg: Double) -> String? {
+        guard let id = builtinID(key) else { return nil }
+        if id == "levetiracetam-cat-2" {
+            return "Feline extended-release levetiracetam needs a specialist-selected regimen and intact-tablet assessment. The cited general dog/cat summary does not establish this preset for cats."
+        }
+        let eligible: Bool
+        switch id {
+        case "digoxin-cat-1": eligible = positiveFinite(kg) && kg < 3
+        case "digoxin-cat-2": eligible = positiveFinite(kg) && kg >= 3 && kg <= 6
+        case "digoxin-cat-3": eligible = positiveFinite(kg) && kg > 6
+        default: return nil
+        }
+        return eligible ? nil : "Enter a valid weight and select the matching feline digoxin weight band."
+    }
+
+    static func maximumProtocolAmount(key: String) -> Double? {
+        builtinID(key) == "digoxin-dog-1" ? 0.25 : nil
+    }
+}

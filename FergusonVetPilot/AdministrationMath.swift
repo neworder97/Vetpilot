@@ -106,11 +106,12 @@ enum AdministrationMath {
     static func selection(for definition: ProtocolMedicationDefinition, kg: Double, level: DoseSelectionLevel) -> DoseRangeSelection? {
         guard definition.validationIssue == nil, definition.veterinarianApproved,
               kg.isFinite, kg >= 0 else { return nil }
+        guard MedicationSafety.protocolEligibilityIssue(key: definition.medicationKey, kg: kg) == nil else { return nil }
         let basis = definition.doseBasis
         guard !basis.requiresWeight || kg > 0 else { return nil }
         let maxDose = definition.maxDose > 0 ? definition.maxDose : definition.minDose
         let low: Double
-        let high: Double
+        var high: Double
         let math: String
 
         switch basis {
@@ -143,6 +144,10 @@ enum AdministrationMath {
             math = "\(ClinicalData.format(kg)) kg × selected \(basis.rawValue)"
         }
 
+        if let ceiling = MedicationSafety.maximumProtocolAmount(key: definition.medicationKey) {
+            guard low <= ceiling else { return nil }
+            high = min(high, ceiling)
+        }
         let unit: String
         switch basis {
         case .mcgKgMin: unit = "mcg/min"
