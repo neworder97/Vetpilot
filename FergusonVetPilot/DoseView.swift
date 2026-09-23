@@ -128,7 +128,7 @@ struct DoseView: View {
                     medication: med,
                     species: species,
                     protocolStore: protocolStore,
-                    weight: Double(weight) ?? 0,
+                    weight: MedicationSafety.parsePositive(weight) ?? 0,
                     weightUnit: weightUnit
                 )
             }
@@ -226,6 +226,8 @@ private struct DoseCalculatorSheet: View {
     @State private var concentration = ""
     @State private var result: DoseResult?
     @State private var supplyDays: Int?
+    @State private var priorCourseDoses = 0
+    @State private var priorCourseHistoryConfirmed = false
     @State private var selectedFrequency: FrequencyChoice = .recommended
     @State private var selectedDoseLevel: DoseSelectionLevel = .middle
     @State private var solidRounding: SolidDoseRounding = .nearest
@@ -237,12 +239,21 @@ private struct DoseCalculatorSheet: View {
         self.medication = medication
         self.species = species
         self.protocolStore = protocolStore
-        _patientWeight = State(initialValue: weight > 0 ? ClinicalData.format(weight) : "")
+        _patientWeight = State(initialValue: weight > 0 ? MedicationSafety.input(weight) : "")
         _patientWeightUnit = State(initialValue: weightUnit)
     }
 
     private var numericWeight: Double {
-        Double(patientWeight.replacingOccurrences(of: ",", with: ".")) ?? 0
+        MedicationSafety.parsePositive(patientWeight) ?? 0
+    }
+
+    private var weightInputError: String? {
+        let entered = patientWeight.trimmingCharacters(in: .whitespacesAndNewlines)
+        if entered.isEmpty && protocolDefinition?.doseBasis.requiresWeight == false { return nil }
+        guard MedicationSafety.parsePositive(entered) != nil, MedicationSafety.positiveFinite(kg) else {
+            return "Enter a finite positive weight using a decimal point, not a comma or grouping separator."
+        }
+        return nil
     }
 
     private var kg: Double {
@@ -285,12 +296,79 @@ private struct DoseCalculatorSheet: View {
     }
 
     private var activeConcentration: Double? {
-        if let entered = Double(concentration), entered > 0 { return entered }
-        return protocolDefinition?.concentration ?? medication.concentration
+        MedicationSafety.parsePositive(concentration)
     }
 
     private var recommendedFrequency: String {
         protocolDefinition?.frequency ?? medication.frequency
+    }
+
+    private var administrationSelection: DoseRangeSelection? {
+        guard let selection = doseSelection else { return nil }
+        return MedicationSafety.perAdministration(selection, frequency: recommendedFrequency, dosesPerDay: dosesPerDay)
+    }
+
+    private var requiresRibbonApplication: Bool {
+        medication.generic == "Mirtazapine transdermal" && medication.brand == "Mirataz"
+    }
+
+    private var usesGalliprantChart: Bool {
+        protocolDefinition == nil && medication.generic == "Grapiprant" && medication.brand == "Galliprant" &&
+            !medication.source.hasPrefix("USER") && !medication.source.hasPrefix("CUSTOM")
+    }
+
+    private var galliprantPlan: LabeledTabletPlan? {
+        guard usesGalliprantChart else { return nil }
+        return MedicationSafety.galliprantPlan(weight: numericWeight, unit: patientWeightUnit)
+    }
+
+    private var concentrationInputError: String? {
+        let needsValue = (protocolDefinition?.doseBasis.supportsConcentration == true &&
+            protocolDefinition?.concentration != nil) ||
+            ([MedicationForm.liquid, .injection].contains(medication.form) && medication.concentration != nil)
+        let entered = concentration.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !entered.isEmpty && MedicationSafety.parsePositive(entered) == nil {
+            return "Use a finite positive concentration with a decimal point, not a comma. No default will be substituted."
+        }
+        if needsValue && entered.isEmpty { return "Enter and verify the product concentration; no default will be substituted." }
+        return nil
+    }
+
+    private var administrationReviewReason: String? {
+        if let error = concentrationInputError { return error }
+        if recommendedFrequency.lowercased().contains("total per week") {
+            return "Weekly totals require a separately reviewed cycle schedule; a daily-frequency override is not valid."
+        }
+        let route = activeRoute.uppercased()
+        if (route.contains("PO") || route.contains("ORAL")) && ["IV", "IM", "SC"].contains(where: route.contains) {
+            return "Mixed oral/injectable entry: confirm one route and its matching product concentration in a route-specific protocol."
+        }
+        if let id = selectedBuiltInPreset?.id,
+           let ceiling = ["furosemide-dog-2": 12.0, "furosemide-cat-2": 6.0][id],
+           let perDose = administrationSelection, let count = dosesPerDay, kg > 0 {
+            // MSD/Merck cardiac table: chronic oral daily ceilings. Do not
+            // lower the dose silently; keep reference math and block instructions.
+            let delivered = max(perDose.selected, selectedSolidPlan?.deliveredMg ?? perDose.selected)
+            if delivered * count / kg > ceiling + 1e-12 {
+                return "Selected dose/frequency exceeds the cited chronic oral furosemide daily ceiling. Review the complete plan."
+            }
+        }
+        if selectedBuiltInPreset?.highRisk == true {
+            return "High-risk protocol: use the visible calculation with the veterinarian's monitored administration plan."
+        }
+        if medication.kind == .robenacoxibCatBand && dosesPerDay != 1 {
+            return "ONSIOR is limited to one dose per day in this labeled entry."
+        }
+        if usesGalliprantChart && dosesPerDay != 1 { return "This GALLIPRANT chart is once daily only." }
+        if usesGalliprantChart && galliprantPlan == nil { return "Weight is outside or between the printed product-chart bands; do not extrapolate." }
+        if requiresRibbonApplication && dosesPerDay != 1 { return "This Mirataz entry is once daily only." }
+        if dosesPerDay == nil && protocolDefinition?.doseBasis.isRate != true {
+            return "Select one explicit veterinarian-approved schedule; alternative/PRN/titration text is not a fixed frequency."
+        }
+        if MedicationSafety.dailyTotal(recommendedFrequency) && administrationSelection == nil {
+            return "A total daily dose requires an explicit within-day division schedule."
+        }
+        return nil
     }
 
     private var activeRoute: String {
@@ -396,6 +474,10 @@ private struct DoseCalculatorSheet: View {
                         .frame(width: 130)
                     }
 
+                    if let error = weightInputError {
+                        Text(error).font(.caption).foregroundStyle(AppTheme.orange)
+                            .accessibilityIdentifier("dose.weight.error")
+                    }
                     if numericWeight > 0 {
                         Text("\(ClinicalData.format(kg)) kg / \(ClinicalData.format(ClinicalData.kgToLb(kg))) lb")
                             .font(.caption.weight(.semibold))
@@ -441,6 +523,11 @@ private struct DoseCalculatorSheet: View {
                     Section("Concentration (\(concentrationUnit)) — verify product") {
                         TextField(concentrationUnit, text: $concentration)
                             .keyboardType(.decimalPad)
+                            .accessibilityIdentifier("dose.concentration")
+                        if let error = concentrationInputError {
+                            Text(error).foregroundStyle(AppTheme.orange)
+                                .accessibilityIdentifier("dose.concentration.error")
+                        }
                         Text("Enter the exact product concentration in \(concentrationUnit).")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
@@ -449,6 +536,14 @@ private struct DoseCalculatorSheet: View {
 
                 Section {
                     Button {
+                        if let error = weightInputError {
+                            result = DoseResult(available: false, headline: "Invalid weight", math: "", formulation: "", warning: error)
+                            return
+                        }
+                        if let error = concentrationInputError {
+                            result = DoseResult(available: false, headline: "Invalid concentration", math: "", formulation: "", warning: error)
+                            return
+                        }
                         if let protocolDefinition {
                             result = ProtocolDoseCalculator.calculate(
                                 definition: protocolDefinition,
@@ -474,7 +569,7 @@ private struct DoseCalculatorSheet: View {
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
-                                        .disabled(((protocolDefinition?.doseBasis.requiresWeight ?? true) && numericWeight <= 0) || (medication.kind == .protocolOnly && protocolDefinition == nil))
+                                        .disabled(weightInputError != nil || !numericWeight.isFinite || numericWeight < 0 || ((protocolDefinition?.doseBasis.requiresWeight ?? true) && numericWeight <= 0) || concentrationInputError != nil || (medication.kind == .protocolOnly && protocolDefinition == nil))
                     .accessibilityIdentifier("dose.calculate")
                 }
 
@@ -542,7 +637,20 @@ private struct DoseCalculatorSheet: View {
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
 
-                            if let solid = selectedSolidPlan {
+                            if let perDose = administrationSelection, MedicationSafety.dailyTotal(recommendedFrequency) {
+                                LabeledContent("Target per administration", value: "\(ClinicalData.format(perDose.selected)) \(perDose.unit)")
+                                Text("\(perDose.math). Rounding, if chosen, is applied after this division.").font(.caption)
+                            }
+                            if let reason = administrationReviewReason {
+                                Text("Administration plan blocked: " + reason).foregroundStyle(AppTheme.orange)
+                            }
+                            if usesGalliprantChart, let chart = galliprantPlan {
+                                Text("Product chart: \(ClinicalData.format(chart.units)) × \(ClinicalData.format(chart.strengthMg)) mg tablet, once daily (\(chart.band)).")
+                                    .accessibilityIdentifier("dose.galliprant.chart")
+                                Text("Chart reference, not generic whole-tablet rounding. Only 20 mg and 60 mg GALLIPRANT tablets are scored; never halve the 100 mg tablet. Verify labeled age and patient eligibility.").font(.caption)
+                            } else if usesGalliprantChart {
+                                Text("No chart dose generated; consult the product chart and veterinarian.")
+                            } else if let solid = selectedSolidPlan {
                                 LabeledContent("Raw formulation", value: "\(ClinicalData.format(solid.rawUnits)) \(solidUnitName)")
 
                                 Picker("Whole-unit rounding", selection: $solidRounding) {
@@ -577,7 +685,7 @@ private struct DoseCalculatorSheet: View {
                                     .foregroundStyle(AppTheme.blue)
                                     .accessibilityIdentifier("dose.administration.instruction")
                                 if let c = activeConcentration, c > 0, protocolDefinition?.doseBasis != .mLKg {
-                                    LabeledContent("Verified concentration", value: "\(ClinicalData.format(c)) \(protocolDefinition?.doseBasis.concentrationLabel ?? "mg/mL")")
+                                    LabeledContent("Entered concentration — verify", value: "\(ClinicalData.format(c)) \(protocolDefinition?.doseBasis.concentrationLabel ?? "mg/mL")")
                                 }
                             } else {
                                 Text("Use the selected calculated amount above with the verified product/formulation. No automatic unit rounding is applied for this dosage form.")
@@ -592,7 +700,7 @@ private struct DoseCalculatorSheet: View {
 
                     if result.available, (medication.kind != .protocolOnly || protocolDefinition != nil), medication.form != .injection {
                         Section("Optional veterinarian frequency") {
-                            Text("Use the source-backed recommended frequency unless the prescribing veterinarian directs a different schedule. Choosing an override changes schedule/supply math only; it does not validate the new frequency or change the calculated per-administration dose.")
+                            Text("Use the source-backed recommended frequency unless the prescribing veterinarian directs a different schedule. Choosing an override does not validate the new schedule. For total-daily-dose entries, the selected daily amount is divided by administrations/day before formulation rounding.")
                                 .font(.footnote)
                                 .foregroundStyle(.secondary)
 
@@ -618,8 +726,8 @@ private struct DoseCalculatorSheet: View {
                                     .accessibilityIdentifier("dose.frequency.override.warning")
                             }
 
-                            if selectedFrequency != .recommended, recommendedFrequency.lowercased().contains("total daily dose") {
-                                Text("This entry is calculated as a total daily dose. The override changes administration timing only; VetPilot keeps the total daily drug amount unchanged and does not decide how the veterinarian wants that daily total divided.")
+                            if selectedFrequency != .recommended, MedicationSafety.dailyTotal(recommendedFrequency) {
+                                Text("This entry is calculated as a total daily dose. The unrounded daily target is kept unchanged and divided by the selected number of administrations per day. Confirm the delivered amount after any formulation rounding.")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
@@ -637,10 +745,21 @@ private struct DoseCalculatorSheet: View {
 
                     if result.available, canPlanSupply {
                         Section("Quantity dispensed — math only") {
+                            if medication.kind == .robenacoxibCatBand {
+                                Toggle("Prior oral/injectable doses in this course reviewed", isOn: $priorCourseHistoryConfirmed)
+                                Stepper("Previous treatment-day doses: \(priorCourseDoses)", value: $priorCourseDoses, in: 0...3)
+                                Text("Maximum 3 total doses on 3 consecutive days, no more than one dose/day, including injections already given. Confirm age ≥4 months and the next dose time.").font(.caption)
+                                HStack {
+                                    supplyButton(days: 1, title: "1 day")
+                                    supplyButton(days: 2, title: "2 days")
+                                    supplyButton(days: 3, title: "3 days")
+                                }
+                            } else {
                             HStack {
                                 supplyButton(days: 7, title: "7 days")
                                 supplyButton(days: 14, title: "2 weeks")
                                 supplyButton(days: 30, title: "30 days")
+                            }
                             }
 
                             if let days = supplyDays {
@@ -675,7 +794,7 @@ private struct DoseCalculatorSheet: View {
             }
             .onAppear {
                 if let c = protocolDefinition?.concentration ?? medication.concentration {
-                    concentration = ClinicalData.format(c)
+                    concentration = MedicationSafety.input(c)
                 }
             }
             .onChange(of: patientWeight) { _, _ in
@@ -718,7 +837,7 @@ private struct DoseCalculatorSheet: View {
                 selectedFrequency = .recommended
                 selectedStrengthIndex = 0
                 if let c = protocolDefinition?.concentration {
-                    concentration = ClinicalData.format(c)
+                    concentration = MedicationSafety.input(c)
                 } else if medication.kind == .protocolOnly {
                     concentration = ""
                 }
@@ -727,7 +846,7 @@ private struct DoseCalculatorSheet: View {
                 result = nil
                 selectedStrengthIndex = 0
                 if let c = protocolDefinition?.concentration {
-                    concentration = ClinicalData.format(c)
+                    concentration = MedicationSafety.input(c)
                 } else if medication.kind == .protocolOnly {
                     concentration = ""
                 }
@@ -736,10 +855,16 @@ private struct DoseCalculatorSheet: View {
     }
 
     private var canPlanSupply: Bool {
-        dosesPerDay != nil &&
-        (medication.kind != .protocolOnly || protocolDefinition != nil) &&
-        selectedBuiltInPreset?.highRisk != true &&
-        medication.form != .injection
+        guard dosesPerDay != nil, administrationReviewReason == nil,
+              administrationSelection != nil, concentrationInputError == nil,
+              (medication.kind != .protocolOnly || protocolDefinition != nil),
+              selectedBuiltInPreset?.highRisk != true,
+              medication.form != .injection, protocolDefinition?.doseBasis.isRate != true else { return false }
+        if usesGalliprantChart { return galliprantPlan != nil }
+        if let solid = selectedSolidPlan, let selection = administrationSelection {
+            return MedicationSafety.withinRange(solid.deliveredMg, selection)
+        }
+        return true
     }
 
     private var activeFrequencyLabel: String {
@@ -748,21 +873,12 @@ private struct DoseCalculatorSheet: View {
 
     private var dosesPerDay: Double? {
         if let override = selectedFrequency.dosesPerDay { return override }
-        let f = recommendedFrequency.lowercased()
-        if f.contains("total daily dose divided into 2") { return 2 }
-        if f.contains("q4h") { return 6 }
-        if f.contains("q6h") { return 4 }
-        if f.contains("q8h") { return 3 }
-        if f.contains("q12h") { return 2 }
-        if f.contains("q24h") { return 1 }
-        if f.contains("q48h") { return 0.5 }
-        if f.contains("q72h") { return 1.0 / 3.0 }
-        return nil
+        return MedicationSafety.regularDosesPerDay(recommendedFrequency)
     }
 
     private var doseMultiplierPerDay: Double? {
         guard let dosesPerDay else { return nil }
-        if recommendedFrequency.lowercased().contains("total daily dose") {
+        if MedicationSafety.dailyTotal(recommendedFrequency) {
             return 1
         }
         return dosesPerDay
@@ -832,8 +948,9 @@ private struct DoseCalculatorSheet: View {
     }
 
     private var selectedSolidPlan: SolidAdministrationPlan? {
-        guard let selection = doseSelection, selection.unit == "mg", !selection.isRate,
-              let strength = selectedStrength, strength > 0,
+        guard !usesGalliprantChart, let selection = administrationSelection,
+              selection.unit == "mg", !selection.isRate,
+              let strength = selectedStrength, MedicationSafety.positiveFinite(strength),
               [.tablet, .capsule].contains(medication.form), routeSupportsOralSolid else { return nil }
         return AdministrationMath.solidPlan(targetMg: selection.selected, strengthMg: strength, rounding: solidRounding)
     }
@@ -858,34 +975,29 @@ private struct DoseCalculatorSheet: View {
     }
 
     private var selectedAdministrationVolume: (value: Double, unit: String)? {
-        guard let selection = doseSelection, routeSupportsMeasuredVolume else { return nil }
-        return AdministrationMath.volume(
-            selection: selection,
-            basis: protocolDefinition?.doseBasis,
-            concentration: activeConcentration
-        )
+        guard !requiresRibbonApplication, let selection = administrationSelection,
+              concentrationInputError == nil, routeSupportsMeasuredVolume else { return nil }
+        return AdministrationMath.volume(selection: selection,
+            basis: protocolDefinition?.doseBasis, concentration: activeConcentration)
     }
 
     private func administrationInstruction(for solid: SolidAdministrationPlan) -> String {
-        let qty = ClinicalData.format(solid.roundedUnits)
-        if recommendedFrequency.lowercased().contains("total daily dose") && selectedFrequency == .recommended {
-            return "Daily total: \(qty) \(solidUnitName); divide across the recommended administrations exactly as directed by the veterinarian."
+        if let reason = administrationReviewReason { return "Plan blocked: " + reason }
+        guard let selection = administrationSelection,
+              MedicationSafety.withinRange(solid.deliveredMg, selection) else {
+            return "Rounded amount is outside the selected dose range. Verify a different strength, permitted tablet fraction or explicitly reviewed protocol."
         }
-        return "Give \(qty) \(solidUnitName) \(activeFrequencyLabel)."
+        let qty = ClinicalData.format(solid.roundedUnits)
+        return "Calculated candidate: \(qty) \(solidUnitName) per administration, \(activeFrequencyLabel). Veterinarian confirmation required."
     }
 
     private func volumeInstruction(_ volume: (value: Double, unit: String)) -> String {
+        if let reason = administrationReviewReason { return "Plan blocked: " + reason }
         let amount = ClinicalData.format(volume.value)
         if volume.unit == "mL/hr" {
-            return "Set calculated rate: \(amount) mL/hr."
+            return "Calculated rate: \(amount) mL/hr. Confirm the infusion concentration, pump resolution and monitoring."
         }
-        if volume.unit.contains("drop") {
-            return "Give \(amount) \(volume.unit) \(activeFrequencyLabel)."
-        }
-        if recommendedFrequency.lowercased().contains("total daily dose") && selectedFrequency == .recommended {
-            return "Calculated daily total: \(amount) \(volume.unit); divide across the recommended administrations exactly as directed by the veterinarian."
-        }
-        return "Give \(amount) \(volume.unit) \(activeFrequencyLabel)."
+        return "Calculated candidate: \(amount) \(volume.unit) per administration, \(activeFrequencyLabel). Veterinarian confirmation required."
     }
 
     private func varianceText(_ percent: Double) -> String {
@@ -895,45 +1007,46 @@ private struct DoseCalculatorSheet: View {
     }
 
     private func supplySummary(days: Int) -> String {
-        guard let dosesPerDay else {
-            return "Quantity dispensed is not available for this frequency. Choose a specific schedule if the recommendation is a range."
+        guard days > 0, canPlanSupply, let dosesPerDay else {
+            return "Dispense calculation blocked: verify inputs, dosage form, selected rounding and an unambiguous schedule."
         }
-
-        let administrations = AdministrationMath.administrations(days: days, dosesPerDay: dosesPerDay)
-        let scheduleText = selectedFrequency == .recommended ? recommendedFrequency : selectedFrequency.rawValue
-        let isDailyTotal = recommendedFrequency.lowercased().contains("total daily dose") && selectedFrequency == .recommended
-
+        if let ceiling = MedicationSafety.documentedDaysCeiling(recommendedFrequency), days > ceiling {
+            return "Blocked: the selected entry documents a \(ceiling)-day course. Review the prescribed duration instead of extending this schedule automatically."
+        }
         if medication.kind == .robenacoxibCatBand {
-            let tabletsPerDose = kg <= 6 ? 1.0 : 2.0
-            let total = tabletsPerDose * Double(administrations)
-            return "\(days) days • \(scheduleText) • \(administrations) administration(s) • quantity to dispense: \(ClinicalData.format(total)) × 6 mg tablet(s), before label-duration checks"
+            guard priorCourseHistoryConfirmed, (0...3).contains(priorCourseDoses),
+                  days <= 3 - priorCourseDoses else {
+                return "Blocked: ONSIOR allows no more than 3 once-daily doses across oral and injectable formulations in the current 3-day course. Confirm previous doses and remaining consecutive treatment days."
+            }
         }
-
-        if medication.generic == "Mirtazapine transdermal" && medication.brand == "Mirataz" {
-            return "\(days) days • \(scheduleText) • \(administrations) application(s) using the labeled ribbon length per administration"
+        if requiresRibbonApplication && days > 14 {
+            return "Blocked: this Mirataz entry describes a 14-day labeled course; verify a separate plan."
         }
-
-        if let solid = selectedSolidPlan, solid.roundedUnits > 0 {
-            let totalUnits = isDailyTotal
-                ? solid.roundedUnits * Double(days)
-                : solid.roundedUnits * Double(administrations)
-            let dispense = ceil(totalUnits)
-            return "\(days) days • \(scheduleText) • \(administrations) administration(s) • \(ClinicalData.format(solid.roundedUnits)) \(solidUnitName) \(isDailyTotal ? "per day total" : "per administration") • quantity to dispense: \(ClinicalData.format(dispense)) \(solidUnitName)"
+        if medication.brand == "Apoquel initial" && days > 14 {
+            return "Blocked: the initial twice-daily Apoquel phase must not exceed 14 days. Select the appropriate maintenance entry."
         }
-
+        let administrations = AdministrationMath.administrations(days: days, dosesPerDay: dosesPerDay)
+        guard administrations > 0 else { return "Dispense calculation outside numeric limits." }
+        let schedule = activeFrequencyLabel
+        if usesGalliprantChart, let plan = galliprantPlan {
+            let total = ceil(MedicationSafety.snapIntegerBoundary(plan.units * Double(administrations)))
+            return "\(days) days • \(schedule) • \(ClinicalData.format(plan.units)) × \(ClinicalData.format(plan.strengthMg)) mg tablets per administration • quantity to dispense: \(ClinicalData.format(total)) whole tablets. Chart reference; veterinarian confirmation required."
+        }
+        if requiresRibbonApplication {
+            return "\(days) days • \(schedule) • \(administrations) applications using the labeled ribbon length. Do not convert ointment to a liquid volume."
+        }
+        if let solid = selectedSolidPlan, let selection = administrationSelection,
+           MedicationSafety.withinRange(solid.deliveredMg, selection) {
+            let total = ceil(MedicationSafety.snapIntegerBoundary(solid.roundedUnits * Double(administrations)))
+            guard total.isFinite else { return "Dispense calculation outside numeric limits." }
+            return "\(days) days • \(schedule) • \(administrations) administration(s) • \(ClinicalData.format(solid.roundedUnits)) \(solidUnitName) per administration • quantity to dispense: \(ClinicalData.format(total)) \(solidUnitName)"
+        }
         if let volume = selectedAdministrationVolume, volume.unit == "mL" {
-            let multiplier = isDailyTotal ? Double(days) : Double(administrations)
-            let total = volume.value * multiplier
-            return "\(days) days • \(scheduleText) • \(administrations) administration(s) • \(ClinicalData.format(volume.value)) mL \(isDailyTotal ? "per day total" : "per administration") • calculated quantity to dispense: \(ClinicalData.format(total)) mL"
+            let total = volume.value * Double(administrations)
+            guard MedicationSafety.positiveFinite(total) else { return "Dispense calculation outside numeric limits." }
+            return "\(days) days • \(schedule) • \(administrations) administration(s) • \(ClinicalData.format(volume.value)) mL per administration • calculated quantity to dispense: \(ClinicalData.format(total)) mL"
         }
-
-        if let selection = doseSelection {
-            let multiplier = isDailyTotal ? Double(days) : Double(administrations)
-            let total = selection.selected * multiplier
-            return "\(days) days • \(scheduleText) • \(administrations) administration(s) • calculated total: \(ClinicalData.format(total)) \(selection.unit)"
-        }
-
-        return "\(days) days • \(scheduleText) • \(administrations) administration(s)"
+        return "No verified administration unit is available. Keep the dose math as a reference; obtain a product-specific dispensing plan."
     }
 
     private func formatRange(_ low: Double, _ high: Double) -> String {

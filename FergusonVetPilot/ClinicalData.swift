@@ -68,14 +68,10 @@ struct BreedEntry: Identifiable {
 }
 
 enum ClinicalData {
-    static func lbToKg(_ lb: Double) -> Double { lb / 2.2046226218 }
-    static func kgToLb(_ kg: Double) -> Double { kg * 2.2046226218 }
+    static func lbToKg(_ lb: Double) -> Double { lb * 0.45359237 }
+    static func kgToLb(_ kg: Double) -> Double { kg / 0.45359237 }
 
-    static func format(_ value: Double) -> String {
-        if abs(value.rounded() - value) < 0.0000001 { return String(format: "%.0f", value) }
-        if abs(value) < 1 { return trim(String(format: "%.3f", value)) }
-        return trim(String(format: "%.2f", value))
-    }
+    static func format(_ value: Double) -> String { MedicationSafety.display(value) }
 
     private static func trim(_ value: String) -> String {
         var result = value
@@ -90,7 +86,7 @@ enum ClinicalData {
         strength: Double?,
         concentration: Double?
     ) -> DoseResult {
-        guard kg > 0 else {
+        guard MedicationSafety.positiveFinite(kg) else {
             return DoseResult(available: false, headline: "Enter a valid weight", math: "", formulation: "", warning: "Weight must be greater than 0 kg.")
         }
 
@@ -104,6 +100,15 @@ enum ClinicalData {
                     ? "Controlled/high-risk medication. Verify indication, patient factors, legal requirements, and Ferguson clinic protocol."
                     : "Verify the current Ferguson clinic formulary or an authoritative veterinary reference."
             )
+        }
+
+        guard MedicationSafety.validRange(low: m.minDose, high: m.maxDose) || m.kind == .robenacoxibCatBand,
+              MedicationSafety.optionalPositive(strength),
+              MedicationSafety.optionalPositive(concentration),
+              MedicationSafety.optionalPositive(m.concentration),
+              m.strengths.allSatisfy(MedicationSafety.positiveFinite) else {
+            return DoseResult(available: false, headline: "Invalid medication inputs", math: "", formulation: "",
+                warning: "Dose bounds, strengths and concentrations must be finite and positive. The upper dose cannot be below the lower dose.")
         }
 
         if m.kind == .robenacoxibCatBand {
@@ -143,6 +148,10 @@ enum ClinicalData {
             high = (m.maxDose > 0 ? m.maxDose : m.minDose) * kg
         }
 
+        guard MedicationSafety.positiveFinite(low), MedicationSafety.positiveFinite(high), high >= low else {
+            return DoseResult(available: false, headline: "Calculation outside numeric limits", math: "", formulation: "", warning: "No dose has been produced.")
+        }
+
         let mg = abs(low - high) < 0.0000001
             ? "\(format(low)) mg"
             : "\(format(low))–\(format(high)) mg"
@@ -163,10 +172,13 @@ enum ClinicalData {
 
         var formulation = ""
         if [.liquid, .injection, .transdermal].contains(m.form) {
-            let c = (concentration ?? 0) > 0 ? concentration : m.concentration
+            let c = concentration ?? m.concentration
             if let c, c > 0 {
                 let a = low / c
                 let b = high / c
+                guard MedicationSafety.positiveFinite(a), MedicationSafety.positiveFinite(b) else {
+                    return DoseResult(available: false, headline: "Formulation outside numeric limits", math: "", formulation: "", warning: "Verify concentration/strength and weight; no administration amount is available.")
+                }
                 formulation = abs(a - b) < 0.0000001
                     ? "\(format(a)) mL at \(format(c)) mg/mL"
                     : "\(format(a))–\(format(b)) mL at \(format(c)) mg/mL"
@@ -174,6 +186,9 @@ enum ClinicalData {
         } else if let strength, strength > 0 {
             let a = low / strength
             let b = high / strength
+            guard MedicationSafety.positiveFinite(a), MedicationSafety.positiveFinite(b) else {
+                return DoseResult(available: false, headline: "Formulation outside numeric limits", math: "", formulation: "", warning: "Verify concentration/strength and weight; no administration amount is available.")
+            }
             formulation = abs(a - b) < 0.0000001
                 ? "\(format(a)) unit(s) of \(format(strength)) mg; raw mathematical conversion—round only per label/protocol"
                 : "\(format(a))–\(format(b)) unit(s) of \(format(strength)) mg; raw mathematical conversion—round only per label/protocol"

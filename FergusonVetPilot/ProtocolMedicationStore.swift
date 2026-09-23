@@ -94,6 +94,16 @@ struct ProtocolMedicationDefinition: Identifiable, Codable, Equatable {
     var species: Species { Species(rawValue: speciesRaw) ?? .dog }
     var doseBasis: ProtocolDoseBasis { ProtocolDoseBasis(rawValue: doseBasisRaw) ?? .mgKg }
 
+    var validationIssue: String? {
+        guard Species(rawValue: speciesRaw) != nil else { return "Unknown species; do not assume dog." }
+        guard ProtocolDoseBasis(rawValue: doseBasisRaw) != nil else { return "Unknown dose basis; do not assume mg/kg." }
+        guard MedicationSafety.validRange(low: minDose, high: maxDose) else { return "Invalid or reversed dose range." }
+        guard strengths.allSatisfy(MedicationSafety.positiveFinite), MedicationSafety.optionalPositive(concentration) else {
+            return "Invalid strength or concentration."
+        }
+        return nil
+    }
+
     static func key(for medication: Medication, species: Species) -> String {
         [medication.generic, medication.brand, medication.form.rawValue, species.rawValue]
             .joined(separator: "|")
@@ -205,7 +215,15 @@ enum ProtocolDoseCalculator {
             )
         }
 
-        guard !d.doseBasis.requiresWeight || kg > 0 else {
+        if let issue = d.validationIssue {
+            return DoseResult(available: false, headline: "Invalid protocol definition", math: "", formulation: "", warning: issue)
+        }
+        guard MedicationSafety.optionalPositive(strength), MedicationSafety.optionalPositive(concentration) else {
+            return DoseResult(available: false, headline: "Invalid strength or concentration", math: "", formulation: "",
+                warning: "Invalid entered values cannot fall back silently to a reference concentration.")
+        }
+
+        guard kg.isFinite, kg >= 0, (!d.doseBasis.requiresWeight || kg > 0) else {
             return DoseResult(
                 available: false,
                 headline: "Enter a valid weight",
@@ -262,6 +280,10 @@ enum ProtocolDoseCalculator {
                 (abs(d.minDose - maxDose) < 0.0000001 ? "" : "–\(ClinicalData.format(maxDose))") + " \(d.doseBasis.rawValue)"
         }
 
+        guard MedicationSafety.positiveFinite(low), MedicationSafety.positiveFinite(high), high >= low else {
+            return DoseResult(available: false, headline: "Calculation outside numeric limits", math: "", formulation: "", warning: "No dose has been produced.")
+        }
+
         let amountText = abs(low - high) < 0.0000001
             ? "\(ClinicalData.format(low)) \(unit)"
             : "\(ClinicalData.format(low))–\(ClinicalData.format(high)) \(unit)"
@@ -283,6 +305,9 @@ enum ProtocolDoseCalculator {
         if d.doseBasis.supportsStrength, let strength, strength > 0 {
             let a = low / strength
             let b = high / strength
+            guard MedicationSafety.positiveFinite(a), MedicationSafety.positiveFinite(b) else {
+                return DoseResult(available: false, headline: "Formulation outside numeric limits", math: "", formulation: "", warning: "No administration amount is available.")
+            }
             formulation = abs(a - b) < 0.0000001
                 ? "\(ClinicalData.format(a)) unit(s) of \(ClinicalData.format(strength)) mg; raw mathematical conversion—round only per selected protocol/label"
                 : "\(ClinicalData.format(a))–\(ClinicalData.format(b)) unit(s) of \(ClinicalData.format(strength)) mg; raw mathematical conversion—round only per selected protocol/label"
@@ -325,6 +350,9 @@ enum ProtocolDoseCalculator {
                 formulation = abs(a - b) < 0.0000001
                     ? "\(ClinicalData.format(a)) mL at \(ClinicalData.format(c)) \(d.doseBasis.concentrationLabel)"
                     : "\(ClinicalData.format(a))–\(ClinicalData.format(b)) mL at \(ClinicalData.format(c)) \(d.doseBasis.concentrationLabel)"
+            }
+            guard MedicationSafety.positiveFinite(a), MedicationSafety.positiveFinite(b) else {
+                return DoseResult(available: false, headline: "Formulation outside numeric limits", math: "", formulation: "", warning: "No administration volume is available.")
             }
         }
 
@@ -391,15 +419,15 @@ struct ProtocolMedicationEditorView: View {
         let saved = store.definition(for: medication, species: species)
         let existing = saved ?? seed
         _basis = State(initialValue: existing?.doseBasis ?? .mgKg)
-        _minDose = State(initialValue: existing.map { ClinicalData.format($0.minDose) } ?? "")
-        _maxDose = State(initialValue: existing.flatMap { $0.maxDose > 0 ? ClinicalData.format($0.maxDose) : nil } ?? "")
+        _minDose = State(initialValue: existing.map { MedicationSafety.input($0.minDose) } ?? "")
+        _maxDose = State(initialValue: existing.flatMap { $0.maxDose > 0 ? MedicationSafety.input($0.maxDose) : nil } ?? "")
         _frequency = State(initialValue: existing?.frequency ?? "")
         _route = State(initialValue: existing?.route ?? "")
-        _strengthsText = State(initialValue: existing?.strengths.map(ClinicalData.format).joined(separator: ", ") ?? "")
-        _concentration = State(initialValue: existing?.concentration.map(ClinicalData.format) ?? "")
+        _strengthsText = State(initialValue: existing?.strengths.map(MedicationSafety.input).joined(separator: ", ") ?? "")
+        _concentration = State(initialValue: existing?.concentration.map(MedicationSafety.input) ?? "")
         _sourceReference = State(initialValue: existing?.sourceReference ?? "")
         _notes = State(initialValue: existing?.notes ?? "")
-        _approved = State(initialValue: saved?.veterinarianApproved ?? false)
+        _approved = State(initialValue: saved?.veterinarianApproved == true && saved?.validationIssue == nil)
     }
 
     private var parsedStrengths: [Double] {
@@ -410,7 +438,11 @@ struct ProtocolMedicationEditorView: View {
     }
 
     private var valid: Bool {
-        (Double(minDose) ?? 0) > 0 && approved
+        let pieces = strengthsText.split(separator: ",", omittingEmptySubsequences: false)
+        let strengthListValid = strengthsText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
+            pieces.allSatisfy { MedicationSafety.parsePositive(String($0)) != nil }
+        return MedicationSafety.enteredRangeIsValid(low: minDose, high: maxDose, concentration: concentration) &&
+            strengthListValid && approved
     }
 
     var body: some View {
@@ -498,7 +530,7 @@ struct ProtocolMedicationEditorView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Save") {
-                        let low = Double(minDose) ?? 0
+                        guard valid, let low = MedicationSafety.parsePositive(minDose) else { return }
                         let high = Double(maxDose) ?? low
                         let def = ProtocolMedicationDefinition(
                             medicationKey: ProtocolMedicationDefinition.key(for: medication, species: species),

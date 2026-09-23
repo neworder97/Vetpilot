@@ -38,6 +38,12 @@ struct CustomMedicationDefinition: Identifiable, Codable, Equatable {
     var doseBasis: CustomDoseBasis { CustomDoseBasis(rawValue: doseBasisRaw) ?? .mgKg }
     var isSourceBacked: Bool { !sourceReference.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
 
+    var hasValidDefinition: Bool {
+        Species(rawValue: speciesRaw) != nil && MedicationForm(rawValue: formRaw) != nil &&
+        CustomDoseBasis(rawValue: doseBasisRaw) != nil &&
+        MedicationSafety.validRange(low: minDose, high: maxDose) && MedicationSafety.optionalPositive(concentration)
+    }
+
     var asMedication: Medication {
         Medication(
             generic: generic.trimmingCharacters(in: .whitespacesAndNewlines),
@@ -46,7 +52,7 @@ struct CustomMedicationDefinition: Identifiable, Codable, Equatable {
             species: [species],
             form: form,
             indication: indication.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "Custom indication" : indication,
-            kind: doseBasis.doseKind,
+            kind: hasValidDefinition ? doseBasis.doseKind : .protocolOnly,
             minDose: minDose,
             maxDose: maxDose > 0 ? maxDose : minDose,
             frequency: frequency.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "per entered protocol" : frequency,
@@ -180,7 +186,7 @@ private struct CustomMedicationEditorView: View {
 
     private var valid: Bool {
         !generic.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        (Double(minDose) ?? 0) > 0
+        MedicationSafety.enteredRangeIsValid(low: minDose, high: maxDose, concentration: concentration)
     }
 
     var body: some View {
@@ -237,7 +243,7 @@ private struct CustomMedicationEditorView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Save") {
-                        let low = Double(minDose) ?? 0
+                        guard valid, let low = MedicationSafety.parsePositive(minDose) else { return }
                         let high = Double(maxDose) ?? low
                         let conc = Double(concentration)
                         store.add(CustomMedicationDefinition(

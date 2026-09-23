@@ -72,6 +72,12 @@ final class NutritionMathTests: XCTestCase {
         }
     }
 
+    func testRejectsOversizedAndNonfiniteWeight() {
+        for kg in [1e24, Double.infinity, Double.nan, 1001, -1, 0] {
+            XCTAssertNil(NutritionMath.estimate(species: .dog, currentKg: kg, bcs: 5))
+        }
+    }
+
     func testRejectsInvalidWeightAndBCS() {
         XCTAssertNil(NutritionMath.estimate(species: .dog, currentKg: 0, bcs: 5))
         XCTAssertNil(NutritionMath.estimate(species: .cat, currentKg: 4, bcs: 10))

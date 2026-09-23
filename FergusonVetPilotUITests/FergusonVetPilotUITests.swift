@@ -15,6 +15,7 @@ final class FergusonVetPilotUITests: XCTestCase {
         XCTAssertTrue(app.tabBars.buttons["Dose"].exists)
         XCTAssertTrue(app.tabBars.buttons["X-Ray"].exists)
         XCTAssertTrue(app.tabBars.buttons["Breeds"].exists)
+        XCTAssertTrue(app.tabBars.buttons["Nutrition"].exists)
 
         let custom = app.buttons["dose.custom"]
         XCTAssertTrue(custom.waitForExistence(timeout: 3))
@@ -57,23 +58,16 @@ final class FergusonVetPilotUITests: XCTestCase {
         XCTAssertTrue(q12.waitForExistence(timeout: 3))
         q12.tap()
 
-        let overrideWarning = app.staticTexts
-            .matching(NSPredicate(format: "label CONTAINS %@", "Choosing an override changes schedule/supply math only"))
-            .firstMatch
-        if !overrideWarning.waitForExistence(timeout: 2) {
-            app.swipeUp()
-        }
-        XCTAssertTrue(overrideWarning.waitForExistence(timeout: 3))
+        let overrideWarning = app.staticTexts["dose.frequency.override.warning"]
+        for _ in 0..<5 where !overrideWarning.isHittable { app.swipeUp() }
+        XCTAssertTrue(overrideWarning.exists)
 
-        let sevenDays = app.buttons["dose.supply.7"]
-        if !sevenDays.waitForExistence(timeout: 2) {
-            app.swipeUp()
-        }
-        XCTAssertTrue(sevenDays.waitForExistence(timeout: 3))
-        sevenDays.tap()
-        let supplySummary = app.staticTexts["dose.supply.summary"]
-        XCTAssertTrue(supplySummary.waitForExistence(timeout: 3))
-        XCTAssertTrue(supplySummary.label.contains("q12h"))
+        // This specific 25-mg strength cannot exactly deliver the fixed 22-mg
+        // per-administration target. It must not become a dispense instruction.
+        let blocked = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "outside the selected dose range")).firstMatch
+        for _ in 0..<6 where !blocked.isHittable { app.swipeDown() }
+        XCTAssertTrue(blocked.exists)
+        XCTAssertFalse(app.buttons["dose.supply.7"].exists)
 
         app.buttons["dose.done"].tap()
 
@@ -141,13 +135,7 @@ final class FergusonVetPilotUITests: XCTestCase {
         expectation(for: pickerDismissed, evaluatedWith: photosNav)
         waitForExpectations(timeout: 10)
 
-        let gate = app.staticTexts
-            .matching(NSPredicate(format: "identifier == %@ AND (label == %@ OR label == %@ OR label == %@)",
-                                  "radiology.precheck",
-                                  "Likely radiograph",
-                                  "Uncertain",
-                                  "Does not look like a radiograph"))
-            .firstMatch
+        let gate = app.staticTexts["radiology.xrayGate"]
         XCTAssertTrue(gate.waitForExistence(timeout: 20), "Production X-ray precheck did not finish")
         XCTAssertFalse(gate.label.contains("Does not look like"), "Real radiograph was rejected by production precheck")
 
@@ -256,5 +244,54 @@ final class FergusonVetPilotUITests: XCTestCase {
         breedSearch.typeText("German")
         XCTAssertTrue(app.staticTexts["German Shepherd Dog"].waitForExistence(timeout: 3))
         sleep(3)
+    }
+
+    // Prepared for the next real iOS Simulator run; not a claim of execution.
+    func testNutritionTabDogAndCatSmokeFlow() throws {
+        app.tabBars.buttons["Nutrition"].tap()
+        XCTAssertTrue(app.staticTexts["Nutrition & weight plan"].waitForExistence(timeout: 4))
+        let weight = app.textFields["Weight"]
+        XCTAssertTrue(weight.exists)
+        app.segmentedControls.buttons["kg"].tap()
+        weight.tap()
+        weight.typeText("12")
+        let score = app.buttons.containing(.staticText, identifier: "7").firstMatch
+        for _ in 0..<6 where !score.isHittable { app.swipeUp() }
+        XCTAssertTrue(score.isHittable)
+        score.tap()
+        let calories = app.staticTexts["Recommended starting calories"]
+        for _ in 0..<6 where !calories.isHittable { app.swipeUp() }
+        XCTAssertTrue(calories.exists)
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "394 kcal/day")).firstMatch.exists)
+        let cat = app.segmentedControls.buttons["Cat"]
+        for _ in 0..<6 where !cat.isHittable { app.swipeDown() }
+        cat.tap()
+        weight.tap()
+        let prior = weight.value as? String ?? "12"
+        weight.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: prior.count))
+        weight.typeText("6")
+        for _ in 0..<6 where !calories.isHittable { app.swipeUp() }
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "187 kcal/day")).firstMatch.exists)
+    }
+
+    func testInvalidConcentrationCannotCalculate() throws {
+        let search = app.textFields["Search medications…"]
+        search.tap()
+        search.typeText("Metacam maintenance")
+        let medication = app.staticTexts["Meloxicam (Metacam maintenance)"]
+        XCTAssertTrue(medication.waitForExistence(timeout: 4))
+        medication.tap()
+        let weight = app.textFields["dose.sheet.weight"]
+        weight.tap()
+        weight.typeText("22.046226218")
+        if app.buttons["dose.keyboard.done"].exists { app.buttons["dose.keyboard.done"].tap() }
+        let concentration = app.textFields["dose.concentration"]
+        for _ in 0..<4 where !concentration.isHittable { app.swipeUp() }
+        concentration.tap()
+        let prior = concentration.value as? String ?? "1.5"
+        concentration.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: prior.count))
+        concentration.typeText("0")
+        XCTAssertTrue(app.staticTexts["dose.concentration.error"].exists)
+        XCTAssertFalse(app.buttons["dose.calculate"].isEnabled)
     }
 }

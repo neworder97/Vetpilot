@@ -22,9 +22,11 @@ struct NutritionEstimate: Equatable {
 }
 
 enum NutritionMath {
+    // Operational input bound, not a clinical eligibility rule.
+    static func validWeight(_ kg: Double) -> Bool { kg.isFinite && kg > 0 && kg <= 1000 }
     /// Resting Energy Requirement (RER): 70 × body weight (kg)^0.75.
     static func rer(kg: Double) -> Double {
-        guard kg > 0, kg.isFinite else { return .nan }
+        guard validWeight(kg) else { return .nan }
         return 70 * pow(kg, 0.75)
     }
 
@@ -35,7 +37,7 @@ enum NutritionMath {
     /// infer an ideal weight from BCS alone because no equally validated
     /// inverse rule exists; a documented prior ideal weight is preferred.
     static func estimatedIdealWeight(currentKg: Double, bcs: Int) -> Double? {
-        guard currentKg > 0, currentKg.isFinite, (1...9).contains(bcs) else { return nil }
+        guard validWeight(currentKg), (1...9).contains(bcs) else { return nil }
         if bcs == 4 || bcs == 5 { return currentKg }
         guard bcs >= 6 else { return nil }
         let excessFraction = Double(bcs - 5) * 0.10
@@ -43,7 +45,7 @@ enum NutritionMath {
     }
 
     static func estimate(species: Species, currentKg: Double, bcs: Int) -> NutritionEstimate? {
-        guard currentKg > 0, currentKg.isFinite, (1...9).contains(bcs) else { return nil }
+        guard validWeight(currentKg), (1...9).contains(bcs) else { return nil }
         let currentRER = rer(kg: currentKg)
         guard currentRER.isFinite else { return nil }
 

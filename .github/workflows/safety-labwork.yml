@@ -1,0 +1,37 @@
+name: VetPilot Safety and Labwork Validation
+on:
+  push:
+    branches: [vetpilot-safety-labwork]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: vetpilot-safety-labwork
+  cancel-in-progress: true
+jobs:
+  ios-validation:
+    runs-on: macos-15
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: brew install xcodegen
+      - name: Simulator unit and UI tests with real radiograph
+        run: bash ValidationPrepared/run_ios_validation.sh
+      - name: Compile physical-device app
+        run: |
+          set -o pipefail
+          xcodebuild build -project FergusonVetPilot.xcodeproj -scheme FergusonVetPilot -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath .build CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='' 2>&1 | tee ValidationResults/device-build.log
+      - name: Restore original visual resources
+        run: |
+          APP=$(find .build/Build/Products/Release-iphoneos -maxdepth 1 -name '*.app' -print -quit)
+          test -n "$APP"
+          bash Scripts/restore_original_bundle_resources.sh "$APP"
+          for F in PreservedOriginalBundleResources/*; do cmp "$F" "$APP/$(basename "$F")"; done
+      - name: Save validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: VetPilot-Safety-Labwork-Evidence
+          path: ValidationResults/

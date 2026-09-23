@@ -15,8 +15,9 @@ struct NutritionView: View {
     private let bcsColumns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 3)
 
     private var weightKg: Double? {
-        guard let entered = Double(weightText.trimmingCharacters(in: .whitespacesAndNewlines)), entered > 0 else { return nil }
-        return unit == .kg ? entered : ClinicalData.lbToKg(entered)
+        guard let entered = MedicationSafety.parsePositive(weightText), entered > 0 else { return nil }
+        let kg = unit == .kg ? entered : ClinicalData.lbToKg(entered)
+        return NutritionMath.validWeight(kg) ? kg : nil
     }
 
     private var estimate: NutritionEstimate? {
@@ -247,13 +248,13 @@ struct NutritionView: View {
     }
 
     private func formatCalories(_ value: Double) -> String {
-        String(Int(value.rounded()))
+        value.isFinite ? String(format: "%.0f", value) : "Invalid value"
     }
 
     private func formatWeight(_ value: Double) -> String {
         let rounded = (value * 10).rounded() / 10
         if abs(rounded.rounded() - rounded) < 0.0001 {
-            return String(Int(rounded))
+            return String(format: "%.0f", rounded)
         }
         return String(format: "%.1f", rounded)
     }

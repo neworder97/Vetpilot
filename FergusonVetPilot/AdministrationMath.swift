@@ -52,7 +52,9 @@ enum AdministrationMath {
     }
 
     static func selection(for medication: Medication, kg: Double, level: DoseSelectionLevel) -> DoseRangeSelection? {
-        guard medication.kind != .protocolOnly else { return nil }
+        guard medication.kind != .protocolOnly,
+              MedicationSafety.positiveFinite(kg),
+              (MedicationSafety.validRange(low: medication.minDose, high: medication.maxDose) || medication.kind == .robenacoxibCatBand) else { return nil }
 
         if medication.kind == .robenacoxibCatBand {
             guard kg >= 2.5 && kg <= 12 else { return nil }
@@ -88,10 +90,13 @@ enum AdministrationMath {
             return nil
         }
 
+        let selected = interpolate(low, high, level: level)
+        guard MedicationSafety.positiveFinite(low), MedicationSafety.positiveFinite(high),
+              MedicationSafety.positiveFinite(selected), high >= low else { return nil }
         return DoseRangeSelection(
             low: low,
             high: high,
-            selected: interpolate(low, high, level: level),
+            selected: selected,
             unit: "mg",
             math: math,
             isRate: false
@@ -99,6 +104,8 @@ enum AdministrationMath {
     }
 
     static func selection(for definition: ProtocolMedicationDefinition, kg: Double, level: DoseSelectionLevel) -> DoseRangeSelection? {
+        guard definition.validationIssue == nil, definition.veterinarianApproved,
+              kg.isFinite, kg >= 0 else { return nil }
         let basis = definition.doseBasis
         guard !basis.requiresWeight || kg > 0 else { return nil }
         let maxDose = definition.maxDose > 0 ? definition.maxDose : definition.minDose
@@ -144,10 +151,13 @@ enum AdministrationMath {
         default: unit = basis.amountUnit
         }
 
+        let selected = interpolate(low, high, level: level)
+        guard MedicationSafety.positiveFinite(low), MedicationSafety.positiveFinite(high),
+              MedicationSafety.positiveFinite(selected), high >= low else { return nil }
         return DoseRangeSelection(
             low: low,
             high: high,
-            selected: interpolate(low, high, level: level),
+            selected: selected,
             unit: unit,
             math: math,
             isRate: basis.isRate
@@ -155,14 +165,17 @@ enum AdministrationMath {
     }
 
     static func solidPlan(targetMg: Double, strengthMg: Double, rounding: SolidDoseRounding) -> SolidAdministrationPlan? {
-        guard targetMg > 0, strengthMg > 0 else { return nil }
+        guard MedicationSafety.positiveFinite(targetMg), MedicationSafety.positiveFinite(strengthMg) else { return nil }
         let raw = targetMg / strengthMg
+        guard MedicationSafety.positiveFinite(raw) else { return nil }
+        let roundingInput = MedicationSafety.snapIntegerBoundary(raw)
         let rounded: Double
         switch rounding {
-        case .down: rounded = floor(raw)
-        case .nearest: rounded = raw.rounded(.toNearestOrAwayFromZero)
-        case .up: rounded = ceil(raw)
+        case .down: rounded = floor(roundingInput)
+        case .nearest: rounded = roundingInput.rounded(.toNearestOrAwayFromZero)
+        case .up: rounded = ceil(roundingInput)
         }
+        guard rounded.isFinite, (rounded * strengthMg).isFinite else { return nil }
         return SolidAdministrationPlan(
             rawUnits: raw,
             roundedUnits: rounded,
@@ -172,38 +185,32 @@ enum AdministrationMath {
     }
 
     static func volume(selection: DoseRangeSelection, basis: ProtocolDoseBasis?, concentration: Double?) -> (value: Double, unit: String)? {
-        if basis == .mLKg {
-            return (selection.selected, "mL")
-        }
-        if basis == .dropsEye {
-            return (selection.selected, "drop(s)/eye")
-        }
-        guard let concentration, concentration > 0 else { return nil }
-
-        guard let basis else {
-            return (selection.selected / concentration, "mL")
-        }
-
+        guard MedicationSafety.positiveFinite(selection.selected) else { return nil }
+        if basis == .mLKg { return (selection.selected, "mL") }
+        if basis == .dropsEye { return (selection.selected, "drop(s)/eye") }
+        guard let concentration, MedicationSafety.positiveFinite(concentration) else { return nil }
+        let value: Double
+        let unit: String
         switch basis {
         case .mcgKgMin:
-            return (((selection.selected / 1000.0) * 60.0) / concentration, "mL/hr")
+            value = ((selection.selected / 1000) * 60) / concentration; unit = "mL/hr"
         case .mgKgHr, .mEqKgHr:
-            return (selection.selected / concentration, "mL/hr")
+            value = selection.selected / concentration; unit = "mL/hr"
         case .mcgKg:
-            return ((selection.selected / 1000.0) / concentration, "mL")
+            value = (selection.selected / 1000) / concentration; unit = "mL"
         case .gKg:
-            return ((selection.selected * 1000.0) / concentration, "mL")
-        case .dropsEye:
-            return (selection.selected, "drop(s)/eye")
-        case .mLKg:
-            return (selection.selected, "mL")
+            value = (selection.selected * 1000) / concentration; unit = "mL"
         default:
-            return (selection.selected / concentration, "mL")
+            value = selection.selected / concentration; unit = "mL"
         }
+        guard MedicationSafety.positiveFinite(value) else { return nil }
+        return (value, unit)
     }
 
     static func administrations(days: Int, dosesPerDay: Double) -> Int {
-        guard days > 0, dosesPerDay > 0 else { return 0 }
-        return Int(ceil(Double(days) * dosesPerDay))
+        guard days > 0, MedicationSafety.positiveFinite(dosesPerDay) else { return 0 }
+        let count = ceil(MedicationSafety.snapIntegerBoundary(Double(days) * dosesPerDay))
+        guard count.isFinite, count > 0, count < Double(Int.max) else { return 0 }
+        return Int(count)
     }
 }

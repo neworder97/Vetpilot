@@ -208,7 +208,8 @@ final class ClinicalDataTests: XCTestCase {
             subdirectory: "Fixtures"
         ) ?? Bundle(for: ClinicalDataTests.self).url(forResource: "dog_thorax_vd_test", withExtension: "jpg"),
         let image = UIImage(contentsOfFile: url.path) else {
-            throw XCTSkip("Real canine thoracic radiograph fixture is downloaded by CI before project generation.")
+            XCTFail("Required real radiograph fixture is missing. Run ValidationPrepared/run_ios_validation.sh; this is a failed validation, not a skipped success.")
+            return
         }
 
         let inspection = await RadiographImageInspector.inspect(image)
