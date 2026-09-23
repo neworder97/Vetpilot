@@ -1,0 +1,1547 @@
+{
+  "reviewed_on": "2026-09-23",
+  "scope": "Dose basis, numerical range, interval, route and insulin concentration checked for marked entries. Full patient eligibility, interactions, all available formulations, and clinical validation remain incomplete.",
+  "findings": [
+    "Insulin concentration substitution previously retained the source regimen. Added product-specific engine and UI checks with regression coverage; validation pending on this revision.",
+    "Canine AAHA insulin instructions need ideal-weight and whole-unit-rounding context; notes now state it.",
+    "Removed oral tablet strength metadata from three non-oral furosemide branches.",
+    "Potassium lower-range and final-dilution workflow remain pending; a maximum infusion rate alone is not a complete protocol."
+  ],
+  "entries": [
+    {
+      "id": "metronidazole-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "metronidazole-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "metronidazole-dog-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "metronidazole-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "metronidazole-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "doxycycline-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "doxycycline-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "doxycycline-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "doxycycline-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "prednisone-prednisolone-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "prednisone-prednisolone-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "levetiracetam-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "levetiracetam-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "levetiracetam-dog-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "levetiracetam-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "levetiracetam-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "levetiracetam-cat-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "omeprazole-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "omeprazole-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "famotidine-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "famotidine-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ondansetron-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ondansetron-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ondansetron-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ondansetron-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "diphenhydramine-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "diphenhydramine-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "cetirizine-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "cetirizine-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "cetirizine-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "cetirizine-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "furosemide-dog-1",
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
+    },
+    {
+      "id": "furosemide-dog-2",
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
+    },
+    {
+      "id": "furosemide-dog-3",
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
+    },
+    {
+      "id": "furosemide-cat-1",
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
+    },
+    {
+      "id": "furosemide-cat-2",
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
+    },
+    {
+      "id": "furosemide-cat-3",
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
+    },
+    {
+      "id": "spironolactone-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "spironolactone-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "spironolactone-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "benazepril-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "benazepril-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "enalapril-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "methimazole-transdermal-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "insulin-glargine-dog-1",
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.aaha.org/resources/2026-aaha-diabetes-management-guidelines-for-dogs/section-4-insulin-treatment/"
+    },
+    {
+      "id": "insulin-glargine-cat-1",
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.aaha.org/resources/2026-aaha-diabetes-management-guidelines-for-cats/section-7-insulin-treatment-and-monitoring/"
+    },
+    {
+      "id": "insulin-pzi-dog-1",
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8dbc0e47-8df9-4484-903b-70fdd26f7998"
+    },
+    {
+      "id": "insulin-pzi-dog-2",
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.aaha.org/resources/2026-aaha-diabetes-management-guidelines-for-dogs/section-4-insulin-treatment/"
+    },
+    {
+      "id": "insulin-pzi-cat-1",
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8dbc0e47-8df9-4484-903b-70fdd26f7998"
+    },
+    {
+      "id": "insulin-pzi-cat-2",
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.aaha.org/resources/2026-aaha-diabetes-management-guidelines-for-cats/section-7-insulin-treatment-and-monitoring/"
+    },
+    {
+      "id": "phenobarbital-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "phenobarbital-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "tramadol-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "tramadol-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "buprenorphine-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "buprenorphine-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "buprenorphine-dog-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "buprenorphine-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "buprenorphine-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "buprenorphine-cat-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "buprenorphine-cat-4",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "butorphanol-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "butorphanol-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "butorphanol-dog-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "butorphanol-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "butorphanol-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "butorphanol-cat-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "hydromorphone-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "hydromorphone-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "hydromorphone-dog-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "hydromorphone-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "hydromorphone-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "hydromorphone-cat-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "fentanyl-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "fentanyl-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "fentanyl-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "fentanyl-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ketamine-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ketamine-dog-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ketamine-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ketamine-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ketamine-cat-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ketamine-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "midazolam-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "midazolam-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "midazolam-dog-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "midazolam-dog-4",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "midazolam-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "midazolam-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "midazolam-cat-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "midazolam-cat-4",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "diazepam-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "diazepam-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "diazepam-dog-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "diazepam-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "diazepam-cat-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "alprazolam-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "alprazolam-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "dexmedetomidine-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "dexmedetomidine-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "dexmedetomidine-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "propofol-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "propofol-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "alfaxalone-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "alfaxalone-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "amoxicillin-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "amoxicillin-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ampicillin-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ampicillin-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ampicillin-sulbactam-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ampicillin-sulbactam-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ampicillin-sulbactam-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ampicillin-sulbactam-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "cephalexin-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "cephalexin-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "cefazolin-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "cefazolin-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "clindamycin-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "clindamycin-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "enrofloxacin-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "enrofloxacin-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "marbofloxacin-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "marbofloxacin-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "marbofloxacin-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "orbifloxacin-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "orbifloxacin-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "orbifloxacin-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "orbifloxacin-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "azithromycin-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "azithromycin-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "minocycline-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "minocycline-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "trimethoprim-sulfamethoxazole-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "trimethoprim-sulfamethoxazole-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "trimethoprim-sulfamethoxazole-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "trimethoprim-sulfamethoxazole-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "chloramphenicol-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "chloramphenicol-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "sucralfate-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "sucralfate-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "pantoprazole-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "pantoprazole-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "metoclopramide-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "metoclopramide-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "metoclopramide-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "metoclopramide-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "cisapride-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "cisapride-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "cisapride-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "lactulose-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "lactulose-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ursodiol-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ursodiol-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "mirtazapine-oral-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "mirtazapine-oral-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "mirtazapine-oral-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "mirtazapine-oral-dog-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "mirtazapine-oral-dog-4",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "dexamethasone-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "dexamethasone-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "dexamethasone-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "dexamethasone-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "methylprednisolone-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "methylprednisolone-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "methylprednisolone-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "triamcinolone-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "triamcinolone-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "amlodipine-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "amlodipine-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "atenolol-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "atenolol-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "atenolol-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "diltiazem-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "diltiazem-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "diltiazem-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "diltiazem-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "clopidogrel-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "clopidogrel-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "clopidogrel-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "digoxin-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "digoxin-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "digoxin-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "digoxin-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "digoxin-cat-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "sildenafil-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "sildenafil-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "hydralazine-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "hydralazine-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "hydralazine-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "telmisartan-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "telmisartan-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "telmisartan-cat-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "torsemide-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "torsemide-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "torsemide-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "levothyroxine-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "levothyroxine-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "trilostane-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "desmopressin-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "desmopressin-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "desmopressin-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "desmopressin-dog-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "desmopressin-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "desmopressin-cat-3",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "fludrocortisone-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "desoxycorticosterone-pivalate-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "mitotane-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "mitotane-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "zonisamide-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "zonisamide-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "potassium-bromide-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "pregabalin-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "pregabalin-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "pregabalin-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "methocarbamol-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "methocarbamol-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "methocarbamol-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "methocarbamol-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "clomipramine-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "sertraline-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "sertraline-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "paroxetine-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "paroxetine-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "buspirone-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "buspirone-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "clonidine-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "selegiline-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "hydroxyzine-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "hydroxyzine-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "chlorpheniramine-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "chlorpheniramine-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "lokivetmab-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "cyclosporine-ophthalmic-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "cyclosporine-ophthalmic-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "tacrolimus-ophthalmic-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "tacrolimus-ophthalmic-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "latanoprost-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "dorzolamide-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "dorzolamide-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "timolol-ophthalmic-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "timolol-ophthalmic-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "atropine-ophthalmic-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "atropine-ophthalmic-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ofloxacin-ophthalmic-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ofloxacin-ophthalmic-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ciprofloxacin-ophthalmic-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ciprofloxacin-ophthalmic-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "epinephrine-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "epinephrine-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "atropine-injection-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "atropine-injection-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "atropine-injection-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "atropine-injection-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "glycopyrrolate-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "glycopyrrolate-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "lidocaine-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "lidocaine-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "lidocaine-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "lidocaine-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "naloxone-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "naloxone-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "mannitol-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "mannitol-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "mannitol-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "mannitol-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "calcium-gluconate-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "calcium-gluconate-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "dextrose-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "dextrose-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "potassium-chloride-dog-1",
+      "status": "MAXIMUM_RATE_SUPPORTED_OTHER_PARAMETERS_PENDING",
+      "source": "https://www.aaha.org/resources/2024-aaha-fluid-therapy-guidelines-for-dogs-and-cats/section-5-fluid-therapy-in-ill-patients/"
+    },
+    {
+      "id": "potassium-chloride-cat-1",
+      "status": "MAXIMUM_RATE_SUPPORTED_OTHER_PARAMETERS_PENDING",
+      "source": "https://www.aaha.org/resources/2024-aaha-fluid-therapy-guidelines-for-dogs-and-cats/section-5-fluid-therapy-in-ill-patients/"
+    },
+    {
+      "id": "fenbendazole-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "fenbendazole-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "fenbendazole-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "pyrantel-pamoate-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "pyrantel-pamoate-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "praziquantel-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "praziquantel-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ivermectin-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "ivermectin-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "milbemycin-oxime-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "selamectin-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "selamectin-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "moxidectin-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "moxidectin-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "afoxolaner-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "fluralaner-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "fluralaner-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "sarolaner-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "lotilaner-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "lotilaner-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "toceranib-phosphate-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "toceranib-phosphate-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "chlorambucil-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "chlorambucil-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "chlorambucil-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "cyclophosphamide-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "cyclophosphamide-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "cyclophosphamide-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "cyclophosphamide-cat-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "vincristine-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "vincristine-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "doxorubicin-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "doxorubicin-dog-2",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "doxorubicin-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "lomustine-dog-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    },
+    {
+      "id": "lomustine-cat-1",
+      "status": "NOT_YET_REVIEWED",
+      "source": null
+    }
+  ]
+}

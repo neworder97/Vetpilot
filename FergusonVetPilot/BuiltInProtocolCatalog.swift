@@ -222,43 +222,43 @@ enum BuiltInProtocolCatalog {
         BuiltInProtocolPreset(
             id: "furosemide-dog-1", generic: "Furosemide", species: .dog,
             label: "Acute pulmonary edema", doseBasis: .mgKg, minDose: 2, maxDose: 4,
-            frequency: "q1-6h initially to effect", route: "IV/IM", strengths: [80], concentration: nil,
-            sourceReference: "MSD cardiac table provides dog acute 2–4 mg/kg, chronic 1–6 mg/kg and feline lower-dose branches.", notes: "Renal values, hydration, electrolytes Product/route verification; renal/electrolyte monitoring Research preload rule: Acute, chronic and CRI branches",
+            frequency: "q1-6h initially to effect", route: "IV/IM", strengths: [], concentration: nil,
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats", notes: "Renal values, hydration, electrolytes Product/route verification; renal/electrolyte monitoring Research preload rule: Acute, chronic and CRI branches",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "furosemide-dog-2", generic: "Furosemide", species: .dog,
             label: "Chronic CHF", doseBasis: .mgKg, minDose: 1, maxDose: 6,
             frequency: "q8-12h", route: "PO", strengths: [80], concentration: nil,
-            sourceReference: "MSD cardiac table provides dog acute 2–4 mg/kg, chronic 1–6 mg/kg and feline lower-dose branches.", notes: "Renal values, hydration, electrolytes. MSD cardiac table lists a maximum total chronic oral dose of 12 mg/kg/day in dogs; verify the selected interval does not exceed that daily ceiling.",
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats", notes: "Renal values, hydration, electrolytes. MSD cardiac table lists a maximum total chronic oral dose of 12 mg/kg/day in dogs; verify the selected interval does not exceed that daily ceiling.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "furosemide-dog-3", generic: "Furosemide", species: .dog,
             label: "CRI", doseBasis: .mgKgHr, minDose: 0.25, maxDose: 1,
-            frequency: "continuous", route: "IV CRI", strengths: [80], concentration: nil,
-            sourceReference: "MSD cardiac table provides dog acute 2–4 mg/kg, chronic 1–6 mg/kg and feline lower-dose branches.", notes: "Renal values, hydration, electrolytes Product/route verification; renal/electrolyte monitoring Research preload rule: Acute, chronic and CRI branches",
+            frequency: "continuous", route: "IV CRI", strengths: [], concentration: nil,
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats", notes: "Renal values, hydration, electrolytes Product/route verification; renal/electrolyte monitoring Research preload rule: Acute, chronic and CRI branches",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "furosemide-cat-1", generic: "Furosemide", species: .cat,
             label: "Acute pulmonary edema", doseBasis: .mgKg, minDose: 0.5, maxDose: 2,
-            frequency: "q1-8h to effect", route: "IV/IM", strengths: [80], concentration: nil,
-            sourceReference: "MSD cardiac table provides dog acute 2–4 mg/kg, chronic 1–6 mg/kg and feline lower-dose branches.", notes: "Renal values, hydration, electrolytes Product/route verification; renal/electrolyte monitoring Research preload rule: Acute, chronic and CRI branches",
+            frequency: "q1-8h to effect", route: "IV/IM", strengths: [], concentration: nil,
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats", notes: "Renal values, hydration, electrolytes Product/route verification; renal/electrolyte monitoring Research preload rule: Acute, chronic and CRI branches",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "furosemide-cat-2", generic: "Furosemide", species: .cat,
             label: "Chronic CHF", doseBasis: .mgKg, minDose: 1, maxDose: 2,
             frequency: "q12-24h", route: "PO", strengths: [80], concentration: nil,
-            sourceReference: "MSD cardiac table provides dog acute 2–4 mg/kg, chronic 1–6 mg/kg and feline lower-dose branches.", notes: "Renal values, hydration, electrolytes. MSD cardiac table lists a maximum total chronic oral dose of 6 mg/kg/day in cats; verify the selected interval does not exceed that daily ceiling.",
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats", notes: "Renal values, hydration, electrolytes. MSD cardiac table lists a maximum total chronic oral dose of 6 mg/kg/day in cats; verify the selected interval does not exceed that daily ceiling.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "furosemide-cat-3", generic: "Furosemide", species: .cat,
             label: "Acute pulmonary edema CRI", doseBasis: .mgKgHr, minDose: 0.25, maxDose: 0.6,
             frequency: "continuous", route: "IV CRI", strengths: [], concentration: nil,
-            sourceReference: "MSD Veterinary Manual cardiac/diuretic guidance.", notes: "Acute monitored CRI branch. Monitor respiratory status, hydration, renal values, and electrolytes; taper as clinical signs resolve.",
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats", notes: "Acute monitored CRI branch. Monitor respiratory status, hydration, renal values, and electrolytes; taper as clinical signs resolve.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
@@ -314,42 +314,42 @@ enum BuiltInProtocolCatalog {
             id: "insulin-glargine-dog-1", generic: "Insulin glargine", species: .dog,
             label: "Glargine U-100 starting protocol 0.25–0.5 U/kg", doseBasis: .unitsKg, minDose: 0.25, maxDose: 0.5,
             frequency: "q12h", route: "SC", strengths: [], concentration: 100,
-            sourceReference: "2026 AAHA Diabetes Management Guidelines for Dogs.", notes: "Confirm insulin product/concentration and matched delivery device. Starting arithmetic does not replace glucose monitoring or titration; some dogs require different insulin strategies.",
+            sourceReference: "https://www.aaha.org/resources/2026-aaha-diabetes-management-guidelines-for-dogs/section-4-insulin-treatment/", notes: "AAHA branch: enter veterinarian-estimated ideal weight. Displayed units are unrounded reference arithmetic; review whole-unit rounding and glucose monitoring. U-300 requires a separate regimen.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "insulin-glargine-cat-1", generic: "Insulin glargine", species: .cat,
             label: "Glargine U-100 common starting dose 1 U/cat", doseBasis: .fixedUnits, minDose: 1, maxDose: 1,
             frequency: "q12h", route: "SC", strengths: [], concentration: 100,
-            sourceReference: "2026 AAHA Diabetes Management Guidelines for Cats.", notes: "For common feline glargine U-100, AAHA states dosing is not weight-based and most cats start at 1 U/cat q12h. Confirm U-100 product and delivery device; subsequent titration is glucose/clinical-response guided.",
+            sourceReference: "https://www.aaha.org/resources/2026-aaha-diabetes-management-guidelines-for-cats/section-7-insulin-treatment-and-monitoring/", notes: "Fixed-dose starting reference for glargine U-100 only. Match the delivery device; titrate from glucose and clinical response. Do not substitute U-300.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "insulin-pzi-dog-1", generic: "Insulin PZI", species: .dog,
             label: "Initial labeled/starting branch", doseBasis: .unitsKg, minDose: 0.5, maxDose: 1,
             frequency: "q24h", route: "SC", strengths: [], concentration: 40.0,
-            sourceReference: "2026 AAHA diabetes guidance.", notes: "U-40 syringe; glucose monitoring Approved veterinary product; U-40/U-100 mismatch is critical Research preload rule: Cat 1–2 U/cat q12h; canine AAHA q12h and labeled q24h branches",
+            sourceReference: "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8dbc0e47-8df9-4484-903b-70fdd26f7998", notes: "FDA-label starting branch. Start insulin-naive dogs at the lower end; transitions require close monitoring. Use a U-40 syringe. Review hypoglycemia risk before every dose.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "insulin-pzi-dog-2", generic: "Insulin PZI", species: .dog,
             label: "AAHA canine q12h starting protocol 0.25–0.5 U/kg", doseBasis: .unitsKg, minDose: 0.25, maxDose: 0.5,
             frequency: "q12h", route: "SC", strengths: [], concentration: 40,
-            sourceReference: "2026 AAHA Diabetes Management Guidelines for Dogs.", notes: "Guideline branch separate from the q24h product-label branch. Confirm U-40 PZI, matched delivery device, and glucose-response monitoring.",
+            sourceReference: "https://www.aaha.org/resources/2026-aaha-diabetes-management-guidelines-for-dogs/section-4-insulin-treatment/", notes: "AAHA branch using estimated ideal weight; review whole-unit rounding. This differs from labeled once-daily initiation. Prolonged action requires close glucose monitoring.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "insulin-pzi-cat-1", generic: "Insulin PZI", species: .cat,
             label: "PROZINC FDA-label initial 0.2–0.7 U/kg", doseBasis: .unitsKg, minDose: 0.2, maxDose: 0.7,
             frequency: "q12h", route: "SC", strengths: [], concentration: 40,
-            sourceReference: "PROZINC prescribing information / DailyMed.", notes: "FDA-label branch. U-40 insulin: use a compatible U-40 delivery device and verify concentration. Monitor and titrate to clinical/glucose response.",
+            sourceReference: "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8dbc0e47-8df9-4484-903b-70fdd26f7998", notes: "FDA-label initial-dose branch; administer SC with a U-40 syringe. Review food intake, hypoglycemia and glucose monitoring. This is not a ketoacidosis protocol.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "insulin-pzi-cat-2", generic: "Insulin PZI", species: .cat,
             label: "AAHA common feline starting dose 1 U/cat", doseBasis: .fixedUnits, minDose: 1, maxDose: 1,
             frequency: "q12h", route: "SC", strengths: [], concentration: 40,
-            sourceReference: "2026 AAHA Diabetes Management Guidelines for Cats.", notes: "Guideline branch. Confirm U-40 PZI and delivery device. Starting dose is not a substitute for glucose/clinical monitoring and titration.",
+            sourceReference: "https://www.aaha.org/resources/2026-aaha-diabetes-management-guidelines-for-cats/section-7-insulin-treatment-and-monitoring/", notes: "Common fixed starting reference for PZI U-40. Match the delivery device and titrate from glucose and clinical response.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(

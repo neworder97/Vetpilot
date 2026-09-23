@@ -315,6 +315,29 @@ final class FergusonVetPilotUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "187 kcal/day")).firstMatch.exists)
     }
 
+    func testInsulinStrengthMismatchCannotCalculate() throws {
+        let search = app.textFields["Search medications…"]
+        search.tap()
+        search.typeText("Insulin glargine")
+        let medication = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Insulin glargine (")).firstMatch
+        XCTAssertTrue(medication.waitForExistence(timeout: 4))
+        medication.tap()
+        let weight = app.textFields["dose.sheet.weight"]
+        weight.tap()
+        weight.typeText("22.046226218")
+        if app.buttons["dose.keyboard.done"].exists { app.buttons["dose.keyboard.done"].tap() }
+        let concentration = app.textFields["dose.concentration"]
+        for _ in 0..<10 where !concentration.isHittable { app.swipeUp() }
+        concentration.tap()
+        let prior = concentration.value as? String ?? "100"
+        concentration.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: prior.count))
+        concentration.typeText("300")
+        let error = app.staticTexts["dose.concentration.error"]
+        XCTAssertTrue(error.waitForExistence(timeout: 3))
+        XCTAssertTrue(error.label.contains("requires U-100"))
+        XCTAssertFalse(app.buttons["dose.calculate"].isEnabled)
+    }
+
     func testInvalidConcentrationCannotCalculate() throws {
         let search = app.textFields["Search medications…"]
         search.tap()

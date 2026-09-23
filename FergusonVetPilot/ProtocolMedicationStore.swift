@@ -223,6 +223,12 @@ enum ProtocolDoseCalculator {
                 warning: "Invalid entered values cannot fall back silently to a reference concentration.")
         }
 
+        if let issue = MedicationSafety.insulinConcentrationIssue(
+            presetID: builtInPreset?.id, concentration: concentration ?? d.concentration) {
+            return DoseResult(available: false, headline: "Insulin product mismatch",
+                math: "", formulation: "", warning: issue)
+        }
+
         guard kg.isFinite, kg >= 0, (!d.doseBasis.requiresWeight || kg > 0) else {
             return DoseResult(
                 available: false,

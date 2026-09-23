@@ -144,3 +144,19 @@ extension MedicationSafety {
         return Int(frequency[range])
     }
 }
+
+extension MedicationSafety {
+    /// Product-specific insulin protocols cannot be reused with another strength.
+    /// Glargine U-300 has different pharmacokinetics from U-100; PZI is U-40.
+    static func insulinConcentrationIssue(presetID: String?, concentration: Double?) -> String? {
+        guard let id = presetID else { return nil }
+        let expected: Double
+        if id.hasPrefix("insulin-glargine-") { expected = 100 }
+        else if id.hasPrefix("insulin-pzi-") { expected = 40 }
+        else { return nil }
+        guard let entered = concentration, positiveFinite(entered), entered == expected else {
+            return "This insulin protocol requires U-\(Int(expected)) (\(display(expected)) units/mL). A different insulin strength needs its own reviewed product-specific protocol and matched delivery device."
+        }
+        return nil
+    }
+}

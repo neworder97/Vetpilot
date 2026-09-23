@@ -2,6 +2,26 @@ import XCTest
 @testable import FergusonVetPilot
 
 final class MedicationSafetyRegressionTests: XCTestCase {
+    func testInsulinProtocolsRejectDifferentProductConcentrations() throws {
+        let insulin = BuiltInProtocolCatalog.all.filter { $0.id.hasPrefix("insulin-") }
+        XCTAssertEqual(insulin.count, 6)
+        for preset in insulin {
+            let expected = try XCTUnwrap(preset.concentration)
+            let valid = ProtocolDoseCalculator.calculate(definition: preset.definition,
+                kg: 10, strength: nil, concentration: expected, builtInPreset: preset)
+            XCTAssertTrue(valid.available, preset.id)
+            for wrong in [20.0, 40, 100, 200, 300] where wrong != expected {
+                let invalid = ProtocolDoseCalculator.calculate(definition: preset.definition,
+                    kg: 10, strength: nil, concentration: wrong, builtInPreset: preset)
+                XCTAssertFalse(invalid.available, preset.id)
+                XCTAssertEqual(invalid.headline, "Insulin product mismatch")
+                XCTAssertTrue(invalid.formulation.isEmpty)
+            }
+            XCTAssertNotNil(MedicationSafety.insulinConcentrationIssue(presetID: preset.id, concentration: nil))
+        }
+        XCTAssertNil(MedicationSafety.insulinConcentrationIssue(presetID: "furosemide-dog-1", concentration: 10))
+    }
+
     func testClonidineFloatingBoundaryDoesNotAddATablet() throws {
         let p = try XCTUnwrap(AdministrationMath.solidPlan(targetMg: 6 * 0.05, strengthMg: 0.3, rounding: .up))
         XCTAssertEqual(p.roundedUnits, 1)

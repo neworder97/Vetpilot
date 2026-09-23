@@ -331,6 +331,10 @@ private struct DoseCalculatorSheet: View {
             return "Use a finite positive concentration with a decimal point, not a comma. No default will be substituted."
         }
         if needsValue && entered.isEmpty { return "Enter and verify the product concentration; no default will be substituted." }
+        if let issue = MedicationSafety.insulinConcentrationIssue(
+            presetID: selectedBuiltInPreset?.id, concentration: MedicationSafety.parsePositive(entered)) {
+            return issue
+        }
         return nil
     }
 
