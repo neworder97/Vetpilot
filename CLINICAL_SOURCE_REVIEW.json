@@ -1048,13 +1048,13 @@
     },
     {
       "id": "levothyroxine-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/endocrine-system/the-thyroid-gland/hypothyroidism-in-animals"
     },
     {
       "id": "levothyroxine-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/endocrine-system/the-thyroid-gland/hypothyroidism-in-animals"
     },
     {
       "id": "trilostane-dog-1",
@@ -1128,8 +1128,8 @@
     },
     {
       "id": "pregabalin-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-dogs"
     },
     {
       "id": "pregabalin-cat-1",
@@ -1138,8 +1138,9 @@
     },
     {
       "id": "pregabalin-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/behavior/behavior-of-cats/behavior-problems-of-cats",
+      "finding": "Matches general extra-label reference range; it is not the narrower BONQAT labeled product regimen."
     },
     {
       "id": "methocarbamol-dog-1",

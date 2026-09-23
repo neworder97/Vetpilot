@@ -40,7 +40,7 @@ The baseline reproduces 9 rounding boundary failures, 12 nonzero volumes shown a
 **Clinical release is not cleared. No final installable IPA is released by this work.**
 
 1. The 307 protocol branches still require medication-by-medication current-source verification of indication, species, route, dose, schedule, concentration, duration, maximums, age limits, interactions and contraindications. A numerical pass does not validate the source dose or make tiny calculated volumes measurable with a particular syringe.
-2. The X-ray service measures coarse image features and retrieves literature. It has no validated lesion-classification or organ-segmentation model. A successful import/result test is not diagnostic sensitivity, specificity, or real-world clinical validation.
+2. User clarified that X-ray completion means a functioning exploratory second look with high/low uncalibrated confidence. Diagnostic accuracy validation is not a release gate for that agreed scope. The service measures coarse image features and retrieves literature; confidence must not be presented as a calibrated disease probability.
 3. This work does not test installation, camera behavior or performance on a physical iPhone, and does not configure signing credentials.
 4. Laboratory requirements can change and vary by ordered panel. Use the linked official order instructions; do not infer unlisted volumes or centrifuge settings.
 
@@ -57,3 +57,14 @@ The baseline reproduces 9 rounding boundary failures, 12 nonzero volumes shown a
 - Full logs and the xcresult screenshot attachments are retained in the run's `VetPilot-Safety-Labwork-Evidence` artifact. Arithmetic JSON, per-protocol CSV and Swift logs are in `VetPilot-Arithmetic-Evidence` on the arithmetic run.
 
 No simulator failures remain in this tested suite. This result does not mean every possible interaction, device, clinical regimen or diagnosis has been validated.
+
+## Medication review continuation — 2026-09-23
+
+Current implementation: `dc35c0d9967d46a698c2ea8d6398cf331219134d`. Current per-entry status is tracked in `CLINICAL_SOURCE_REVIEW.json`; source-range matches are not full clinical clearance.
+
+- Added digoxin weight-band and dose-ceiling enforcement, separated oral and IV ondansetron, and corrected source-coupled intervals.
+- Corrected ampicillin and enrofloxacin routes, removed cefazolin vial mass from tablet choices, and corrected sucralfate schedules.
+- Added feline enrofloxacin daily ceiling checks and insulin checks that also work without optional preset metadata.
+- Added product-specific buprenorphine substitution guards and explicit final prepared infusion concentration verification.
+- The second correction commit passed arithmetic CI (run 35807150574). The following infusion/product changes require their own CI results; do not reuse the earlier pass as evidence for them.
+- IPA remains uncreated while source review and latest regression results are incomplete.
