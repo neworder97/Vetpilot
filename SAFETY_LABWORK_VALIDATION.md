@@ -1,29 +1,53 @@
-# VetPilot safety and Labwork validation — 2026-09-23
+# VetPilot 0.4.0 (4) — validation and release
 
-The last completed validation is commit `37b3dc45a479fe885c1491115ec91bffbe412968`: arithmetic run 35810306723 and iOS run 35810306656 passed, with 95 unit and 9 UI tests, zero failures, a successful unsigned physical-device target build and byte-identical restored original visual resources.
+Validated application source: `0ae2faa91ebb8847670686fd1ef94e578d85da86` on `vetpilot-safety-labwork`. Documentation updates after this commit do not change the IPA's source identity.
 
-The current candidate requires its own validation. It completes initial source comparison for all 307 protocol entries and adds explicit prescribed potassium rates, combined-mass antibiotic wording, blocked ambiguous CRI and chemotherapy cycle amounts, and source-specific anesthesia, behavioral and ophthalmic corrections. See `CLINICAL_SOURCE_REVIEW.json` for per-entry sources and limitations. Source matching is not clinical clearance.
+The unsigned IPA was created successfully and is ready for Signulous or another authorized signing service. It is not directly installable until signed. Artifact: [VetPilot-0.4.0-Signulous-IPA](https://github.com/neworder97/Vetpilot/actions/runs/35812969585/artifacts/10730947026).
 
-## Release gate
+SHA-256: `75d4de3c136825e69bd2aca841ef280b69ceffda611e85bbcd22cdbfed0e5717`
 
-The safety workflow now runs the independent numerical/rendered oracles and extracted-core Swift tests, then iOS unit/UI simulator tests, then the Release iphoneos build and original-resource comparisons. Only successful completion creates version 0.4.0 build 4 as an unsigned Signulous IPA. The generated release manifest records the exact source commit, run, IPA SHA-256 and validated archive structure. A failed check prevents packaging.
+## Passed checks
+
+[Arithmetic run](https://github.com/neworder97/Vetpilot/actions/runs/35812969532) and [iOS/release run](https://github.com/neworder97/Vetpilot/actions/runs/35812969585) both completed successfully on the same source.
+
+| Check | Result |
+|---|---|
+| Preset branches / protocol medication names | 307 / 114 |
+| Additional automatic medication entries | 27 |
+| Weight × branch × level cases | 9,210, including blocked-eligibility checks |
+| Independent numerical comparisons | 56,208; zero mismatches |
+| Rendered-output comparisons | 68,710; zero failures |
+| Solid-rounding / volume cases | 13,140 / 3,030 |
+| Boundary mismatches / nonzero volumes shown as zero | Zero / zero |
+| Extracted-core Swift tests | 91 passed |
+| iOS unit / UI simulator tests | 98 / 10 passed; zero failures |
+| Release iphoneos build | Passed |
+| Restored original bundle resources | Byte-for-byte comparisons passed |
+| IPA archive, arm64, version, bundle ID and checksum | Passed |
+
+The IPA was downloaded and independently checked against the workflow manifest. Bundle ID is `com.ferguson.vetpilot`, version `0.4.0`, build `4`, platform `iPhoneOS`.
+
+## Medication changes and limits
+
+Source comparison is recorded for all 307 preset entries in `CLINICAL_SOURCE_REVIEW.json`: 213 source matches, 86 corrected entries with regression passes, four blocked entries, three limited-evidence references and one divergent reference. These categories are not clinical clearance.
+
+Safeguards include finite inputs, unit conversions, daily-total division, tablet rounding, nonzero tiny-volume display, product-specific insulin and buprenorphine concentration guards, fixed-volume product mismatch rejection, source weight bands, maximum amounts, course limits and explicit final infusion concentration verification. Potassium now requires an entered veterinarian-prescribed rate and rejects values above 0.5 mEq/kg/hr; it does not select a midpoint. Ampicillin–sulbactam intermittent dosing explicitly uses combined drug mass.
+
+Automatic calculations remain blocked for feline extended-release levetiracetam, the ambiguous feline cyclophosphamide cycle total, and dog/cat ampicillin–sulbactam CRI references with unresolved mass conventions. A reviewed individualized protocol is needed for these cases. The app must not invent missing clinical instructions.
+
+Patient-specific eligibility, all interactions/contraindications and every commercial or compounded formulation have not been exhaustively validated. A mathematically valid volume does not prove that a particular syringe can measure it.
+
+## X-ray and Labwork
+
+The production X-ray pathway and photo-import UI passed with a checksum-pinned real canine radiograph. High/low confidence remains exploratory and uncalibrated, consistent with the requested scope; diagnostic performance has not been established.
+
+The final Labwork tab contains 28 selected dog/cat entries: 15 IDEXX and 13 Michigan State, including two explicitly unavailable tests. Search/provider filtering accompanies purpose, specimen amount, tubes/additives, preparation, storage and official links. It is not either provider's full directory. Missing requirements remain explicitly unverified; current laboratory order instructions take precedence.
+
+Physical iPhone installation and real camera capture have not been tested. Simulator test logs and screenshots are retained in the workflow evidence artifact.
 
 ## Branch scope
 
 - `vetpilot-additive-migration`: delivered baseline used for regression comparison.
-- `vetpilot-safety-audit-e2e`: baseline with audit workflow; not a corrected build.
-- `vetpilot-safety-labwork`: corrected source and Labwork implementation.
+- `vetpilot-safety-audit-e2e`: baseline with an audit workflow; not a corrected medication build.
+- `vetpilot-safety-labwork`: corrected application and Labwork implementation used for this IPA.
 - `main`: diverged from the delivered migration; not replaced or claimed to pass.
-
-## Features and coverage
-
-- Dose safeguards cover finite inputs, unit conversions, daily totals, tablet rounding, tiny volume display, product-specific insulin and buprenorphine strengths, fixed-volume product mismatches, source weight bands, maximum amounts, duration and prescribed infusion rates.
-- The final Labwork tab contains 28 selected dog/cat entries: 15 IDEXX and 13 Michigan State including two explicitly unavailable tests. Search/provider filtering and official source links accompany purpose, specimen, volume, tubes/additives, preparation and storage. This is not either provider's full directory. Unknown requirements remain explicitly unverified.
-- X-ray validation includes a checksum-pinned real canine radiograph through the production analysis and photo-import UI. High/low confidence is exploratory and uncalibrated, not a disease probability or diagnostic validation.
-- Simulator flows cover dosing, invalid inputs, insulin substitution, nutrition, Labwork and X-ray. Evidence includes logs, xcresult and screenshots.
-
-## Remaining limits
-
-Passing arithmetic and simulator checks does not validate every patient, indication, interaction, contraindication, commercial/compounded formulation or physical measuring device. Four unsupported/ambiguous presets remain blocked pending explicit individualized protocols. Other limited-evidence or divergent references remain qualified and high risk where applicable. Tiny calculated amounts do not establish syringe measurability.
-
-Physical iPhone installation, real camera capture and clinical performance have not been tested. The IPA is unsigned and requires Signulous or another authorized signing route before installation. Laboratory instructions must be checked against the current ordered test.

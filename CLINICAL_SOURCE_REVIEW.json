@@ -13,7 +13,9 @@
     "Canine doxorubicin >10 kg versus <=10 kg now enforced in both calculators and independently tested. Fenbendazole single-dose and three-day courses separated. Canine praziquantel 170 mg ceiling enforced; weights whose lower range exceeds ceiling require product-table review. Canine pyrantel 5 mg/kg corresponds to Nemex-2 base-dose label; MSD small-dog 10 mg/kg is a distinct alternative, not a universal correction. Credelio dog source and food instruction corrected.",
     "Added direct source checks for anesthesia, seizure, behavior and antiparasitic protocols. Updated propofol/alfaxalone canine induction and midazolam adjunct to named AAHA regimens; narrowed feline paroxetine and sertraline to 2024 AAFP intercat-tension ranges. Feline intranasal midazolam explicitly retains limited-evidence status.",
     "Completed initial source comparison for all 307 entries; this does not mean clinical clearance. Remaining source-limited and protocol-dependent records stay explicitly qualified. Feline cyclophosphamide rescue cycle total is blocked from automatic per-administration calculation to prevent doubling a divided course.",
-    "Potassium requires an explicit prescribed infusion rate, maximum 0.5 mEq/kg/hr, and verified final dilution. Ampicillin\u2013sulbactam intermittent entry now explicitly uses combined mass; ambiguous CRI entries are blocked. These are arithmetic safeguards, not clinical clearance."
+    "Potassium requires an explicit prescribed infusion rate, maximum 0.5 mEq/kg/hr, and verified final dilution. Ampicillin\u2013sulbactam intermittent entry now explicitly uses combined mass; ambiguous CRI entries are blocked. These are arithmetic safeguards, not clinical clearance.",
+    "Final candidate arithmetic run 35811686568 passed 91 extracted-core tests, 56,208 numeric and 68,710 rendered-output comparisons with zero mismatches. Simulator unit/UI step passed in run 35811686584. These results establish the tested software behavior, not clinical clearance.",
+    "Release source 0ae2faa91ebb8847670686fd1ef94e578d85da86 passed arithmetic run 35812969532 and iOS/package run 35812969585: 98 native unit tests, 10 UI tests, device build, original resource comparisons and IPA metadata/integrity checks. Version 0.4.0 build 4 is unsigned for authorized signing. Four ambiguous/unsupported presets remain blocked."
   ],
   "entries": [
     {
@@ -45,29 +47,29 @@
       "id": "doxycycline-dog-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://doi.org/10.1111/jvim.14627",
-      "finding": "Corrected regimen metadata against cited source; regression pending.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "finding": "Corrected regimen metadata against cited source; regression passed.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "doxycycline-dog-2",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://doi.org/10.1111/jvim.14627",
-      "finding": "Corrected regimen metadata against cited source; regression pending.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "finding": "Corrected regimen metadata against cited source; regression passed.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "doxycycline-cat-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://doi.org/10.1111/jvim.14627",
-      "finding": "Corrected regimen metadata against cited source; regression pending.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "finding": "Corrected regimen metadata against cited source; regression passed.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "doxycycline-cat-2",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/circulatory-system/heartworm-disease/heartworm-disease-in-dogs-cats-and-ferrets",
-      "finding": "Corrected regimen metadata against cited source; regression pending.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "finding": "Corrected regimen metadata against cited source; regression passed.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "prednisone-prednisolone-dog-1",
@@ -137,37 +139,38 @@
     {
       "id": "famotidine-cat-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
-      "source": null,
+      "source": "https://www.msdvetmanual.com/generalized-conditions/paraneoplastic-disorders-in-small-animals/gastrointestinal-paraneoplastic-syndromes-in-small-animals ; https://pmc.ncbi.nlm.nih.gov/articles/PMC10829162/",
       "finding": "Corrected source intervals or removed mismatched formulation metadata.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86",
+      "review_note": "Oral 0.5\u20131 mg/kg q12\u201324h explicitly appears in these references. Famotidine is an acid suppressant, not an antiemetic; repeated dosing can lose efficacy. This range is not interchangeable with lower critical-care summaries or evidence favoring proton pump inhibitors for severe acid-related disease."
     },
     {
       "id": "ondansetron-dog-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs",
-      "finding": "Corrected regimen metadata against cited source; regression pending.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "finding": "Corrected regimen metadata against cited source; regression passed.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "ondansetron-dog-2",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs",
-      "finding": "Corrected regimen metadata against cited source; regression pending.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "finding": "Corrected regimen metadata against cited source; regression passed.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "ondansetron-cat-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs",
-      "finding": "Corrected regimen metadata against cited source; regression pending.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "finding": "Corrected regimen metadata against cited source; regression passed.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "ondansetron-cat-2",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs",
-      "finding": "Corrected regimen metadata against cited source; regression pending.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "finding": "Corrected regimen metadata against cited source; regression passed.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "diphenhydramine-dog-1",
@@ -233,22 +236,22 @@
       "id": "spironolactone-dog-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-cardiovascular-system/diuretics-for-use-in-animals",
-      "finding": "Corrected regimen metadata against cited source; regression pending.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "finding": "Corrected regimen metadata against cited source; regression passed.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "spironolactone-dog-2",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-cardiovascular-system/diuretics-for-use-in-animals",
-      "finding": "Corrected regimen metadata against cited source; regression pending.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "finding": "Corrected regimen metadata against cited source; regression passed.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "spironolactone-cat-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-cardiovascular-system/diuretics-for-use-in-animals",
-      "finding": "Corrected regimen metadata against cited source; regression pending.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "finding": "Corrected regimen metadata against cited source; regression passed.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "benazepril-dog-1",
@@ -259,8 +262,8 @@
       "id": "benazepril-cat-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
-      "finding": "Corrected regimen metadata against cited source; regression pending.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "finding": "Corrected regimen metadata against cited source; regression passed.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "enalapril-dog-1",
@@ -464,9 +467,10 @@
     },
     {
       "id": "ketamine-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-dogs",
-      "finding": "Corrected indication wording or formulation representation against cited source. Regression pending for this revision."
+      "finding": "Corrected indication wording or formulation representation against cited source. Regression passed for this revision.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "ketamine-dog-3",
@@ -482,9 +486,10 @@
     },
     {
       "id": "ketamine-cat-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-cats",
-      "finding": "Corrected indication wording or formulation representation against cited source. Regression pending for this revision."
+      "finding": "Corrected indication wording or formulation representation against cited source. Regression passed for this revision.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "ketamine-cat-3",
@@ -500,8 +505,9 @@
     },
     {
       "id": "midazolam-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_premedicationandsedation.pdf"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_premedicationandsedation.pdf",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "midazolam-dog-2",
@@ -520,8 +526,9 @@
     },
     {
       "id": "midazolam-cat-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_premedicationandsedation.pdf"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_premedicationandsedation.pdf",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "midazolam-cat-2",
@@ -595,8 +602,9 @@
     },
     {
       "id": "propofol-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_induction_iv.pdf"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_induction_iv.pdf",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "propofol-cat-1",
@@ -605,8 +613,9 @@
     },
     {
       "id": "alfaxalone-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_induction_iv.pdf"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_induction_iv.pdf",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "alfaxalone-cat-1",
@@ -630,21 +639,22 @@
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-penicillins",
       "finding": "Corrected formulation/route metadata; feline enrofloxacin daily ceiling now blocks a shortened dosing interval.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "ampicillin-cat-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-penicillins",
       "finding": "Corrected formulation/route metadata; feline enrofloxacin daily ceiling now blocks a shortened dosing interval.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "ampicillin-sulbactam-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7167523/ \u2014 Ford and Mazzaferro, Charts and Tables; 20\u201350 mg/kg total combined ampicillin + sulbactam q8h.",
       "finding": "Numerical range matches; combined-drug mass convention and final infusion formulation need explicit verification.",
-      "review_note": "Replaced ambiguous merged 10\u201330 range with a reference explicitly defining total combined mass; no default concentration."
+      "review_note": "Replaced ambiguous merged 10\u201330 range with a reference explicitly defining total combined mass; no default concentration.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "ampicillin-sulbactam-dog-2",
@@ -655,10 +665,11 @@
     },
     {
       "id": "ampicillin-sulbactam-cat-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7167523/ \u2014 Ford and Mazzaferro, Charts and Tables; 20\u201350 mg/kg total combined ampicillin + sulbactam q8h.",
       "finding": "Numerical range matches; combined-drug mass convention and final infusion formulation need explicit verification.",
-      "review_note": "Replaced ambiguous merged 10\u201330 range with a reference explicitly defining total combined mass; no default concentration."
+      "review_note": "Replaced ambiguous merged 10\u201330 range with a reference explicitly defining total combined mass; no default concentration.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "ampicillin-sulbactam-cat-2",
@@ -684,14 +695,14 @@
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.merckvetmanual.com/multimedia/table/dosages-of-cephalosporins",
       "finding": "Corrected formulation/route metadata; feline enrofloxacin daily ceiling now blocks a shortened dosing interval.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "cefazolin-cat-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.merckvetmanual.com/multimedia/table/dosages-of-cephalosporins",
       "finding": "Corrected formulation/route metadata; feline enrofloxacin daily ceiling now blocks a shortened dosing interval.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "clindamycin-dog-1",
@@ -710,14 +721,14 @@
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-quinolones",
       "finding": "Corrected formulation/route metadata; feline enrofloxacin daily ceiling now blocks a shortened dosing interval.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "enrofloxacin-cat-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-quinolones",
       "finding": "Corrected formulation/route metadata; feline enrofloxacin daily ceiling now blocks a shortened dosing interval.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "marbofloxacin-dog-1",
@@ -820,14 +831,14 @@
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/antiulcerative-drugs",
       "finding": "Corrected source intervals or removed mismatched formulation metadata.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "sucralfate-cat-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/antiulcerative-drugs",
       "finding": "Corrected source intervals or removed mismatched formulation metadata.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "pantoprazole-dog-1",
@@ -846,28 +857,28 @@
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs",
       "finding": "Corrected source intervals or removed mismatched formulation metadata.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "metoclopramide-dog-2",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs",
       "finding": "Corrected source intervals or removed mismatched formulation metadata.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "metoclopramide-cat-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs",
       "finding": "Corrected source intervals or removed mismatched formulation metadata.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "metoclopramide-cat-2",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs",
       "finding": "Corrected source intervals or removed mismatched formulation metadata.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "cisapride-dog-1",
@@ -921,49 +932,57 @@
       "id": "mirtazapine-oral-dog-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/drugs-used-to-stimulate-appetite",
-      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression pending.",
-      "validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892"
+      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression passed.",
+      "validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "mirtazapine-oral-dog-2",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/drugs-used-to-stimulate-appetite",
-      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression pending.",
-      "validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892"
+      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression passed.",
+      "validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "mirtazapine-oral-dog-3",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/drugs-used-to-stimulate-appetite",
-      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression pending.",
-      "validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892"
+      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression passed.",
+      "validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "mirtazapine-oral-dog-4",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/drugs-used-to-stimulate-appetite",
-      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression pending.",
-      "validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892"
+      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression passed.",
+      "validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "dexamethasone-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.cliniciansbrief.com/article/which-drugs-are-most-effective-managing-atopic-dermatitis-part-1"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.cliniciansbrief.com/article/which-drugs-are-most-effective-managing-atopic-dermatitis-part-1",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "dexamethasone-dog-2",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.msdvetmanual.com/circulatory-system/anemia/regenerative-anemias-in-animals"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.msdvetmanual.com/circulatory-system/anemia/regenerative-anemias-in-animals",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "dexamethasone-cat-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.cliniciansbrief.com/article/which-drugs-are-most-effective-managing-atopic-dermatitis-part-1"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.cliniciansbrief.com/article/which-drugs-are-most-effective-managing-atopic-dermatitis-part-1",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "dexamethasone-cat-2",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.msdvetmanual.com/circulatory-system/anemia/regenerative-anemias-in-animals"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.msdvetmanual.com/circulatory-system/anemia/regenerative-anemias-in-animals",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "methylprednisolone-cat-1",
@@ -983,27 +1002,29 @@
     },
     {
       "id": "triamcinolone-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.cliniciansbrief.com/article/which-drugs-are-most-effective-managing-atopic-dermatitis-part-1"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.cliniciansbrief.com/article/which-drugs-are-most-effective-managing-atopic-dermatitis-part-1",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "triamcinolone-cat-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.cliniciansbrief.com/article/which-drugs-are-most-effective-managing-atopic-dermatitis-part-1"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.cliniciansbrief.com/article/which-drugs-are-most-effective-managing-atopic-dermatitis-part-1",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "amlodipine-dog-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
-      "finding": "Corrected regimen metadata against cited source; regression pending.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "finding": "Corrected regimen metadata against cited source; regression passed.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "amlodipine-cat-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
-      "finding": "Corrected regimen metadata against cited source; regression pending.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "finding": "Corrected regimen metadata against cited source; regression passed.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "atenolol-dog-1",
@@ -1060,7 +1081,7 @@
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
       "finding": "Enforced source weight bands and canine per-dose maximum.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "digoxin-dog-2",
@@ -1073,21 +1094,21 @@
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
       "finding": "Enforced source weight bands and canine per-dose maximum.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "digoxin-cat-2",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
       "finding": "Enforced source weight bands and canine per-dose maximum.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "digoxin-cat-3",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
       "finding": "Enforced source weight bands and canine per-dose maximum.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "sildenafil-dog-1",
@@ -1103,8 +1124,8 @@
       "id": "hydralazine-dog-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
-      "finding": "Corrected regimen metadata against cited source; regression pending.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "finding": "Corrected regimen metadata against cited source; regression passed.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "hydralazine-dog-2",
@@ -1115,8 +1136,8 @@
       "id": "hydralazine-cat-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
-      "finding": "Corrected regimen metadata against cited source; regression pending.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "finding": "Corrected regimen metadata against cited source; regression passed.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "telmisartan-cat-1",
@@ -1148,8 +1169,8 @@
       "id": "torsemide-cat-2",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
-      "finding": "Corrected regimen metadata against cited source; regression pending.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "finding": "Corrected regimen metadata against cited source; regression passed.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "levothyroxine-dog-1",
@@ -1248,9 +1269,10 @@
     },
     {
       "id": "pregabalin-cat-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/behavior/behavior-of-cats/behavior-problems-of-cats",
-      "finding": "Corrected indication wording or formulation representation against cited source. Regression pending for this revision."
+      "finding": "Corrected indication wording or formulation representation against cited source. Regression passed for this revision.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "pregabalin-cat-2",
@@ -1266,9 +1288,10 @@
     },
     {
       "id": "methocarbamol-dog-2",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.merckvetmanual.com/multimedia/table/skeletal-muscle-relaxants",
-      "finding": "Corrected indication wording or formulation representation against cited source. Regression pending for this revision."
+      "finding": "Corrected indication wording or formulation representation against cited source. Regression passed for this revision.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "methocarbamol-cat-1",
@@ -1278,9 +1301,10 @@
     },
     {
       "id": "methocarbamol-cat-2",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.merckvetmanual.com/multimedia/table/skeletal-muscle-relaxants",
-      "finding": "Corrected indication wording or formulation representation against cited source. Regression pending for this revision."
+      "finding": "Corrected indication wording or formulation representation against cited source. Regression passed for this revision.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "clomipramine-dog-1",
@@ -1294,8 +1318,9 @@
     },
     {
       "id": "sertraline-cat-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://journals.sagepub.com/doi/10.1177/1098612X241263465"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://journals.sagepub.com/doi/10.1177/1098612X241263465",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "paroxetine-dog-1",
@@ -1304,8 +1329,9 @@
     },
     {
       "id": "paroxetine-cat-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://journals.sagepub.com/doi/10.1177/1098612X241263465"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://journals.sagepub.com/doi/10.1177/1098612X241263465",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "buspirone-dog-1",
@@ -1343,7 +1369,7 @@
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.aaha.org/resources/2023-aaha-management-of-allergic-skin-diseases-in-dogs-and-cats-guidelines/table-3-oral-antihistamine-doses-for-dogs/",
       "finding": "Replaced incompletely weight-banded range with the explicit AAHA oral canine regimen.",
-      "regression_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d"
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "chlorpheniramine-cat-1",
@@ -1357,19 +1383,22 @@
     },
     {
       "id": "cyclosporine-ophthalmic-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8ee9c677-d86c-4f2f-9eec-6998f4394ae1",
-      "finding": "Corrected indication wording or formulation representation against cited source. Regression pending for this revision."
+      "finding": "Corrected indication wording or formulation representation against cited source. Regression passed for this revision.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "cyclosporine-ophthalmic-cat-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://onlinelibrary.wiley.com/doi/10.1111/j.1463-5224.2008.00679.x"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://onlinelibrary.wiley.com/doi/10.1111/j.1463-5224.2008.00679.x",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "tacrolimus-ophthalmic-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3103853/"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3103853/",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "tacrolimus-ophthalmic-cat-1",
@@ -1403,33 +1432,39 @@
     },
     {
       "id": "atropine-ophthalmic-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://todaysveterinarypractice.com/ophthalmology/ocular-proptosis/"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://todaysveterinarypractice.com/ophthalmology/ocular-proptosis/",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "atropine-ophthalmic-cat-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://todaysveterinarypractice.com/ophthalmology/feline-corneal-ulcers-diagnosis-and-management/"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://todaysveterinarypractice.com/ophthalmology/feline-corneal-ulcers-diagnosis-and-management/",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "ofloxacin-ophthalmic-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.ivis.org/library/evc/evc-voorjaarsdagen-hague-2017/diagnosis-and-treatment-of-corneal-diseases"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.ivis.org/library/evc/evc-voorjaarsdagen-hague-2017/diagnosis-and-treatment-of-corneal-diseases",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "ofloxacin-ophthalmic-cat-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://todaysveterinarypractice.com/ophthalmology/feline-corneal-ulcers-diagnosis-and-management/"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://todaysveterinarypractice.com/ophthalmology/feline-corneal-ulcers-diagnosis-and-management/",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "ciprofloxacin-ophthalmic-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.ivis.org/library/evc/evc-voorjaarsdagen-hague-2017/diagnosis-and-treatment-of-corneal-diseases"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.ivis.org/library/evc/evc-voorjaarsdagen-hague-2017/diagnosis-and-treatment-of-corneal-diseases",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "ciprofloxacin-ophthalmic-cat-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://todaysveterinarypractice.com/ophthalmology/feline-corneal-ulcers-diagnosis-and-management/"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://todaysveterinarypractice.com/ophthalmology/feline-corneal-ulcers-diagnosis-and-management/",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "epinephrine-dog-1",
@@ -1543,15 +1578,17 @@
       "id": "calcium-gluconate-dog-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/urinary-system/urolithiasis-in-small-animals/urethral-obstruction-in-small-animals",
-      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression pending.",
-      "validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892"
+      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression passed.",
+      "validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "calcium-gluconate-cat-1",
       "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.msdvetmanual.com/urinary-system/urolithiasis-in-small-animals/urethral-obstruction-in-small-animals",
-      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression pending.",
-      "validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892"
+      "finding": "Numerical match. Added enforcement of source weight band or required product concentration; new regression passed.",
+      "validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "dextrose-dog-1",
@@ -1567,57 +1604,67 @@
     },
     {
       "id": "potassium-chloride-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.aaha.org/resources/2024-aaha-fluid-therapy-guidelines-for-dogs-and-cats/section-5-fluid-therapy-in-ill-patients/ \u2014 Table 11, 2024 AAHA Fluid Therapy Guidelines.",
       "finding": "AAHA Table 11 supports numerical range by serum-K band. A single selectable range does not replace serum-K-specific prescription; final diluted concentration workflow still needs explicit UI.",
-      "review_note": "Explicit prescribed-rate entry replaces automatic low/middle/high selection. Both engines reject absent, nonfinite, nonpositive or above-ceiling input."
+      "review_note": "Explicit prescribed-rate entry replaces automatic low/middle/high selection. Both engines reject absent, nonfinite, nonpositive or above-ceiling input.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "potassium-chloride-cat-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
       "source": "https://www.aaha.org/resources/2024-aaha-fluid-therapy-guidelines-for-dogs-and-cats/section-5-fluid-therapy-in-ill-patients/ \u2014 Table 11, 2024 AAHA Fluid Therapy Guidelines.",
       "finding": "AAHA Table 11 supports numerical range by serum-K band. A single selectable range does not replace serum-K-specific prescription; final diluted concentration workflow still needs explicit UI.",
-      "review_note": "Explicit prescribed-rate entry replaces automatic low/middle/high selection. Both engines reject absent, nonfinite, nonpositive or above-ceiling input."
+      "review_note": "Explicit prescribed-rate entry replaces automatic low/middle/high selection. Both engines reject absent, nonfinite, nonpositive or above-ceiling input.",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "fenbendazole-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "fenbendazole-dog-2",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "fenbendazole-cat-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "pyrantel-pamoate-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d2d6dcd1-7835-4c7b-bbae-d14752d9983b"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d2d6dcd1-7835-4c7b-bbae-d14752d9983b",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "pyrantel-pamoate-cat-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.msdvetmanual.com/multimedia/table/core-feline-vaccination-and-antiparasitic-administration-in-shelter-medicine"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/core-feline-vaccination-and-antiparasitic-administration-in-shelter-medicine",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "praziquantel-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "praziquantel-cat-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "ivermectin-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.msdvetmanual.com/ear-disorders/diseases-of-the-pinna/mite-infestations-affecting-the-pinna-in-animals"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.msdvetmanual.com/ear-disorders/diseases-of-the-pinna/mite-infestations-affecting-the-pinna-in-animals",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "ivermectin-cat-1",
@@ -1641,13 +1688,15 @@
     },
     {
       "id": "moxidectin-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "moxidectin-cat-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "afoxolaner-dog-1",
@@ -1675,13 +1724,15 @@
     },
     {
       "id": "lotilaner-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=427f2ebc-ce24-452b-bbb3-43d4ef8b63b0"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=427f2ebc-ce24-452b-bbb3-43d4ef8b63b0",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "lotilaner-cat-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=365b701f-e9a8-458f-90ff-33ca1fb947ca"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=365b701f-e9a8-458f-90ff-33ca1fb947ca",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "toceranib-phosphate-dog-1",
@@ -1712,8 +1763,9 @@
     },
     {
       "id": "cyclophosphamide-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12784993/"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12784993/",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "cyclophosphamide-dog-2",
@@ -1745,13 +1797,15 @@
     },
     {
       "id": "doxorubicin-dog-1",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.msdvetmanual.com/reproductive-system/canine-transmissible-venereal-tumor/canine-transmissible-venereal-tumor"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.msdvetmanual.com/reproductive-system/canine-transmissible-venereal-tumor/canine-transmissible-venereal-tumor",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "doxorubicin-dog-2",
-      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
-      "source": "https://www.msdvetmanual.com/reproductive-system/canine-transmissible-venereal-tumor/canine-transmissible-venereal-tumor"
+      "status": "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED",
+      "source": "https://www.msdvetmanual.com/reproductive-system/canine-transmissible-venereal-tumor/canine-transmissible-venereal-tumor",
+      "regression_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86"
     },
     {
       "id": "doxorubicin-cat-1",
@@ -1779,5 +1833,17 @@
     "ui_tests": 9,
     "latest_failed_source": "4d7915b3cc7d41a0ba926d4cc9edc3b9d3a5f794",
     "failure": "Ointment test expected text omitted correct q12h interval; corrected in next candidate. SwiftPM failure details will print on the next run."
+  },
+  "last_regression": {
+    "source_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86",
+    "arithmetic_run": 35812969532,
+    "ios_run": 35812969585,
+    "arithmetic_status": "passed",
+    "ios_unit_tests": 98,
+    "ios_ui_tests": 10,
+    "failures": 0,
+    "device_target_build": "passed",
+    "ipa_package": "passed",
+    "clinical_clearance": false
   }
 }

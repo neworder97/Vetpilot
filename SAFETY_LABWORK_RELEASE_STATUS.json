@@ -1,33 +1,51 @@
 {
-  "source_commit": "37b3dc45a479fe885c1491115ec91bffbe412968",
+  "source_commit": "0ae2faa91ebb8847670686fd1ef94e578d85da86",
   "date": "2026-09-23",
-  "last_completed_validation": {
-    "arithmetic_run": 35810306723,
-    "ios_run": 35810306656,
-    "unit_tests": 95,
-    "ui_tests": 9,
-    "failures": 0,
-    "device_target_build": "passed"
+  "release_status": "UNSIGNED_IPA_READY_FOR_AUTHORIZED_SIGNING",
+  "version": "0.4.0",
+  "build": "4",
+  "ipa_created": true,
+  "ipa_sha256": "75d4de3c136825e69bd2aca841ef280b69ceffda611e85bbcd22cdbfed0e5717",
+  "ipa_artifact_id": 10730947026,
+  "arithmetic": {
+    "run_id": 35812969532,
+    "status": "success",
+    "extracted_core_tests": 91,
+    "preset_branches": 307,
+    "automatic_medication_entries": 27,
+    "weight_branch_level_cases": 9210,
+    "numeric_comparisons": 56208,
+    "rendered_output_comparisons": 68710,
+    "numeric_or_rendered_mismatches": 0,
+    "solid_rounding_cases": 13140,
+    "volume_cases": 3030
   },
-  "candidate_status": "SOURCE_COMPARISON_COMPLETE_FINAL_REGRESSION_AND_IPA_PENDING",
+  "ios": {
+    "run_id": 35812969585,
+    "status": "success",
+    "unit_tests": 98,
+    "ui_tests": 10,
+    "failures": 0,
+    "device_target_build": "passed",
+    "original_resource_comparison": "passed",
+    "ipa_structure_version_arm64_checks": "passed"
+  },
   "clinical_review_counts": {
     "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED": 213,
-    "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED": 41,
+    "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED": 86,
     "AUTOMATIC_CALCULATION_BLOCKED_PENDING_SPECIALIST_REVIEW": 4,
-    "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION": 45,
     "SOURCE_LIMITED_REFERENCE_REQUIRES_INDIVIDUAL_REVIEW": 3,
     "SOURCE_DIVERGENCE_REQUIRES_INDIVIDUAL_REVIEW": 1
   },
-  "scope": "All 307 preset entries have initial dose/source comparison; not full clinical clearance. Clinical suitability, interactions, contraindications and all commercial/compounded formulations are not exhaustively validated.",
-  "candidate_changes": [
-    "Explicit prescribed potassium rate and ceiling",
-    "Combined-mass ampicillin-sulbactam intermittent protocol; ambiguous CRI blocked",
-    "Chemotherapy cycle-total guard",
-    "Anesthesia, behavioral, antiparasitic and ophthalmic source-specific corrections",
-    "Version 0.4.0 build 4 with unsigned IPA packaging after all gates"
+  "clinical_clearance": false,
+  "blocked_presets": [
+    "levetiracetam-cat-2",
+    "cyclophosphamide-cat-1",
+    "ampicillin-sulbactam-dog-2",
+    "ampicillin-sulbactam-cat-2"
   ],
-  "ipa_created": false,
-  "xray_scope": "Working exploratory high/low uncalibrated confidence; diagnostic accuracy is outside agreed scope.",
-  "labwork_scope": "28 selected entries (15 IDEXX, 13 MSU including two unavailable tests), with search and preparation; not full directories.",
-  "installation": "Unsigned IPA requires authorized signing; physical-device installation and camera behavior not yet tested."
+  "scope": "All 307 preset entries have initial dose/source comparison. Full patient eligibility, interactions, contraindications and every marketed/compounded formulation are not exhaustively validated.",
+  "xray_scope": "Exploratory high/low uncalibrated confidence; real-image import and production processing tested, diagnostic accuracy not established.",
+  "labwork_scope": "28 selected entries: 15 IDEXX and 13 MSU, including two unavailable tests. Search, specimens and preparation; not full directories.",
+  "physical_device_installation": "Not tested; unsigned IPA needs Signulous or another authorized signing route."
 }
