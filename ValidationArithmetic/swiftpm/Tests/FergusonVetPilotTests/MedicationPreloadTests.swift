@@ -9,6 +9,10 @@ final class MedicationPreloadTests: XCTestCase {
         case "digoxin-cat-1": return weight > 0 && weight < 3
         case "digoxin-cat-2": return weight >= 3 && weight <= 6
         case "digoxin-cat-3": return weight > 6
+        case "mirtazapine-oral-dog-1": return weight > 0 && weight < 7
+        case "mirtazapine-oral-dog-2": return weight > 7 && weight <= 15
+        case "mirtazapine-oral-dog-3": return weight > 15 && weight <= 30
+        case "mirtazapine-oral-dog-4": return weight > 30
         default: return true
         }
     }
@@ -407,3 +411,4 @@ final class MedicationPreloadTests: XCTestCase {
     }
 
 }
+

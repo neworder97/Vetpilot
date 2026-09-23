@@ -68,3 +68,12 @@ Current implementation: `dc35c0d9967d46a698c2ea8d6398cf331219134d`. Current per-
 - Added product-specific buprenorphine substitution guards and explicit final prepared infusion concentration verification.
 - The second correction commit passed arithmetic CI (run 35807150574). The following infusion/product changes require their own CI results; do not reuse the earlier pass as evidence for them.
 - IPA remains uncreated while source review and latest regression results are incomplete.
+
+
+## Emergency and fixed-dose continuation — 2026-09-23
+
+Source `dc35c0d9967d46a698c2ea8d6398cf331219134d` passed arithmetic run 35807452217 and iOS run 35807452287. The iOS suite passed 90 unit tests and 9 UI tests with zero failures; the unsigned device-target build and original-resource comparisons passed.
+
+The next candidate enforces canine oral mirtazapine weight bands in both the calculator and administration selection. Exactly 7 kg is not assigned in the cited table and requires an individual regimen. It also rejects explicit concentration substitutions for concentration-specific mL/kg rules, including calcium gluconate. Boundary and product-substitution tests were added; independent numeric/rendered oracle eligibility expectations were updated. These new changes require a fresh regression run.
+
+The per-entry source ledger is authoritative for the remaining clinical review. IPA packaging is not yet performed.

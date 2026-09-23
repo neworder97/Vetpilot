@@ -2,6 +2,34 @@ import XCTest
 @testable import FergusonVetPilot
 
 final class MedicationSafetyRegressionTests: XCTestCase {
+    func testCalciumVolumeProtocolRejectsDifferentProductStrength() throws {
+        for id in ["calcium-gluconate-dog-1", "calcium-gluconate-cat-1"] {
+            let p = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == id })
+            for concentration: Double? in [nil, 100, 10, 9.3, 200] {
+                let result = ProtocolDoseCalculator.calculate(definition: p.definition,
+                    kg: 4, strength: nil, concentration: concentration)
+                XCTAssertEqual(result.available, concentration == nil || concentration == 100, id)
+                if !result.available { XCTAssertTrue(result.formulation.isEmpty) }
+            }
+        }
+    }
+    func testMirtazapineWeightBandsEnforcedAtEveryBoundary() throws {
+        for (id, allowedWeights) in [
+            ("mirtazapine-oral-dog-1", [0.1, 6.999]),
+            ("mirtazapine-oral-dog-2", [7.001, 15.0]),
+            ("mirtazapine-oral-dog-3", [15.001, 30.0]),
+            ("mirtazapine-oral-dog-4", [30.001, 100.0])
+        ] {
+            let p = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == id })
+            for kg in [0, 0.1, 6.999, 7, 7.001, 15, 15.001, 30, 30.001, 100] {
+                let expected = allowedWeights.contains(kg)
+                XCTAssertEqual(ProtocolDoseCalculator.calculate(definition: p.definition,
+                    kg: kg, strength: nil, concentration: nil).available, expected, "\(id) \(kg)")
+                XCTAssertEqual(AdministrationMath.selection(for: p.definition, kg: kg, level: .middle) != nil,
+                    expected, "\(id) \(kg)")
+            }
+        }
+    }
     func testBuprenorphineProductSpecificProtocolsRejectSubstitution() throws {
         for id in ["buprenorphine-cat-4", "buprenorphine-cat-1", "buprenorphine-dog-1"] {
             let p = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == id })

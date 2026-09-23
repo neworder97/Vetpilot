@@ -176,9 +176,14 @@ extension MedicationSafety {
         case "digoxin-cat-1": eligible = positiveFinite(kg) && kg < 3
         case "digoxin-cat-2": eligible = positiveFinite(kg) && kg >= 3 && kg <= 6
         case "digoxin-cat-3": eligible = positiveFinite(kg) && kg > 6
+        case "mirtazapine-oral-dog-1": eligible = positiveFinite(kg) && kg < 7
+        case "mirtazapine-oral-dog-2": eligible = positiveFinite(kg) && kg > 7 && kg <= 15
+        case "mirtazapine-oral-dog-3": eligible = positiveFinite(kg) && kg > 15 && kg <= 30
+        case "mirtazapine-oral-dog-4": eligible = positiveFinite(kg) && kg > 30
         default: return nil
         }
-        return eligible ? nil : "Enter a valid weight and select the matching feline digoxin weight band."
+        // The source leaves exactly 7 kg unspecified; do not invent a band.
+        return eligible ? nil : "Enter a valid weight and select the matching protocol weight band. Source boundary gaps require an individually reviewed regimen."
     }
 
     static func maximumProtocolAmount(key: String) -> Double? {
@@ -204,3 +209,4 @@ extension MedicationSafety {
         return nil
     }
 }
+

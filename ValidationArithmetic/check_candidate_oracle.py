@@ -13,7 +13,11 @@ def source_ineligible(identifier, kg):
  return (identifier == 'levetiracetam-cat-2' or
          (identifier == 'digoxin-cat-1' and not (0 < kg < 3)) or
          (identifier == 'digoxin-cat-2' and not (3 <= kg <= 6)) or
-         (identifier == 'digoxin-cat-3' and not (kg > 6)))
+         (identifier == 'digoxin-cat-3' and not (kg > 6)) or
+         (identifier == 'mirtazapine-oral-dog-1' and not (0 < kg < 7)) or
+         (identifier == 'mirtazapine-oral-dog-2' and not (7 < kg <= 15)) or
+         (identifier == 'mirtazapine-oral-dog-3' and not (15 < kg <= 30)) or
+         (identifier == 'mirtazapine-oral-dog-4' and not (kg > 30)))
 for r in p['presets']:
  for c in r['cases']:
   kg=D(c['kg']);basis=r['basis']
@@ -51,3 +55,4 @@ with (root/'candidate-all-307-protocols.csv').open('w') as f:
  w=csv.DictWriter(f,fieldnames=fields);w.writeheader();w.writerows({k:r.get(k,'') for k in fields} for r in p['presets'])
 print({k:v for k,v in summary.items() if not isinstance(v,list)})
 for k in ('numeric_mismatches','rounding_boundary_mismatches','nonzero_volumes_displayed_as_zero','amount_display_errors_over_5_percent'):print(k,len(summary[k]),'Examples:',summary[k][:4])
+

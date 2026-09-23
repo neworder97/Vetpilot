@@ -10,7 +10,11 @@ def source_ineligible(identifier, kg):
  return (identifier == 'levetiracetam-cat-2' or
          (identifier == 'digoxin-cat-1' and not (0 < kg < 3)) or
          (identifier == 'digoxin-cat-2' and not (3 <= kg <= 6)) or
-         (identifier == 'digoxin-cat-3' and not (kg > 6)))
+         (identifier == 'digoxin-cat-3' and not (kg > 6)) or
+         (identifier == 'mirtazapine-oral-dog-1' and not (0 < kg < 7)) or
+         (identifier == 'mirtazapine-oral-dog-2' and not (7 < kg <= 15)) or
+         (identifier == 'mirtazapine-oral-dog-3' and not (15 < kg <= 30)) or
+         (identifier == 'mirtazapine-oral-dog-4' and not (kg > 30)))
 def audit(data, restrictions=False):
     failures=[]; checks=0; automatic_checked=0
     def check(condition,detail):
@@ -73,3 +77,4 @@ if __name__=='__main__':
         result=audit(data, restrictions=version=='candidate')
         (root/(version+'-rendered-oracle.json')).write_text(json.dumps(result,indent=2))
         print(version,{k:v for k,v in result.items() if k!='failures'});print('Examples',result['failures'][:3])
+

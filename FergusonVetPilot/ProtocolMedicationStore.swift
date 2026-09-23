@@ -223,6 +223,15 @@ enum ProtocolDoseCalculator {
                 warning: "Invalid entered values cannot fall back silently to a reference concentration.")
         }
 
+        // A volume-per-weight rule already incorporates its reference strength.
+        // Applying it unchanged to another product would change the drug amount.
+        if d.doseBasis == .mLKg, let required = d.concentration,
+           let entered = concentration, entered != required {
+            return DoseResult(available: false, headline: "Volume protocol product mismatch",
+                math: "", formulation: "",
+                warning: "This mL/kg protocol requires \(MedicationSafety.display(required)) mg/mL. Select a reviewed protocol for a different product concentration.")
+        }
+
         if let issue = MedicationSafety.insulinConcentrationIssue(
             presetID: builtInPreset?.id ?? MedicationSafety.builtinID(d.medicationKey), concentration: concentration ?? d.concentration) {
             return DoseResult(available: false, headline: "Insulin product mismatch",
