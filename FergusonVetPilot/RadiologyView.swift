@@ -123,7 +123,7 @@ struct RadiologyView: View {
                             }
                         }
                         .vetCard()
-                        .accessibilityIdentifier("radiology.precheck")
+
                     }
 
                     Picker("Species", selection: $species) {

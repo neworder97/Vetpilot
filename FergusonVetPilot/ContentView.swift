@@ -22,6 +22,10 @@ struct ContentView: View {
                 NutritionView()
                     .tag(3)
                     .tabItem { Label("Nutrition", systemImage: "scalemass.fill") }
+
+                LabworkView()
+                    .tag(4)
+                    .tabItem { Label("Labwork", systemImage: "testtube.2") }
             }
         }
         .background(Color.white)

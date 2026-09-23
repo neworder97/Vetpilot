@@ -11,6 +11,7 @@ struct NutritionView: View {
     @State private var weightText = ""
     @State private var unit: WeightUnit = .lb
     @State private var bcs = 5
+    @FocusState private var weightFocused: Bool
 
     private let bcsColumns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 3)
 
@@ -52,6 +53,8 @@ struct NutritionView: View {
 
                         HStack(spacing: 10) {
                             TextField("Weight", text: $weightText)
+                                .focused($weightFocused)
+                                .accessibilityIdentifier("nutrition.weight")
                                 .keyboardType(.decimalPad)
                                 .textFieldStyle(.roundedBorder)
 
@@ -101,6 +104,7 @@ struct NutritionView: View {
                                     }
                                 }
                                 .buttonStyle(.plain)
+                                .accessibilityIdentifier("nutrition.bcs.\(score)")
                             }
                         }
 
@@ -117,7 +121,7 @@ struct NutritionView: View {
                             Label("Enter a valid weight to calculate calories", systemImage: "info.circle.fill")
                                 .font(.headline)
                                 .foregroundStyle(AppTheme.blue)
-                            Text("Choose Dog or Cat, enter the current weight, then select the patient's 1–9 body condition score.")
+                            Text("Enter a positive weight up to 1,000 kg (software input limit), then select the patient's 1–9 body condition score. Use a decimal point; grouped/comma numbers are not accepted.")
                                 .font(.footnote)
                                 .foregroundStyle(.secondary)
                         }
@@ -138,6 +142,13 @@ struct NutritionView: View {
                     .vetCard()
                 }
                 .padding(16)
+            }
+            .scrollDismissesKeyboard(.interactively)
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") { weightFocused = false }.accessibilityIdentifier("nutrition.keyboard.done")
+                }
             }
             .navigationBarHidden(true)
         }
