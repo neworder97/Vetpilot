@@ -147,5 +147,54 @@ final class DoseSheetLogicRegressionTests: XCTestCase {
         XCTAssertEqual(p.numericWeight, 10)
         XCTAssertNil(p.weightInputError)
     }
+
+    func testReadableQuantityTracksDoseLevelAndStrength() throws {
+        let med = Medication(generic:"Quantity fixture",brand:"",drugClass:"",species:[.dog],form:.tablet,indication:"Test only",kind:.mgKg,minDose:2,maxDose:6,frequency:"q12h",route:"PO",notes:"",source:"Test only",strengths:[10,20],concentration:nil,controlled:false)
+        var p = DoseSheetLogicProbe(medication:med,kg:10)
+        for (level, expected) in [(DoseSelectionLevel.low,"2 tablet(s)"),(.middle,"4 tablet(s)"),(.high,"6 tablet(s)")] {
+            p.selectedDoseLevel = level
+            let text = try XCTUnwrap(p.readableAdministrationSummary)
+            XCTAssertTrue(text.hasPrefix(expected),text)
+            XCTAssertTrue(text.contains("q12h"),text)
+        }
+        p.selectedStrengthIndex = 1
+        XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).hasPrefix("3 tablet(s)"))
+    }
+    func testReadableDailyTotalDividesBeforeDisplayingQuantity() throws {
+        let med = Medication(generic:"Daily fixture",brand:"",drugClass:"",species:[.dog],form:.tablet,indication:"Test only",kind:.mgKg,minDose:4,maxDose:4,frequency:"q24h total daily dose",route:"PO",notes:"",source:"Test only",strengths:[20],concentration:nil,controlled:false)
+        var p = DoseSheetLogicProbe(medication:med,kg:10)
+        XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).hasPrefix("2 tablet(s)"))
+        p.selectedFrequency = .q12h
+        XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).hasPrefix("1 tablet(s)"))
+    }
+    func testReadableInjectionVolumeUsesSelectedDoseAndConcentration() throws {
+        let med = Medication(generic:"Volume fixture",brand:"",drugClass:"",species:[.dog],form:.injection,indication:"Test only",kind:.mgKg,minDose:1,maxDose:3,frequency:"q12h",route:"SC",notes:"",source:"Test only",strengths:[],concentration:10,controlled:false)
+        var p = DoseSheetLogicProbe(medication:med,kg:10,concentration:"10")
+        for (level, expected) in [(DoseSelectionLevel.low,"1 mL"),(.middle,"2 mL"),(.high,"3 mL")] {
+            p.selectedDoseLevel = level
+            XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).hasPrefix(expected))
+        }
+        p.concentration = "20"
+        XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).hasPrefix("1.5 mL"))
+        p.concentration = "0"
+        XCTAssertNil(p.readableAdministrationSummary)
+    }
+    func testReadableCapsuleFractionDoesNotAuthorizeSplitting() throws {
+        let med = Medication(generic:"Capsule fixture",brand:"",drugClass:"",species:[.dog],form:.capsule,indication:"Test only",kind:.mgKg,minDose:3,maxDose:3,frequency:"q12h",route:"PO",notes:"",source:"Test only",strengths:[20],concentration:nil,controlled:false)
+        let p = DoseSheetLogicProbe(medication:med,kg:10)
+        XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).hasPrefix("1.5 capsule(s) equivalent"))
+        XCTAssertTrue(try XCTUnwrap(p.readableAdministrationNote).contains("Do not split or open"))
+    }
+    func testReadableInfusionKeepsHourlyUnitsAndReviewWarning() throws {
+        let med = try XCTUnwrap(ClinicalData.medications.first { $0.generic == "Potassium chloride" })
+        let preset = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == "potassium-chloride-dog-1" })
+        var p = DoseSheetLogicProbe(medication:med,protocolDefinition:preset.definition,selectedBuiltInPreset:preset,kg:10,concentration:"0.04")
+        p.infusionConcentrationConfirmed = true
+        p.prescribedPotassiumRate = "0.1"
+        XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).hasPrefix("25 mL/hr continuous infusion"))
+        XCTAssertTrue(try XCTUnwrap(p.readableAdministrationNote).contains("requires review"))
+        p.prescribedPotassiumRate = "0.6"
+        XCTAssertNil(p.readableAdministrationSummary)
+    }
 }
 

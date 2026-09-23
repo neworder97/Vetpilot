@@ -87,6 +87,11 @@ final class FergusonVetPilotUITests: XCTestCase {
 
         let doseResult = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "44 mg")).firstMatch
         XCTAssertTrue(doseResult.waitForExistence(timeout: 3))
+        let quantity = app.staticTexts["dose.result.quantity"]
+        for _ in 0..<4 where !quantity.exists { app.swipeUp() }
+        XCTAssertTrue(quantity.exists)
+        XCTAssertTrue(quantity.label.contains("tablet(s) equivalent"))
+
 
         let q12 = app.buttons["dose.frequency.q12h"]
         for _ in 0..<12 {

@@ -637,6 +637,23 @@ private struct DoseCalculatorSheet: View {
                         if !result.formulation.isEmpty {
                             LabeledContent("Formulation", value: result.formulation)
                         }
+                        if result.available, let summary = readableAdministrationSummary {
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Selected dose — quantity and schedule")
+                                    .font(.caption.bold())
+                                Text(summary)
+                                    .font(.headline)
+                                    .foregroundStyle(AppTheme.blue)
+                                    .accessibilityIdentifier("dose.result.quantity")
+                                if let note = readableAdministrationNote {
+                                    Text(note)
+                                        .font(.footnote)
+                                        .foregroundStyle(AppTheme.orange)
+                                        .accessibilityIdentifier("dose.result.quantity.note")
+                                }
+                            }
+                        }
+
                         if !result.warning.isEmpty {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Safety").font(.caption.bold()).foregroundStyle(AppTheme.orange)
@@ -1010,6 +1027,44 @@ private struct DoseCalculatorSheet: View {
                     .foregroundStyle(level == selectedDoseLevel ? AppTheme.blue : .secondary)
             }
         }
+    }
+
+    // An additive rendering of the existing selected-dose math, never a new
+    // dosing rule or permission to split a tablet/capsule.
+    private var readableAdministrationSummary: String? {
+        guard weightInputError == nil, concentrationInputError == nil,
+              let dose = administrationSelection else { return nil }
+        if usesGalliprantChart, let chart = galliprantPlan {
+            return "\(ClinicalData.format(chart.units)) tablet(s) of \(ClinicalData.format(chart.strengthMg)) mg • \(activeFrequencyLabel)\nProduct-chart amount: \(ClinicalData.format(chart.deliveredMg)) mg per administration"
+        }
+        if usesGalliprantChart { return nil }
+        if let solid = selectedSolidPlan, let strength = selectedStrength {
+            return "\(ClinicalData.format(solid.rawUnits)) \(solidUnitName) equivalent per administration • \(activeFrequencyLabel)\n\(ClinicalData.format(dose.selected)) mg ÷ \(ClinicalData.format(strength)) mg per unit = \(ClinicalData.format(solid.rawUnits)) \(solidUnitName)"
+        }
+        if let volume = selectedAdministrationVolume, volume.unit == "mL" || volume.unit == "mL/hr" {
+            let schedule = volume.unit == "mL/hr" ? "continuous infusion" : "per administration • \(activeFrequencyLabel)"
+            let concentrationText = activeConcentration.map {
+                " • at \(ClinicalData.format($0)) \(protocolDefinition?.doseBasis.concentrationLabel ?? "mg/mL")"
+            } ?? ""
+            return "\(ClinicalData.format(volume.value)) \(volume.unit) \(schedule)\nSelected amount: \(ClinicalData.format(dose.selected)) \(dose.unit)\(concentrationText)"
+        }
+        return nil
+    }
+
+    private var readableAdministrationNote: String? {
+        guard readableAdministrationSummary != nil else { return nil }
+        if let reason = administrationReviewReason {
+            return "Calculation only — administration plan requires review. " + reason
+        }
+        if let solid = selectedSolidPlan {
+            let whole = MedicationSafety.snapIntegerBoundary(solid.rawUnits)
+            if whole != whole.rounded() {
+                return medication.form == .capsule
+                    ? "Fractional capsule equivalent only. Do not split or open capsules from this calculation; verify a suitable strength or formulation with the prescribing veterinarian."
+                    : "Fractional tablet equivalent only. Verify that this specific tablet can be divided accurately; existing whole-tablet rounding options remain below."
+            }
+        }
+        return "Confirm the selected product, route and schedule before administration."
     }
 
     private var selectedSolidPlan: SolidAdministrationPlan? {
