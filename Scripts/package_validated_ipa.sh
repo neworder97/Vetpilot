@@ -21,8 +21,8 @@ with zipfile.ZipFile(ipa) as z:
     assert len(infofiles)==1,infofiles
     info=plistlib.loads(z.read(infofiles[0]))
     assert info['CFBundleIdentifier']=='com.ferguson.vetpilot'
-    assert info['CFBundleShortVersionString']=='0.4.0'
-    assert info['CFBundleVersion']=='4'
+    assert info['CFBundleShortVersionString']=='0.4.0', ('version',info['CFBundleShortVersionString'])
+    assert info['CFBundleVersion']=='4', ('build',info['CFBundleVersion'])
     assert 'iPhoneOS' in info['CFBundleSupportedPlatforms']
     assert z.getinfo(infofiles[0].rsplit('/',1)[0]+'/'+info['CFBundleExecutable']).file_size>0
 numeric=json.loads(Path('ValidationArithmetic/candidate-independent-numeric-audit.json').read_text())

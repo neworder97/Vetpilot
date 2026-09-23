@@ -24,6 +24,8 @@ targets:
       path: FergusonVetPilot/Info.plist
       properties:
         CFBundleDisplayName: Ferguson VetPilot
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         CFBundleIconName: AppIcon
         UIUserInterfaceStyle: Light
         UILaunchScreen: {}
