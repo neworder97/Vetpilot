@@ -9,7 +9,8 @@
     "8d2e22d arithmetic candidate: zero numeric/rendered mismatches. SwiftPM 74/75 passed; stale mixed-route fixture corrected for next run.",
     "Added explicit final-infusion concentration verification in UI and buprenorphine product-specific concentration guards; next CI required.",
     "dc35c0d9967d46a698c2ea8d6398cf331219134d passed arithmetic run 35807452217 and iOS run 35807452287: 90 unit and 9 UI tests; device-target compile passed. Source matching does not establish clinical clearance.",
-    "Additional source review confirmed TMP-sulfamethoxazole skin regimens are explicitly present in the antistaphylococcal table; prior search snippets omitted that row. Added canine mirtazapine weight-band enforcement (7 kg source gap intentionally not guessed), and fixed-volume product-concentration engine guard."
+    "Additional source review confirmed TMP-sulfamethoxazole skin regimens are explicitly present in the antistaphylococcal table; prior search snippets omitted that row. Added canine mirtazapine weight-band enforcement (7 kg source gap intentionally not guessed), and fixed-volume product-concentration engine guard.",
+    "Replaced canine commercial cyclosporine drops with a separate ointment-strip dose basis; mass and volume conversions disabled. Corrected ketamine/pregabalin indication wording and removed oral strengths from IV methocarbamol. Weight-band protocols now require weight in view validation even for fixed-mg arithmetic."
   ],
   "entries": [
     {
@@ -79,23 +80,27 @@
     },
     {
       "id": "levetiracetam-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/nervous-system/epilepsy-in-small-animals/epilepsy-in-small-animals",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "levetiracetam-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/nervous-system/epilepsy-in-small-animals/epilepsy-in-small-animals",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "levetiracetam-dog-3",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/nervous-system/epilepsy-in-small-animals/epilepsy-in-small-animals",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "levetiracetam-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/nervous-system/epilepsy-in-small-animals/epilepsy-in-small-animals",
+      "finding": "General dog/cat epilepsy chapter numerical match only; evidence strength and feline emergency/IR patient regimen still require individual review. Feline ER remains blocked."
     },
     {
       "id": "levetiracetam-cat-2",
@@ -105,8 +110,9 @@
     },
     {
       "id": "levetiracetam-cat-3",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/nervous-system/epilepsy-in-small-animals/epilepsy-in-small-animals",
+      "finding": "General dog/cat epilepsy chapter numerical match only; evidence strength and feline emergency/IR patient regimen still require individual review. Feline ER remains blocked."
     },
     {
       "id": "omeprazole-dog-1",
@@ -455,8 +461,9 @@
     },
     {
       "id": "ketamine-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-dogs",
+      "finding": "Corrected indication wording or formulation representation against cited source. Regression pending for this revision."
     },
     {
       "id": "ketamine-dog-3",
@@ -472,8 +479,9 @@
     },
     {
       "id": "ketamine-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-cats",
+      "finding": "Corrected indication wording or formulation representation against cited source. Regression pending for this revision."
     },
     {
       "id": "ketamine-cat-3",
@@ -559,8 +567,9 @@
     },
     {
       "id": "alprazolam-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/behavior/behavior-of-cats/behavior-problems-of-cats",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "dexmedetomidine-dog-1",
@@ -749,13 +758,15 @@
     },
     {
       "id": "minocycline-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-tetracyclines",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "minocycline-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-tetracyclines",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "trimethoprim-sulfamethoxazole-dog-1",
@@ -783,13 +794,15 @@
     },
     {
       "id": "chloramphenicol-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-chloramphenicol-and-florfenicol",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "chloramphenicol-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-chloramphenicol-and-florfenicol",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "sucralfate-dog-1",
@@ -847,18 +860,21 @@
     },
     {
       "id": "cisapride-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/prokinetic-drugs",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "cisapride-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/digestive-system/diseases-of-the-large-intestine-in-small-animals/constipation-obstipation-and-megacolon-in-small-animals",
+      "finding": "Current numerical range falls within reported feline tolerated dosing; source notes anecdotal efficacy and does not establish comparative efficacy across this range."
     },
     {
       "id": "cisapride-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/monitoring-the-critically-ill-small-animal/monitoring-the-critically-ill-small-animal-using-the-rule-of-20",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "lactulose-dog-1",
@@ -868,8 +884,9 @@
     },
     {
       "id": "lactulose-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/digestive-system/diseases-of-the-large-intestine-in-small-animals/constipation-obstipation-and-megacolon-in-small-animals",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "ursodiol-dog-1",
@@ -935,8 +952,9 @@
     },
     {
       "id": "methylprednisolone-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/integumentary-system/atopic-skin-conditions-in-dogs-and-cats/feline-atopic-skin-syndrome",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "methylprednisolone-cat-2",
@@ -1097,8 +1115,9 @@
     },
     {
       "id": "telmisartan-cat-3",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-cardiovascular-system/angiotensin-ii-receptor-antagonists-for-use-in-animals",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "torsemide-dog-1",
@@ -1129,18 +1148,21 @@
     },
     {
       "id": "trilostane-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=22a5e838-c9a3-40d2-84cd-15df6ada913b",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "desmopressin-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/digestive-system/laboratory-analyses-and-imaging-in-hepatic-disease-in-small-animals/coagulation-tests-in-hepatic-disease-in-small-animals",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "desmopressin-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/digestive-system/laboratory-analyses-and-imaging-in-hepatic-disease-in-small-animals/coagulation-tests-in-hepatic-disease-in-small-animals",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "desmopressin-dog-2",
@@ -1168,13 +1190,15 @@
     },
     {
       "id": "fludrocortisone-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/endocrine-system/the-adrenal-glands/addison-disease-hypoadrenocorticism-in-animals",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "desoxycorticosterone-pivalate-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2c9b766a-c36b-44aa-bbd8-24fab24ca97c",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "mitotane-dog-1",
@@ -1208,8 +1232,9 @@
     },
     {
       "id": "pregabalin-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.msdvetmanual.com/behavior/behavior-of-cats/behavior-problems-of-cats",
+      "finding": "Corrected indication wording or formulation representation against cited source. Regression pending for this revision."
     },
     {
       "id": "pregabalin-cat-2",
@@ -1219,23 +1244,27 @@
     },
     {
       "id": "methocarbamol-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.merckvetmanual.com/multimedia/table/skeletal-muscle-relaxants",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "methocarbamol-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.merckvetmanual.com/multimedia/table/skeletal-muscle-relaxants",
+      "finding": "Corrected indication wording or formulation representation against cited source. Regression pending for this revision."
     },
     {
       "id": "methocarbamol-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.merckvetmanual.com/multimedia/table/skeletal-muscle-relaxants",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "methocarbamol-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.merckvetmanual.com/multimedia/table/skeletal-muscle-relaxants",
+      "finding": "Corrected indication wording or formulation representation against cited source. Regression pending for this revision."
     },
     {
       "id": "clomipramine-dog-1",
@@ -1279,8 +1308,9 @@
     },
     {
       "id": "selegiline-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=84e25a59-1db6-42bf-b27e-a25c4883a141",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "hydroxyzine-dog-1",
@@ -1311,8 +1341,9 @@
     },
     {
       "id": "cyclosporine-ophthalmic-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8ee9c677-d86c-4f2f-9eec-6998f4394ae1",
+      "finding": "Corrected indication wording or formulation representation against cited source. Regression pending for this revision."
     },
     {
       "id": "cyclosporine-ophthalmic-cat-1",
@@ -1458,13 +1489,15 @@
     },
     {
       "id": "naloxone-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/drugs-and-defibrillation-used-in-cardiopulmonary-resuscitation",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "naloxone-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/multimedia/table/drugs-and-defibrillation-used-in-cardiopulmonary-resuscitation",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "mannitol-dog-1",
@@ -1638,13 +1671,15 @@
     },
     {
       "id": "chlorambucil-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.merckvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-digestive-system/drugs-used-to-treat-inflammatory-bowel-disease-in-monogastric-animals",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "chlorambucil-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.merckvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-digestive-system/drugs-used-to-treat-inflammatory-bowel-disease-in-monogastric-animals",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "chlorambucil-cat-2",
@@ -1673,8 +1708,9 @@
     },
     {
       "id": "vincristine-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.merckvetmanual.com/reproductive-system/canine-transmissible-venereal-tumor/canine-transmissible-venereal-tumor",
+      "finding": "Numerical and route/interval source comparison completed. Source scope, product preparation, patient-specific adjustments and clinical suitability remain separate."
     },
     {
       "id": "vincristine-cat-1",

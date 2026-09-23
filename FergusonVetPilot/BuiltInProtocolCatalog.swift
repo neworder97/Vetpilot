@@ -543,9 +543,9 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "ketamine-dog-1", generic: "Ketamine", species: .dog,
-            label: "Anesthetic/co-induction adjunct", doseBasis: .mgKg, minDose: 3, maxDose: 5,
+            label: "Perioperative analgesic adjunct 3–5 mg/kg IV", doseBasis: .mgKg, minDose: 3, maxDose: 5,
             frequency: "to effect", route: "IV", strengths: [], concentration: 100.0,
-            sourceReference: "MSD Veterinary Manual selected analgesics guidance.", notes: "Keep induction and analgesic CRI separate **CIII**; dose-to-effect/protocol dependent Research preload rule: Anesthetic/co-induction and low-dose analgesic CRI branches",
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-dogs", notes: "Keep induction and analgesic CRI separate **CIII**; dose-to-effect/protocol dependent Research preload rule: Anesthetic/co-induction and low-dose analgesic CRI branches",
             confidence: "High for workflow", highRisk: true
         ),
         BuiltInProtocolPreset(
@@ -564,9 +564,9 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "ketamine-cat-1", generic: "Ketamine", species: .cat,
-            label: "Anesthetic/co-induction adjunct", doseBasis: .mgKg, minDose: 3, maxDose: 5,
+            label: "Perioperative analgesic adjunct 3–5 mg/kg IV", doseBasis: .mgKg, minDose: 3, maxDose: 5,
             frequency: "to effect", route: "IV", strengths: [], concentration: 100.0,
-            sourceReference: "MSD Veterinary Manual selected analgesics guidance.", notes: "Keep induction and analgesic CRI separate **CIII**; dose-to-effect/protocol dependent Research preload rule: Anesthetic/co-induction and low-dose analgesic CRI branches",
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-cats", notes: "Keep induction and analgesic CRI separate **CIII**; dose-to-effect/protocol dependent Research preload rule: Anesthetic/co-induction and low-dose analgesic CRI branches",
             confidence: "High for workflow", highRisk: true
         ),
         BuiltInProtocolPreset(
@@ -1488,9 +1488,9 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "pregabalin-cat-1", generic: "Pregabalin", species: .cat,
-            label: "Chronic/as-needed anxiety-pain branch", doseBasis: .mgKg, minDose: 1, maxDose: 2,
-            frequency: "q12h", route: "PO", strengths: [150], concentration: nil,
-            sourceReference: "MSD feline behavior guidance.", notes: "Sedation/ataxia, renal adjustment **CV** federally; FDA-approved feline pre-visit product exists Research preload rule: Dog pain 2–5 mg/kg q8–12h; cat 1–2 mg/kg, situational 5–10 mg/kg once",
+            label: "Feline anxiety: extra-label as-needed regimen", doseBasis: .mgKg, minDose: 1, maxDose: 2,
+            frequency: "q12h as needed", route: "PO", strengths: [150], concentration: nil,
+            sourceReference: "MSD feline behavior guidance.", notes: "Extra-label feline behavioral regimen; not a chronic pain range or the BONQAT 5 mg/kg single-event label. Sedation/ataxia and renal function require review. DEA Schedule V.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
@@ -1509,8 +1509,8 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "methocarbamol-dog-2", generic: "Methocarbamol", species: .dog,
-            label: "Severe tremor/toxin protocol 44 mg/kg IV increment", doseBasis: .mgKg, minDose: 44.0, maxDose: 44.0,
-            frequency: "repeat increments only to monitored response; max 330 mg/kg/day", route: "IV", strengths: [750], concentration: nil,
+            label: "Tetanus/strychnine protocol 44 mg/kg IV increment", doseBasis: .mgKg, minDose: 44.0, maxDose: 44.0,
+            frequency: "repeat increments only to monitored response; max 330 mg/kg/day", route: "IV", strengths: [], concentration: nil,
             sourceReference: "MSD muscle-relaxant table.", notes: "Monitored IV severe-tremor/toxin branch. Each calculator result is one 44 mg/kg increment; do not exceed the cited total daily ceiling of 330 mg/kg/day.",
             confidence: "High", highRisk: true
         ),
@@ -1523,8 +1523,8 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "methocarbamol-cat-2", generic: "Methocarbamol", species: .cat,
-            label: "Severe tremor/toxin protocol 44 mg/kg IV increment", doseBasis: .mgKg, minDose: 44.0, maxDose: 44.0,
-            frequency: "repeat increments only to monitored response; max 330 mg/kg/day", route: "IV", strengths: [750], concentration: nil,
+            label: "Tetanus/strychnine protocol 44 mg/kg IV increment", doseBasis: .mgKg, minDose: 44.0, maxDose: 44.0,
+            frequency: "repeat increments only to monitored response; max 330 mg/kg/day", route: "IV", strengths: [], concentration: nil,
             sourceReference: "MSD muscle-relaxant table.", notes: "Monitored IV severe-tremor/toxin branch. Each calculator result is one 44 mg/kg increment; do not exceed the cited total daily ceiling of 330 mg/kg/day.",
             confidence: "High", highRisk: true
         ),
@@ -1628,9 +1628,9 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "cyclosporine-ophthalmic-dog-1", generic: "Cyclosporine ophthalmic", species: .dog,
-            label: "Commercial 0.2% ophthalmic", doseBasis: .dropsEye, minDose: 1, maxDose: 1,
+            label: "OPTIMMUNE 0.2% ointment: 1/4-inch strip per affected eye", doseBasis: .ribbonInch, minDose: 0.25, maxDose: 0.25,
             frequency: "q12h", route: "Ophthalmic", strengths: [], concentration: nil,
-            sourceReference: "Veterinary ophthalmology/KCS guidance.", notes: "Tear/ocular monitoring Approved/compounded formulations must not be conflated Research preload rule: 0.2% q12h; selected refractory compounded 1–2% branch",
+            sourceReference: "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8ee9c677-d86c-4f2f-9eec-6998f4394ae1", notes: "Canine KCS/CSK labeled ointment. Apply the strip to each affected eye every 12 hours after removing debris. This is an ointment length, not drops or a liquid volume. Verify affected eyes and monitor ocular response.",
             confidence: "Moderate-high", highRisk: false
         ),
         BuiltInProtocolPreset(
@@ -2163,3 +2163,4 @@ enum BuiltInProtocolCatalog {
 
     static var coveredMedicationNames: Set<String> { Set(all.map(\.generic)) }
 }
+

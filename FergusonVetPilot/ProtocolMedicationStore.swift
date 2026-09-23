@@ -14,6 +14,7 @@ enum ProtocolDoseBasis: String, CaseIterable, Identifiable, Codable {
     case mEqKgHr = "mEq/kg/hr"
     case mLKg = "mL/kg"
     case dropsEye = "drops/eye"
+    case ribbonInch = "inch ribbon/eye"
     case gKg = "g/kg"
     case mgM2 = "mg/m²"
 
@@ -27,6 +28,7 @@ enum ProtocolDoseBasis: String, CaseIterable, Identifiable, Codable {
         case .mEqKg, .mEqKgHr: return "mEq"
         case .mLKg: return "mL"
         case .dropsEye: return "drop(s)/eye"
+        case .ribbonInch: return "inch ribbon/eye"
         case .gKg: return "g"
         }
     }
@@ -49,7 +51,7 @@ enum ProtocolDoseBasis: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .mgKg, .mgLb, .fixedMg, .unitsKg, .fixedUnits, .mcgKg, .mcgKgMin, .mgKgHr, .mEqKg, .mEqKgHr, .gKg, .mgM2:
             return true
-        case .mLKg, .dropsEye:
+        case .mLKg, .dropsEye, .ribbonInch:
             return false
         }
     }
@@ -64,12 +66,13 @@ enum ProtocolDoseBasis: String, CaseIterable, Identifiable, Codable {
         case .mEqKg, .mEqKgHr: return "mEq/mL"
         case .mLKg: return "mL"
         case .dropsEye: return "drops"
+        case .ribbonInch: return "inch ribbon/eye"
         }
     }
 
     var requiresWeight: Bool {
         switch self {
-        case .fixedMg, .fixedUnits, .dropsEye: return false
+        case .fixedMg, .fixedUnits, .dropsEye, .ribbonInch: return false
         default: return true
         }
     }
@@ -287,7 +290,7 @@ enum ProtocolDoseCalculator {
             basisText = "\(ClinicalData.format(lb)) lb × \(ClinicalData.format(d.minDose))" +
                 (abs(d.minDose - maxDose) < 0.0000001 ? "" : "–\(ClinicalData.format(maxDose))") + " mg/lb"
 
-        case .fixedMg, .fixedUnits, .dropsEye:
+        case .fixedMg, .fixedUnits, .dropsEye, .ribbonInch:
             low = d.minDose
             high = maxDose
             basisText = builtInPreset == nil ? "Clinic-entered fixed dose" : "Selected preloaded fixed-dose protocol"

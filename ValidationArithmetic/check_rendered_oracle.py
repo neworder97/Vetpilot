@@ -30,13 +30,13 @@ def audit(data, restrictions=False):
             check(math.isclose(float(actual),float(expected),rel_tol=5e-9,abs_tol=1e-11),{'case':identifier,'actual':str(actual),'expected':str(expected),'text':text})
         suffix=text[m.end():]
         check(suffix.startswith(unit),{'case':identifier,'expected_unit':unit,'text':text})
-    units={'mg/kg':'mg','Fixed mg/patient':'mg','mg/lb':'mg','mg/m²':'mg','mcg/kg':'mcg','g/kg':'g','units/kg':'units','Fixed units/patient':'units','drops/eye':'drop(s)/eye','mL/kg':'mL','mcg/kg/min':'mcg/min','mg/kg/hr':'mg/hr','mEq/kg/hr':'mEq/hr','mEq/kg':'mEq'}
+    units={'mg/kg':'mg','Fixed mg/patient':'mg','mg/lb':'mg','mg/m²':'mg','mcg/kg':'mcg','g/kg':'g','units/kg':'units','Fixed units/patient':'units','drops/eye':'drop(s)/eye','inch ribbon/eye':'inch ribbon/eye','mL/kg':'mL','mcg/kg/min':'mcg/min','mg/kg/hr':'mg/hr','mEq/kg/hr':'mEq/hr','mEq/kg':'mEq'}
     for p in data['presets']:
         for c in p['cases']:
             b=p['basis'];kg=D(c['kg']);key=f"{p['id']}:{c['kg']}:{c['level']}"
             with localcontext() as ctx:
                 ctx.prec=45
-                factor=D(1) if b.startswith('Fixed') or b=='drops/eye' else kg/D('0.45359237') if b=='mg/lb' else (D('.101' if p['species']=='Dog' else '.100')*kg**(D(2)/D(3))) if b=='mg/m²' else kg
+                factor=D(1) if b.startswith('Fixed') or b in ('drops/eye','inch ribbon/eye') else kg/D('0.45359237') if b=='mg/lb' else (D('.101' if p['species']=='Dog' else '.100')*kg**(D(2)/D(3))) if b=='mg/m²' else kg
                 low=D(p['min'])*factor;high=D(p['max'])*factor
                 if restrictions and source_ineligible(p['id'], kg):
                     check(not c['engine']['available'] and not c['engine']['formulation'],{'case':key,'error':'ineligible protocol must not calculate'})

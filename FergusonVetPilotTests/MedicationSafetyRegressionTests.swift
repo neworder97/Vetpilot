@@ -30,6 +30,20 @@ final class MedicationSafetyRegressionTests: XCTestCase {
             }
         }
     }
+    func testOptimmuneUsesOintmentStripWithoutMassOrVolumeConversion() throws {
+        let p = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == "cyclosporine-ophthalmic-dog-1" })
+        XCTAssertEqual(p.doseBasis, .ribbonInch)
+        for kg in [0.0, 1.0, 10.0, 80.0] {
+            let result = ProtocolDoseCalculator.calculate(definition: p.definition, kg: kg,
+                strength: 100, concentration: 2, builtInPreset: p)
+            XCTAssertTrue(result.available)
+            XCTAssertEqual(result.headline, "0.25 inch ribbon/eye")
+            XCTAssertTrue(result.formulation.isEmpty)
+            let selection = try XCTUnwrap(AdministrationMath.selection(for: p.definition, kg: kg, level: .high))
+            XCTAssertEqual(selection.selected, 0.25)
+            XCTAssertNil(AdministrationMath.volume(selection: selection, basis: p.doseBasis, concentration: 2))
+        }
+    }
     func testBuprenorphineProductSpecificProtocolsRejectSubstitution() throws {
         for id in ["buprenorphine-cat-4", "buprenorphine-cat-1", "buprenorphine-dog-1"] {
             let p = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == id })

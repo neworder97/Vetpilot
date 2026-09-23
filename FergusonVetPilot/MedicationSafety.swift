@@ -166,6 +166,11 @@ extension MedicationSafety {
         key.hasPrefix("builtin|") ? String(key.dropFirst(8)) : nil
     }
 
+    static func requiresEligibilityWeight(key: String) -> Bool {
+        guard let id = builtinID(key) else { return false }
+        return id.hasPrefix("digoxin-cat-") || id.hasPrefix("mirtazapine-oral-dog-")
+    }
+
     static func protocolEligibilityIssue(key: String, kg: Double) -> String? {
         guard let id = builtinID(key) else { return nil }
         if id == "levetiracetam-cat-2" {

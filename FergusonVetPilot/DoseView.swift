@@ -250,7 +250,7 @@ private struct DoseCalculatorSheet: View {
 
     private var weightInputError: String? {
         let entered = patientWeight.trimmingCharacters(in: .whitespacesAndNewlines)
-        if entered.isEmpty && protocolDefinition?.doseBasis.requiresWeight == false { return nil }
+        if entered.isEmpty && (protocolDefinition?.doseBasis.requiresWeight == false && !MedicationSafety.requiresEligibilityWeight(key: protocolDefinition?.medicationKey ?? "")) { return nil }
         guard MedicationSafety.parsePositive(entered) != nil, MedicationSafety.positiveFinite(kg) else {
             return "Enter a finite positive weight using a decimal point, not a comma or grouping separator."
         }
@@ -494,7 +494,7 @@ private struct DoseCalculatorSheet: View {
                         Text("\(ClinicalData.format(kg)) kg / \(ClinicalData.format(ClinicalData.kgToLb(kg))) lb")
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(.secondary)
-                    } else if protocolDefinition?.doseBasis.requiresWeight == false {
+                    } else if (protocolDefinition?.doseBasis.requiresWeight == false && !MedicationSafety.requiresEligibilityWeight(key: protocolDefinition?.medicationKey ?? "")) {
                         Text("The selected protocol uses a fixed per-patient/eye dose; weight is optional for the arithmetic.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
@@ -1055,6 +1055,9 @@ private struct DoseCalculatorSheet: View {
         let administrations = AdministrationMath.administrations(days: days, dosesPerDay: dosesPerDay)
         guard administrations > 0 else { return "Dispense calculation outside numeric limits." }
         let schedule = activeFrequencyLabel
+        if protocolDefinition?.doseBasis == .ribbonInch, let selection = administrationSelection {
+            return "\(days) days • \(schedule) • \(administrations) applications of \(ClinicalData.format(selection.selected))-inch ointment strip to each affected eye. Verify the prescribed eye(s); do not convert strip length to drops, mL or tube quantity."
+        }
         if usesGalliprantChart, let plan = galliprantPlan {
             let total = ceil(MedicationSafety.snapIntegerBoundary(plan.units * Double(administrations)))
             return "\(days) days • \(schedule) • \(ClinicalData.format(plan.units)) × \(ClinicalData.format(plan.strengthMg)) mg tablets per administration • quantity to dispense: \(ClinicalData.format(total)) whole tablets. Chart reference; veterinarian confirmation required."
@@ -1082,3 +1085,4 @@ private struct DoseCalculatorSheet: View {
             : "\(ClinicalData.format(low))–\(ClinicalData.format(high))"
     }
 }
+

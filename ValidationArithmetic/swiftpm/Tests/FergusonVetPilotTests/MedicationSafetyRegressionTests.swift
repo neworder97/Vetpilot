@@ -2,6 +2,124 @@ import XCTest
 @testable import FergusonVetPilot
 
 final class MedicationSafetyRegressionTests: XCTestCase {
+    func testCalciumVolumeProtocolRejectsDifferentProductStrength() throws {
+        for id in ["calcium-gluconate-dog-1", "calcium-gluconate-cat-1"] {
+            let p = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == id })
+            for concentration: Double? in [nil, 100, 10, 9.3, 200] {
+                let result = ProtocolDoseCalculator.calculate(definition: p.definition,
+                    kg: 4, strength: nil, concentration: concentration)
+                XCTAssertEqual(result.available, concentration == nil || concentration == 100, id)
+                if !result.available { XCTAssertTrue(result.formulation.isEmpty) }
+            }
+        }
+    }
+    func testMirtazapineWeightBandsEnforcedAtEveryBoundary() throws {
+        for (id, allowedWeights) in [
+            ("mirtazapine-oral-dog-1", [0.1, 6.999]),
+            ("mirtazapine-oral-dog-2", [7.001, 15.0]),
+            ("mirtazapine-oral-dog-3", [15.001, 30.0]),
+            ("mirtazapine-oral-dog-4", [30.001, 100.0])
+        ] {
+            let p = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == id })
+            for kg in [0, 0.1, 6.999, 7, 7.001, 15, 15.001, 30, 30.001, 100] {
+                let expected = allowedWeights.contains(kg)
+                XCTAssertEqual(ProtocolDoseCalculator.calculate(definition: p.definition,
+                    kg: kg, strength: nil, concentration: nil).available, expected, "\(id) \(kg)")
+                XCTAssertEqual(AdministrationMath.selection(for: p.definition, kg: kg, level: .middle) != nil,
+                    expected, "\(id) \(kg)")
+            }
+        }
+    }
+    func testOptimmuneUsesOintmentStripWithoutMassOrVolumeConversion() throws {
+        let p = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == "cyclosporine-ophthalmic-dog-1" })
+        XCTAssertEqual(p.doseBasis, .ribbonInch)
+        for kg in [0.0, 1.0, 10.0, 80.0] {
+            let result = ProtocolDoseCalculator.calculate(definition: p.definition, kg: kg,
+                strength: 100, concentration: 2, builtInPreset: p)
+            XCTAssertTrue(result.available)
+            XCTAssertEqual(result.headline, "0.25 inch ribbon/eye")
+            XCTAssertTrue(result.formulation.isEmpty)
+            let selection = try XCTUnwrap(AdministrationMath.selection(for: p.definition, kg: kg, level: .high))
+            XCTAssertEqual(selection.selected, 0.25)
+            XCTAssertNil(AdministrationMath.volume(selection: selection, basis: p.doseBasis, concentration: 2))
+        }
+    }
+    func testBuprenorphineProductSpecificProtocolsRejectSubstitution() throws {
+        for id in ["buprenorphine-cat-4", "buprenorphine-cat-1", "buprenorphine-dog-1"] {
+            let p = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == id })
+            for strength in [0.3, 1.8, 20.0] {
+                let result = ProtocolDoseCalculator.calculate(definition: p.definition,
+                    kg: 4, strength: nil, concentration: strength)
+                XCTAssertEqual(result.available, strength == p.concentration, id)
+                if !result.available { XCTAssertTrue(result.formulation.isEmpty) }
+            }
+        }
+    }
+    func testDigoxinWeightBandsAndMaximumAmount() throws {
+        for (id, kg, allowed) in [
+            ("digoxin-cat-1", 2.999, true), ("digoxin-cat-1", 3.0, false),
+            ("digoxin-cat-2", 0.0, false), ("digoxin-cat-2", 2.999, false),
+            ("digoxin-cat-2", 3.0, true), ("digoxin-cat-2", 6.0, true),
+            ("digoxin-cat-2", 6.001, false), ("digoxin-cat-3", 6.0, false),
+            ("digoxin-cat-3", 6.001, true)
+        ] {
+            let preset = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == id })
+            let result = ProtocolDoseCalculator.calculate(definition: preset.definition,
+                kg: kg, strength: nil, concentration: nil, builtInPreset: preset)
+            XCTAssertEqual(result.available, allowed, id)
+            XCTAssertEqual(AdministrationMath.selection(for: preset.definition, kg: kg, level: .high) != nil, allowed, id)
+            if !allowed { XCTAssertTrue(result.formulation.isEmpty) }
+        }
+        let dog = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == "digoxin-dog-1" })
+        let selected = try XCTUnwrap(AdministrationMath.selection(for: dog.definition, kg: 60, level: .high))
+        XCTAssertEqual(selected.low, 0.15, accuracy: 1e-12)
+        XCTAssertEqual(selected.high, 0.25, accuracy: 1e-12)
+        XCTAssertEqual(selected.selected, 0.25, accuracy: 1e-12)
+        let capped = ProtocolDoseCalculator.calculate(definition: dog.definition, kg: 60,
+            strength: nil, concentration: nil, builtInPreset: dog)
+        XCTAssertTrue(capped.headline.hasPrefix("0.15–0.25 mg"))
+        XCTAssertNil(AdministrationMath.selection(for: dog.definition, kg: 101, level: .low))
+    }
+
+    func testOralAndIVAntiemeticBranchesRemainSeparate() throws {
+        for species in ["dog", "cat"] {
+            let oral = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == "ondansetron-\(species)-1" })
+            let iv = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == "ondansetron-\(species)-2" })
+            XCTAssertEqual(oral.route, "PO")
+            XCTAssertEqual(oral.frequency, "q12–24h")
+            XCTAssertNil(oral.concentration)
+            XCTAssertEqual(iv.route, "IV")
+            XCTAssertTrue(iv.strengths.isEmpty)
+            let dose = try XCTUnwrap(AdministrationMath.selection(for: iv.definition, kg: 10, level: .high))
+            let volume = try XCTUnwrap(AdministrationMath.volume(selection: dose, basis: iv.doseBasis, concentration: 2))
+            XCTAssertEqual(dose.selected, 1.5, accuracy: 1e-12)
+            XCTAssertEqual(volume.value, 0.75, accuracy: 1e-12)
+        }
+    }
+
+    func testInsulinProtocolsRejectDifferentProductConcentrations() throws {
+        let insulin = BuiltInProtocolCatalog.all.filter { $0.id.hasPrefix("insulin-") }
+        XCTAssertEqual(insulin.count, 6)
+        for preset in insulin {
+            let expected = try XCTUnwrap(preset.concentration)
+            let valid = ProtocolDoseCalculator.calculate(definition: preset.definition,
+                kg: 10, strength: nil, concentration: expected, builtInPreset: preset)
+            XCTAssertTrue(valid.available, preset.id)
+            for wrong in [20.0, 40, 100, 200, 300] where wrong != expected {
+                let invalid = ProtocolDoseCalculator.calculate(definition: preset.definition,
+                    kg: 10, strength: nil, concentration: wrong, builtInPreset: preset)
+                XCTAssertFalse(invalid.available, preset.id)
+                let withoutMetadata = ProtocolDoseCalculator.calculate(definition: preset.definition,
+                    kg: 10, strength: nil, concentration: wrong)
+                XCTAssertFalse(withoutMetadata.available, "Insulin guard must also use the stable definition key: \(preset.id)")
+                XCTAssertEqual(invalid.headline, "Insulin product mismatch")
+                XCTAssertTrue(invalid.formulation.isEmpty)
+            }
+            XCTAssertNotNil(MedicationSafety.insulinConcentrationIssue(presetID: preset.id, concentration: nil))
+        }
+        XCTAssertNil(MedicationSafety.insulinConcentrationIssue(presetID: "furosemide-dog-1", concentration: 10))
+    }
+
     func testClonidineFloatingBoundaryDoesNotAddATablet() throws {
         let p = try XCTUnwrap(AdministrationMath.solidPlan(targetMg: 6 * 0.05, strengthMg: 0.3, rounding: .up))
         XCTAssertEqual(p.roundedUnits, 1)

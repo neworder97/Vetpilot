@@ -3,6 +3,23 @@ import XCTest
 
 // These execute extracted production view-logic bodies, NOT UIKit/SwiftUI screens.
 final class DoseSheetLogicRegressionTests: XCTestCase {
+    func testOintmentPlanCountsApplicationsWithoutInventingVolume() throws {
+        let m = try XCTUnwrap(ClinicalData.medications.first { $0.generic == "Cyclosporine ophthalmic" })
+        let preset = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == "cyclosporine-ophthalmic-dog-1" })
+        let p = DoseSheetLogicProbe(medication:m, protocolDefinition:preset.definition,
+            selectedBuiltInPreset:preset, kg:0)
+        XCTAssertNil(p.selectedAdministrationVolume)
+        XCTAssertNil(p.selectedSolidPlan)
+        XCTAssertTrue(p.supplySummary(days:7).contains("14 applications of 0.25-inch ointment strip"))
+    }
+    func testFixedWeightBandProtocolStillRequiresPatientWeight() throws {
+        let m = try XCTUnwrap(ClinicalData.medications.first { $0.generic == "Mirtazapine oral" })
+        let preset = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == "mirtazapine-oral-dog-1" })
+        let p = DoseSheetLogicProbe(medication:m, protocolDefinition:preset.definition,
+            selectedBuiltInPreset:preset, kg:0, patientWeightOverride:"")
+        XCTAssertNotNil(p.weightInputError)
+        XCTAssertNil(p.administrationSelection)
+    }
     func testCarprofenOverrideDividesDailyTargetBeforeRounding() throws {
         let m=try XCTUnwrap(ClinicalData.medications.first { $0.generic=="Carprofen" })
         var p=DoseSheetLogicProbe(medication:m,kg:10)
@@ -121,3 +138,4 @@ final class DoseSheetLogicRegressionTests: XCTestCase {
         XCTAssertNil(p.weightInputError)
     }
 }
+

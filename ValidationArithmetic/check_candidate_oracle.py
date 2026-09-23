@@ -27,7 +27,7 @@ for r in p['presets']:
    continue
   with localcontext() as ctx:
    ctx.prec=45
-   factor=Decimal(1) if basis.startswith('Fixed') or basis=='drops/eye' else (kg**(Decimal(2)/Decimal(3)) * D('.101' if r['species']=='Dog' else '.100') if basis=='mg/m²' else (kg/D('0.45359237') if basis=='mg/lb' else kg))
+   factor=Decimal(1) if basis.startswith('Fixed') or basis in ('drops/eye','inch ribbon/eye') else (kg**(Decimal(2)/Decimal(3)) * D('.101' if r['species']=='Dog' else '.100') if basis=='mg/m²' else (kg/D('0.45359237') if basis=='mg/lb' else kg))
    lo=D(r['min'])*factor;hi=D(r['max'])*factor
    if r['id']=='digoxin-dog-1':hi=min(hi,D('.25'))
    target=lo+((hi-lo)*{'Low':D(0),'Middle':D('.5'),'High':D(1)}[c['level']])

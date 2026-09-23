@@ -25,12 +25,12 @@
   },
   "xray_scope": "Import and exploratory high/low uncalibrated confidence workflow; diagnostic accuracy validation is not a user-requested release gate.",
   "clinical_review_counts": {
-    "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED": 140,
+    "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED": 169,
     "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED": 35,
-    "NOT_YET_REVIEWED": 118,
     "AUTOMATIC_CALCULATION_BLOCKED_PENDING_SPECIALIST_REVIEW": 1,
+    "NOT_YET_REVIEWED": 83,
+    "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION": 12,
     "SOURCE_RANGE_MATCHES_WORKFLOW_REVIEW_PENDING": 6,
-    "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION": 6,
     "SOURCE_DIVERGENCE_REQUIRES_INDIVIDUAL_REVIEW": 1
   },
   "release_status": "MEDICATION_REVIEW_AND_REGRESSION_IN_PROGRESS",
@@ -41,7 +41,8 @@
   ],
   "ipa_created": false,
   "pending_changes": [
-    "mL/kg concentration mismatch guard",
-    "Canine mirtazapine weight bands"
+    "Ointment-strip dose basis and view logic",
+    "Weight-band input requirements",
+    "Indication and injectable formulation metadata"
   ]
 }

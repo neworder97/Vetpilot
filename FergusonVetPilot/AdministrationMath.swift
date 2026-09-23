@@ -130,7 +130,7 @@ enum AdministrationMath {
             low = definition.minDose * lb
             high = maxDose * lb
             math = "\(ClinicalData.format(lb)) lb × selected mg/lb"
-        case .fixedMg, .fixedUnits, .dropsEye:
+        case .fixedMg, .fixedUnits, .dropsEye, .ribbonInch:
             low = definition.minDose
             high = maxDose
             math = "Selected fixed-dose protocol"
@@ -193,6 +193,7 @@ enum AdministrationMath {
         guard MedicationSafety.positiveFinite(selection.selected) else { return nil }
         if basis == .mLKg { return (selection.selected, "mL") }
         if basis == .dropsEye { return (selection.selected, "drop(s)/eye") }
+        if basis == .ribbonInch { return nil } // Ointment length is not a liquid volume.
         guard let concentration, MedicationSafety.positiveFinite(concentration) else { return nil }
         let value: Double
         let unit: String
@@ -219,3 +220,4 @@ enum AdministrationMath {
         return Int(count)
     }
 }
+
