@@ -10,7 +10,7 @@ def block(pattern):
   if view[i]=='}':depth-=1
   i+=1
  return view[m.start():i]
-fields=['numericWeight','weightInputError','activeStrengths','selectedStrength','activeConcentration','recommendedFrequency','activeRoute','activeFrequencyLabel','dosesPerDay','doseSelection','selectedSolidPlan','routeSupportsOralSolid','routeSupportsMeasuredVolume','solidUnitName','selectedAdministrationVolume','canPlanSupply','administrationSelection','requiresRibbonApplication','usesGalliprantChart','galliprantPlan','concentrationInputError','administrationReviewReason']
+fields=['requiresPrescribedPotassiumRate','prescribedRateInputError','numericWeight','weightInputError','activeStrengths','selectedStrength','activeConcentration','recommendedFrequency','activeRoute','activeFrequencyLabel','dosesPerDay','doseSelection','selectedSolidPlan','routeSupportsOralSolid','routeSupportsMeasuredVolume','solidUnitName','selectedAdministrationVolume','canPlanSupply','administrationSelection','requiresRibbonApplication','usesGalliprantChart','galliprantPlan','concentrationInputError','administrationReviewReason']
 funcs=['administrationInstruction','volumeInstruction','supplySummary']
 chunks=[block(r'private enum FrequencyChoice:')]+[block(r'private var '+f+r':') for f in fields]+[block(r'private func '+f+r'\(') for f in funcs]
 head='''import Foundation
@@ -22,6 +22,7 @@ struct DoseSheetLogicProbe {
  var selectedStrengthIndex = 0
  var concentration = ""
  var infusionConcentrationConfirmed = false
+ var prescribedPotassiumRate = ""
  var selectedFrequency: FrequencyChoice = .recommended
  var selectedDoseLevel: DoseSelectionLevel = .middle
  var solidRounding: SolidDoseRounding = .nearest
@@ -38,3 +39,4 @@ c=(r/'FergusonVetPilot/CustomMedicationStore.swift').read_text()
 (h/'CustomCore.swift').write_text('import Foundation\n'+c[c.index('enum CustomDoseBasis:'):c.index('@MainActor\nfinal class CustomMedicationStore')])
 for f in ['ClinicalData.swift','AdministrationMath.swift','BuiltInProtocolCatalog.swift','NutritionMath.swift','MedicationSafety.swift']:shutil.copy2(r/'FergusonVetPilot'/f,h/f)
 (root/'candidate-probe-extraction.json').write_text(json.dumps({'source':'candidate/FergusonVetPilot/DoseView.swift','properties':fields,'methods':funcs,'method':'Unchanged computed property and method bodies extracted into a plain struct. Removed private modifiers and substituted non-UI state fields. Not an iOS UI execution.'},indent=2))
+

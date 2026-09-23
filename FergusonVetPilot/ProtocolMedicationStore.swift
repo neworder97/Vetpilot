@@ -206,8 +206,18 @@ enum ProtocolDoseCalculator {
         kg: Double,
         strength: Double?,
         concentration: Double?,
-        builtInPreset: BuiltInProtocolPreset? = nil
+        builtInPreset: BuiltInProtocolPreset? = nil,
+        prescribedRate: Double? = nil
     ) -> DoseResult {
+        var d = d
+        if MedicationSafety.requiresPrescribedPotassiumRate(key: d.medicationKey) {
+            guard MedicationSafety.validPotassiumRate(prescribedRate), let rate = prescribedRate else {
+                return DoseResult(available: false, headline: "Prescribed potassium rate required", math: "", formulation: "",
+                    warning: "Enter the veterinarian-prescribed rate in mEq/kg/hr, greater than zero and no more than 0.5. The rate must be based on current serum potassium and the complete fluid plan; never bolus potassium chloride.")
+            }
+            d.minDose = rate
+            d.maxDose = rate
+        }
         guard d.veterinarianApproved else {
             return DoseResult(
                 available: false,

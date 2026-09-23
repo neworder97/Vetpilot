@@ -1,48 +1,33 @@
 {
-  "source_commit": "dc35c0d9967d46a698c2ea8d6398cf331219134d",
+  "source_commit": "37b3dc45a479fe885c1491115ec91bffbe412968",
   "date": "2026-09-23",
-  "technical_checks": {
-    "previous_arithmetic_pass": {
-      "commit": "8bd7e2a55f3bf5c7460d362655755c291cb8b977",
-      "run_id": 35807150574
-    },
-    "current_arithmetic": {
-      "run_id": 35807452217,
-      "status": "success"
-    },
-    "current_ios": {
-      "run_id": 35807452287,
-      "status": "success",
-      "unit_tests": 90,
-      "ui_tests": 9,
-      "failures": 0,
-      "device_target_build": "passed"
-    },
-    "last_complete_ios_pass": {
-      "commit": "eadbe53cb1ddd561b138e61dd8dda0d7d200ef99",
-      "run_id": 35805829280
-    }
+  "last_completed_validation": {
+    "arithmetic_run": 35810306723,
+    "ios_run": 35810306656,
+    "unit_tests": 95,
+    "ui_tests": 9,
+    "failures": 0,
+    "device_target_build": "passed"
   },
-  "xray_scope": "Import and exploratory high/low uncalibrated confidence workflow; diagnostic accuracy validation is not a user-requested release gate.",
+  "candidate_status": "SOURCE_COMPARISON_COMPLETE_FINAL_REGRESSION_AND_IPA_PENDING",
   "clinical_review_counts": {
-    "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED": 169,
-    "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED": 35,
-    "AUTOMATIC_CALCULATION_BLOCKED_PENDING_SPECIALIST_REVIEW": 1,
-    "NOT_YET_REVIEWED": 83,
-    "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION": 12,
-    "SOURCE_RANGE_MATCHES_WORKFLOW_REVIEW_PENDING": 6,
+    "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED": 213,
+    "DOSE_PARAMETERS_CORRECTED_REGRESSION_PASSED": 41,
+    "AUTOMATIC_CALCULATION_BLOCKED_PENDING_SPECIALIST_REVIEW": 4,
+    "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION": 45,
+    "SOURCE_LIMITED_REFERENCE_REQUIRES_INDIVIDUAL_REVIEW": 3,
     "SOURCE_DIVERGENCE_REQUIRES_INDIVIDUAL_REVIEW": 1
   },
-  "release_status": "MEDICATION_REVIEW_AND_REGRESSION_IN_PROGRESS",
-  "unresolved": [
-    "Remaining per-protocol current-source medication verification",
-    "Patient-specific eligibility and formulation/administration review",
-    "IPA packaging after validation"
+  "scope": "All 307 preset entries have initial dose/source comparison; not full clinical clearance. Clinical suitability, interactions, contraindications and all commercial/compounded formulations are not exhaustively validated.",
+  "candidate_changes": [
+    "Explicit prescribed potassium rate and ceiling",
+    "Combined-mass ampicillin-sulbactam intermittent protocol; ambiguous CRI blocked",
+    "Chemotherapy cycle-total guard",
+    "Anesthesia, behavioral, antiparasitic and ophthalmic source-specific corrections",
+    "Version 0.4.0 build 4 with unsigned IPA packaging after all gates"
   ],
   "ipa_created": false,
-  "pending_changes": [
-    "Ointment-strip dose basis and view logic",
-    "Weight-band input requirements",
-    "Indication and injectable formulation metadata"
-  ]
+  "xray_scope": "Working exploratory high/low uncalibrated confidence; diagnostic accuracy is outside agreed scope.",
+  "labwork_scope": "28 selected entries (15 IDEXX, 13 MSU including two unavailable tests), with search and preparation; not full directories.",
+  "installation": "Unsigned IPA requires authorized signing; physical-device installation and camera behavior not yet tested."
 }

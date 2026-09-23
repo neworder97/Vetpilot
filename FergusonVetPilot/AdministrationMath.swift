@@ -103,7 +103,13 @@ enum AdministrationMath {
         )
     }
 
-    static func selection(for definition: ProtocolMedicationDefinition, kg: Double, level: DoseSelectionLevel) -> DoseRangeSelection? {
+    static func selection(for definition: ProtocolMedicationDefinition, kg: Double, level: DoseSelectionLevel, prescribedRate: Double? = nil) -> DoseRangeSelection? {
+        var definition = definition
+        if MedicationSafety.requiresPrescribedPotassiumRate(key: definition.medicationKey) {
+            guard MedicationSafety.validPotassiumRate(prescribedRate), let rate = prescribedRate else { return nil }
+            definition.minDose = rate
+            definition.maxDose = rate
+        }
         guard definition.validationIssue == nil, definition.veterinarianApproved,
               kg.isFinite, kg >= 0 else { return nil }
         guard MedicationSafety.protocolEligibilityIssue(key: definition.medicationKey, kg: kg) == nil else { return nil }

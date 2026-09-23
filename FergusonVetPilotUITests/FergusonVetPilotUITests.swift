@@ -358,4 +358,43 @@ final class FergusonVetPilotUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["dose.concentration.error"].exists)
         XCTAssertFalse(app.buttons["dose.calculate"].isEnabled)
     }
+
+    func testPotassiumNeedsExplicitPrescription() throws {
+        let search = app.textFields["Search medications…"]
+        search.tap()
+        search.typeText("potassium chloride")
+        let medication = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Potassium chloride")).firstMatch
+        XCTAssertTrue(medication.waitForExistence(timeout: 4))
+        medication.tap()
+        let weight = app.textFields["dose.sheet.weight"]
+        XCTAssertTrue(weight.waitForExistence(timeout: 4))
+        weight.tap()
+        weight.typeText("22.046226218")
+        app.buttons["dose.keyboard.done"].tap()
+        let rate = app.textFields["dose.potassium.prescribed.rate"]
+        for _ in 0..<8 where !rate.isHittable { app.swipeUp() }
+        XCTAssertTrue(rate.exists)
+        let calculate = app.buttons["dose.calculate"]
+        for _ in 0..<3 where !calculate.isHittable { app.swipeUp() }
+        XCTAssertFalse(calculate.isEnabled)
+        for _ in 0..<3 where !rate.isHittable { app.swipeDown() }
+        rate.tap()
+        rate.typeText("0.6")
+        app.buttons["dose.keyboard.done"].tap()
+        for _ in 0..<3 where !calculate.isHittable { app.swipeUp() }
+        XCTAssertFalse(calculate.isEnabled)
+        for _ in 0..<3 where !rate.isHittable { app.swipeDown() }
+        rate.tap()
+        rate.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: 3) + "0.1")
+        app.buttons["dose.keyboard.done"].tap()
+        for _ in 0..<3 where !calculate.isHittable { app.swipeUp() }
+        XCTAssertTrue(calculate.isEnabled)
+        calculate.tap()
+        XCTAssertEqual(app.state, .runningForeground)
+        let result = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "mEq/hr")).firstMatch
+        for _ in 0..<4 where !result.exists { app.swipeUp() }
+        XCTAssertTrue(result.exists)
+        XCTAssertFalse(app.segmentedControls["dose.level"].exists)
+    }
 }
+

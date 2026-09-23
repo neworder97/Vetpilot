@@ -7,7 +7,7 @@ D=lambda x:Decimal(str(x))
 number=r'(?:[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)'
 lead=re.compile('^('+number+')(?:–('+number+'))? ')
 def source_ineligible(identifier, kg):
- return (identifier == 'levetiracetam-cat-2' or
+ return (identifier in ('levetiracetam-cat-2', 'cyclophosphamide-cat-1', 'ampicillin-sulbactam-dog-2', 'ampicillin-sulbactam-cat-2', 'potassium-chloride-dog-1', 'potassium-chloride-cat-1') or
          (identifier == 'praziquantel-dog-1' and kg > 34) or
          (identifier == 'doxorubicin-dog-1' and not (kg > 10)) or
          (identifier == 'doxorubicin-dog-2' and not (0 < kg <= 10)) or

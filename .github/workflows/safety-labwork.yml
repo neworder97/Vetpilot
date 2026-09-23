@@ -11,11 +11,13 @@ concurrency:
 jobs:
   ios-validation:
     runs-on: macos-15
-    timeout-minutes: 40
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Independent arithmetic and extracted-core regression gate
+        run: python3 ValidationArithmetic/run_local_audit.py
       - run: brew install xcodegen
       - name: Simulator unit and UI tests with real radiograph
         run: bash ValidationPrepared/run_ios_validation.sh
@@ -29,9 +31,22 @@ jobs:
           test -n "$APP"
           bash Scripts/restore_original_bundle_resources.sh "$APP"
           for F in PreservedOriginalBundleResources/*; do cmp "$F" "$APP/$(basename "$F")"; done
+      - name: Package unsigned Signulous IPA after validation
+        run: bash Scripts/package_validated_ipa.sh
+      - name: Save unsigned IPA and release manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: VetPilot-0.4.0-Signulous-IPA
+          path: ReleaseArtifacts/
+          if-no-files-found: error
       - name: Save validation evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: VetPilot-Safety-Labwork-Evidence
-          path: ValidationResults/
+          path: |
+            ValidationResults/
+            ValidationArithmetic/evidence/
+            ValidationArithmetic/candidate-independent-numeric-audit.json
+            ValidationArithmetic/candidate-rendered-oracle.json
+

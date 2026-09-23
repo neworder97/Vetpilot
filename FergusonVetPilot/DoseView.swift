@@ -225,6 +225,7 @@ private struct DoseCalculatorSheet: View {
     @State private var selectedStrengthIndex = 0
     @State private var concentration = ""
     @State private var infusionConcentrationConfirmed = false
+    @State private var prescribedPotassiumRate = ""
     @State private var result: DoseResult?
     @State private var supplyDays: Int?
     @State private var priorCourseDoses = 0
@@ -323,6 +324,16 @@ private struct DoseCalculatorSheet: View {
         return MedicationSafety.galliprantPlan(weight: numericWeight, unit: patientWeightUnit)
     }
 
+    private var requiresPrescribedPotassiumRate: Bool {
+        MedicationSafety.requiresPrescribedPotassiumRate(key: protocolDefinition?.medicationKey ?? "")
+    }
+
+    private var prescribedRateInputError: String? {
+        guard requiresPrescribedPotassiumRate else { return nil }
+        return MedicationSafety.validPotassiumRate(MedicationSafety.parsePositive(prescribedPotassiumRate)) ? nil :
+            "Enter the veterinarian-prescribed rate in mEq/kg/hr, greater than zero and no more than 0.5."
+    }
+
     private var concentrationInputError: String? {
         let needsValue = (protocolDefinition?.doseBasis.supportsConcentration == true &&
             protocolDefinition?.concentration != nil) ||
@@ -347,6 +358,7 @@ private struct DoseCalculatorSheet: View {
     }
 
     private var administrationReviewReason: String? {
+        if let error = prescribedRateInputError { return error }
         if let error = concentrationInputError { return error }
         if recommendedFrequency.lowercased().contains("total per week") {
             return "Weekly totals require a separately reviewed cycle schedule; a daily-frequency override is not valid."
@@ -533,6 +545,10 @@ private struct DoseCalculatorSheet: View {
                 } else if (needsProtocolConcentration || needsMedicationConcentration) && medication.generic != "Mirtazapine transdermal" {
                     let concentrationUnit = protocolDefinition?.doseBasis.concentrationLabel ?? "mg/mL"
                     Section(protocolDefinition?.doseBasis.isRate == true ? "Final infusion concentration (\(concentrationUnit))" : "Concentration (\(concentrationUnit)) — verify product") {
+                        if selectedBuiltInPreset?.id.hasPrefix("ampicillin-sulbactam-") == true {
+                            Text("TOTAL COMBINED ampicillin + sulbactam mg/mL, after preparation; not ampicillin alone.")
+                                .font(.footnote.bold())
+                        }
                         TextField(concentrationUnit, text: $concentration)
                             .keyboardType(.decimalPad)
                             .accessibilityIdentifier("dose.concentration")
@@ -554,8 +570,23 @@ private struct DoseCalculatorSheet: View {
                     }
                 }
 
+                if requiresPrescribedPotassiumRate {
+                    Section("Prescribed potassium rate (mEq/kg/hr)") {
+                        TextField("Veterinarian-prescribed mEq/kg/hr", text: $prescribedPotassiumRate)
+                            .keyboardType(.decimalPad)
+                            .accessibilityIdentifier("dose.potassium.prescribed.rate")
+                        Text("Use the current serum potassium and the complete fluid prescription. Maximum 0.5 mEq/kg/hr. Never bolus KCl-containing fluids. Account for all potassium sources.")
+                            .font(.footnote)
+                        if let error = prescribedRateInputError { Text(error).foregroundStyle(AppTheme.orange) }
+                    }
+                }
+
                 Section {
                     Button {
+                        if let error = prescribedRateInputError {
+                            result = DoseResult(available: false, headline: "Prescribed rate required", math: "", formulation: "", warning: error)
+                            return
+                        }
                         if let error = weightInputError {
                             result = DoseResult(available: false, headline: "Invalid weight", math: "", formulation: "", warning: error)
                             return
@@ -570,7 +601,8 @@ private struct DoseCalculatorSheet: View {
                                 kg: kg,
                                 strength: selectedStrength,
                                 concentration: activeConcentration,
-                                builtInPreset: usingBuiltInPreset ? selectedBuiltInPreset : nil
+                                builtInPreset: usingBuiltInPreset ? selectedBuiltInPreset : nil,
+                                prescribedRate: MedicationSafety.parsePositive(prescribedPotassiumRate)
                             )
                         } else {
                             result = ClinicalData.calculate(
@@ -589,7 +621,7 @@ private struct DoseCalculatorSheet: View {
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
-                                        .disabled(weightInputError != nil || !numericWeight.isFinite || numericWeight < 0 || ((protocolDefinition?.doseBasis.requiresWeight ?? true) && numericWeight <= 0) || concentrationInputError != nil || (medication.kind == .protocolOnly && protocolDefinition == nil))
+                                        .disabled(prescribedRateInputError != nil || weightInputError != nil || !numericWeight.isFinite || numericWeight < 0 || ((protocolDefinition?.doseBasis.requiresWeight ?? true) && numericWeight <= 0) || concentrationInputError != nil || (medication.kind == .protocolOnly && protocolDefinition == nil))
                     .accessibilityIdentifier("dose.calculate")
                 }
 
@@ -838,6 +870,10 @@ private struct DoseCalculatorSheet: View {
                 supplyDays = nil
                 selectedFrequency = .recommended
             }
+            .onChange(of: prescribedPotassiumRate) { _, _ in
+                result = nil
+                supplyDays = nil
+            }
             .onChange(of: infusionConcentrationConfirmed) { _, _ in
                 result = nil
                 supplyDays = nil
@@ -857,6 +893,7 @@ private struct DoseCalculatorSheet: View {
                 supplyDays = nil
             }
             .onChange(of: selectedPresetIndex) { _, _ in
+                prescribedPotassiumRate = ""
                 infusionConcentrationConfirmed = false
                 result = nil
                 supplyDays = nil
@@ -869,6 +906,7 @@ private struct DoseCalculatorSheet: View {
                 }
             }
             .onChange(of: protocolStore.definitions) { _, _ in
+                prescribedPotassiumRate = ""
                 infusionConcentrationConfirmed = false
                 result = nil
                 selectedStrengthIndex = 0
@@ -950,14 +988,14 @@ private struct DoseCalculatorSheet: View {
 
     private var doseSelection: DoseRangeSelection? {
         if let protocolDefinition {
-            return AdministrationMath.selection(for: protocolDefinition, kg: kg, level: selectedDoseLevel)
+            return AdministrationMath.selection(for: protocolDefinition, kg: kg, level: selectedDoseLevel, prescribedRate: MedicationSafety.parsePositive(prescribedPotassiumRate))
         }
         return AdministrationMath.selection(for: medication, kg: kg, level: selectedDoseLevel)
     }
 
     private func selection(for level: DoseSelectionLevel) -> DoseRangeSelection? {
         if let protocolDefinition {
-            return AdministrationMath.selection(for: protocolDefinition, kg: kg, level: level)
+            return AdministrationMath.selection(for: protocolDefinition, kg: kg, level: level, prescribedRate: MedicationSafety.parsePositive(prescribedPotassiumRate))
         }
         return AdministrationMath.selection(for: medication, kg: kg, level: level)
     }

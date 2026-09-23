@@ -54,9 +54,19 @@ final class DoseSheetLogicRegressionTests: XCTestCase {
         XCTAssertNil(p.selectedAdministrationVolume)
         p.infusionConcentrationConfirmed=true
         XCTAssertNil(p.concentrationInputError)
-        // High end 0.5 mEq/kg/hr × 10 kg / 0.04 mEq/mL = 125 mL/hr.
-        p.selectedDoseLevel = .high
-        XCTAssertEqual(try XCTUnwrap(p.selectedAdministrationVolume).value,125,accuracy:1e-12)
+        XCTAssertNotNil(p.prescribedRateInputError)
+        XCTAssertNil(p.selectedAdministrationVolume)
+        p.prescribedPotassiumRate = "0.1"
+        XCTAssertNil(p.prescribedRateInputError)
+        // Prescribed 0.1 mEq/kg/hr × 10 kg / 0.04 mEq/mL = 25 mL/hr.
+        for level in DoseSelectionLevel.allCases {
+            p.selectedDoseLevel = level
+            XCTAssertEqual(try XCTUnwrap(p.selectedAdministrationVolume).value,25,accuracy:1e-12)
+        }
+        p.prescribedPotassiumRate = "0.50001"
+        XCTAssertNotNil(p.prescribedRateInputError)
+        XCTAssertNil(p.selectedAdministrationVolume)
+        p.prescribedPotassiumRate = "0.1"
         XCTAssertTrue(try XCTUnwrap(p.administrationReviewReason).contains("High-risk"))
     }
     func testInvalidConcentrationDoesNotFallbackInUIPath() throws {

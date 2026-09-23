@@ -132,7 +132,7 @@ enum BuiltInProtocolCatalog {
             id: "omeprazole-cat-1", generic: "Omeprazole", species: .cat,
             label: "0.5–1 mg/kg PO q12–24h", doseBasis: .mgKg, minDose: 0.5, maxDose: 1.0,
             frequency: "q12-24h", route: "PO", strengths: [40], concentration: nil,
-            sourceReference: "MSD GI pharmacology.", notes: "IV/CRI is separate protocol Extra-label veterinary use Research preload rule: 0.5–1 mg/kg PO q12–24h",
+            sourceReference: "https://journals.sagepub.com/doi/10.1177/1098612x16631234", notes: "ISFM dose reference. Use for a documented acid-related indication; CKD alone does not establish a need for acid suppression. Enteric-coated granules must not be crushed.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
@@ -307,7 +307,7 @@ enum BuiltInProtocolCatalog {
             id: "methimazole-transdermal-cat-1", generic: "Methimazole transdermal", species: .cat,
             label: "1.25–2.5 mg/cat transdermal q12h", doseBasis: .fixedMg, minDose: 1.25, maxDose: 2.5,
             frequency: "q12h", route: "Transdermal", strengths: [], concentration: nil,
-            sourceReference: "Veterinary hyperthyroidism literature; compounded/extra-label formulation, so pharmacy concentration must be confirmed.", notes: "T4/CBC/chemistry; bioavailability varies Compounded/extra-label; concentration mandatory Research preload rule: 1.25–2.5 mg/cat transdermal q12h",
+            sourceReference: "https://www.msdvetmanual.com/endocrine-system/the-thyroid-gland/hyperthyroidism-in-animals", notes: "Compounded starting regimen; verify pharmacy concentration before volume calculation. Recheck T4, CBC and chemistry during titration. Do not infer oral-to-transdermal bioequivalence.",
             confidence: "Moderate", highRisk: false
         ),
         BuiltInProtocolPreset(
@@ -585,94 +585,94 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "midazolam-dog-1", generic: "Midazolam", species: .dog,
-            label: "Anesthesia/sedation adjunct 0.1–0.3 mg/kg", doseBasis: .mgKg, minDose: 0.1, maxDose: 0.3,
+            label: "AAHA sedation-combination adjunct 0.2 mg/kg", doseBasis: .mgKg, minDose: 0.2, maxDose: 0.2,
             frequency: "per monitored anesthetic protocol", route: "IV/IM", strengths: [], concentration: 5,
-            sourceReference: "Veterinary anesthesia literature plus MSD emergency seizure guidance for benzodiazepine safety context.", notes: "DEA Schedule IV. Dose-to-effect combinations can increase respiratory/CNS depression; this selector is not the seizure-rescue branch.",
+            sourceReference: "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_premedicationandsedation.pdf", notes: "Adjunct within a veterinarian-selected sedation combination. Patient condition and other sedatives change requirements; monitor ventilation and circulation. Not the seizure-rescue branch.",
             confidence: "Moderate-high", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "midazolam-dog-2", generic: "Midazolam", species: .dog,
             label: "Emergency seizure IV 0.1–0.25 mg/kg", doseBasis: .mgKg, minDose: 0.1, maxDose: 0.25,
             frequency: "rescue dose; repeat/CRI only per emergency protocol", route: "IV", strengths: [], concentration: 5,
-            sourceReference: "MSD Veterinary Manual emergency seizure guidance.", notes: "DEA Schedule IV. Emergency seizure-rescue selector; monitored setting required.",
+            sourceReference: "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients", notes: "DEA Schedule IV. Emergency seizure-rescue selector; monitored setting required.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "midazolam-dog-3", generic: "Midazolam", species: .dog,
             label: "Emergency seizure intranasal 0.2 mg/kg", doseBasis: .mgKg, minDose: 0.2, maxDose: 0.2,
             frequency: "rescue dose", route: "intranasal", strengths: [], concentration: 5,
-            sourceReference: "MSD Veterinary Manual emergency seizure guidance.", notes: "DEA Schedule IV. Intranasal seizure-rescue branch; verify product concentration and delivery technique.",
+            sourceReference: "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients", notes: "DEA Schedule IV. Intranasal seizure-rescue branch; verify product concentration and delivery technique.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "midazolam-dog-4", generic: "Midazolam", species: .dog,
             label: "Emergency seizure CRI 0.25–0.4 mg/kg/hr", doseBasis: .mgKgHr, minDose: 0.25, maxDose: 0.4,
             frequency: "continuous", route: "IV CRI", strengths: [], concentration: 5,
-            sourceReference: "MSD Veterinary Manual emergency seizure guidance.", notes: "DEA Schedule IV. For prolonged/repeated seizures in a monitored setting; verify final concentration and pump settings.",
+            sourceReference: "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients", notes: "DEA Schedule IV. For prolonged/repeated seizures in a monitored setting; verify final concentration and pump settings.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "midazolam-cat-1", generic: "Midazolam", species: .cat,
-            label: "Anesthesia/sedation adjunct 0.1–0.3 mg/kg", doseBasis: .mgKg, minDose: 0.1, maxDose: 0.3,
+            label: "AAHA sedation-combination adjunct 0.2 mg/kg", doseBasis: .mgKg, minDose: 0.2, maxDose: 0.2,
             frequency: "per monitored anesthetic protocol", route: "IV/IM", strengths: [], concentration: 5,
-            sourceReference: "Veterinary anesthesia literature plus MSD emergency seizure guidance for benzodiazepine safety context.", notes: "DEA Schedule IV. Dose-to-effect combinations can increase respiratory/CNS depression; this selector is not the seizure-rescue branch.",
+            sourceReference: "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_premedicationandsedation.pdf", notes: "Adjunct within a veterinarian-selected sedation combination. Patient condition and other sedatives change requirements; monitor ventilation and circulation. Not the seizure-rescue branch.",
             confidence: "Moderate-high", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "midazolam-cat-2", generic: "Midazolam", species: .cat,
             label: "Emergency seizure IV 0.1–0.25 mg/kg", doseBasis: .mgKg, minDose: 0.1, maxDose: 0.25,
             frequency: "rescue dose; repeat/CRI only per emergency protocol", route: "IV", strengths: [], concentration: 5,
-            sourceReference: "MSD Veterinary Manual emergency seizure guidance.", notes: "DEA Schedule IV. Emergency seizure-rescue selector; monitored setting required.",
+            sourceReference: "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients", notes: "DEA Schedule IV. Emergency seizure-rescue selector; monitored setting required.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "midazolam-cat-3", generic: "Midazolam", species: .cat,
             label: "Emergency seizure intranasal 0.2 mg/kg", doseBasis: .mgKg, minDose: 0.2, maxDose: 0.2,
             frequency: "rescue dose", route: "intranasal", strengths: [], concentration: 5,
-            sourceReference: "MSD Veterinary Manual emergency seizure guidance.", notes: "DEA Schedule IV. Intranasal seizure-rescue branch; verify product concentration and delivery technique.",
-            confidence: "High", highRisk: true
+            sourceReference: "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients", notes: "Extra-label feline intranasal rescue; ACVIM 2024 grades feline evidence E. The numeric value comes from a general small-animal reference, not a validated feline trial. Specialist selection and monitored rescue plan required.",
+            confidence: "Limited feline route evidence", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "midazolam-cat-4", generic: "Midazolam", species: .cat,
             label: "Emergency seizure CRI 0.25–0.4 mg/kg/hr", doseBasis: .mgKgHr, minDose: 0.25, maxDose: 0.4,
             frequency: "continuous", route: "IV CRI", strengths: [], concentration: 5,
-            sourceReference: "MSD Veterinary Manual emergency seizure guidance.", notes: "DEA Schedule IV. For prolonged/repeated seizures in a monitored setting; verify final concentration and pump settings.",
+            sourceReference: "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients", notes: "DEA Schedule IV. For prolonged/repeated seizures in a monitored setting; verify final concentration and pump settings.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "diazepam-dog-1", generic: "Diazepam", species: .dog,
             label: "Emergency seizure IV 0.5 mg/kg", doseBasis: .mgKg, minDose: 0.5, maxDose: 0.5,
             frequency: "rescue dose", route: "IV", strengths: [], concentration: 5,
-            sourceReference: "MSD Veterinary Manual emergency seizure guidance.", notes: "DEA Schedule IV. Monitor CNS/respiratory status. Chronic oral diazepam is avoided in cats because of rare potentially fatal hepatic injury.",
+            sourceReference: "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients", notes: "DEA Schedule IV. Monitor CNS/respiratory status. Chronic oral diazepam is avoided in cats because of rare potentially fatal hepatic injury.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "diazepam-dog-2", generic: "Diazepam", species: .dog,
             label: "Emergency seizure rectal 1–2 mg/kg", doseBasis: .mgKg, minDose: 1, maxDose: 2,
             frequency: "rescue dose", route: "per rectum", strengths: [], concentration: 5,
-            sourceReference: "MSD Veterinary Manual emergency seizure guidance.", notes: "DEA Schedule IV. Rectal rescue selector; verify concentration and administration technique.",
+            sourceReference: "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients", notes: "DEA Schedule IV. Rectal rescue selector; verify concentration and administration technique.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "diazepam-dog-3", generic: "Diazepam", species: .dog,
             label: "Emergency seizure CRI 0.2–2 mg/kg/hr", doseBasis: .mgKgHr, minDose: 0.2, maxDose: 2,
             frequency: "continuous", route: "IV CRI", strengths: [], concentration: 5,
-            sourceReference: "MSD Veterinary Manual emergency seizure guidance.", notes: "DEA Schedule IV. Dedicated catheter and light protection are required per emergency guidance; monitored setting only.",
-            confidence: "High", highRisk: true
+            sourceReference: "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients", notes: "Dedicated catheter and light protection required. Verify preparation, line compatibility and plastic adsorption. ACVIM 2024 favors midazolam CRI, especially in cats because diazepam vehicles can cause toxicity. Enter verified final prepared concentration.",
+            confidence: "Specialist CRI review required", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "diazepam-cat-1", generic: "Diazepam", species: .cat,
             label: "Emergency seizure IV 0.5 mg/kg", doseBasis: .mgKg, minDose: 0.5, maxDose: 0.5,
             frequency: "rescue dose", route: "IV", strengths: [], concentration: 5,
-            sourceReference: "MSD Veterinary Manual emergency seizure guidance.", notes: "DEA Schedule IV. Monitor CNS/respiratory status. Chronic oral diazepam is avoided in cats because of rare potentially fatal hepatic injury.",
+            sourceReference: "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients", notes: "DEA Schedule IV. Monitor CNS/respiratory status. Chronic oral diazepam is avoided in cats because of rare potentially fatal hepatic injury.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "diazepam-cat-3", generic: "Diazepam", species: .cat,
             label: "Emergency seizure CRI 0.2–2 mg/kg/hr", doseBasis: .mgKgHr, minDose: 0.2, maxDose: 2,
             frequency: "continuous", route: "IV CRI", strengths: [], concentration: 5,
-            sourceReference: "MSD Veterinary Manual emergency seizure guidance.", notes: "DEA Schedule IV. Dedicated catheter and light protection are required per emergency guidance; monitored setting only.",
-            confidence: "High", highRisk: true
+            sourceReference: "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients", notes: "Dedicated catheter and light protection required. Verify preparation, line compatibility and plastic adsorption. ACVIM 2024 favors midazolam CRI, especially in cats because diazepam vehicles can cause toxicity. Enter verified final prepared concentration.",
+            confidence: "Specialist CRI review required", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "alprazolam-dog-1", generic: "Alprazolam", species: .dog,
@@ -692,49 +692,49 @@ enum BuiltInProtocolCatalog {
             id: "dexmedetomidine-dog-1", generic: "Dexmedetomidine", species: .dog,
             label: "Manufacturer canine IV sedation/analgesia 375 mcg/m²", doseBasis: .mgM2, minDose: 0.375, maxDose: 0.375,
             frequency: "once", route: "IV", strengths: [], concentration: 0.5,
-            sourceReference: "Dexmedetomidine veterinary prescribing information / DailyMed.", notes: "Canine label dose is BSA-based, not one universal mcg/kg value. 375 mcg/m² = 0.375 mg/m². Verify cardiovascular/respiratory contraindications and availability of reversal/monitoring.",
+            sourceReference: "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9afc5d50-8df7-46e9-b5a0-5573627fc1bc", notes: "Canine label dose is BSA-based, not one universal mcg/kg value. 375 mcg/m² = 0.375 mg/m². Verify cardiovascular/respiratory contraindications and availability of reversal/monitoring.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "dexmedetomidine-dog-2", generic: "Dexmedetomidine", species: .dog,
             label: "Manufacturer canine IM sedation/analgesia 500 mcg/m²", doseBasis: .mgM2, minDose: 0.5, maxDose: 0.5,
             frequency: "once", route: "IM", strengths: [], concentration: 0.5,
-            sourceReference: "Dexmedetomidine veterinary prescribing information / DailyMed.", notes: "Canine label dose is BSA-based. 500 mcg/m² = 0.5 mg/m². Verify cardiovascular/respiratory contraindications and availability of reversal/monitoring.",
+            sourceReference: "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9afc5d50-8df7-46e9-b5a0-5573627fc1bc", notes: "Canine label dose is BSA-based. 500 mcg/m² = 0.5 mg/m². Verify cardiovascular/respiratory contraindications and availability of reversal/monitoring.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "dexmedetomidine-cat-1", generic: "Dexmedetomidine", species: .cat,
             label: "Manufacturer feline IM 40 mcg/kg", doseBasis: .mcgKg, minDose: 40, maxDose: 40,
             frequency: "once", route: "IM", strengths: [], concentration: 0.5,
-            sourceReference: "Dexmedetomidine veterinary prescribing information / DailyMed.", notes: "0.5 mg/mL injectable product. VetPilot converts the 40 mcg/kg dose to mg before volume conversion. Verify cardiovascular/respiratory contraindications and monitored setting.",
+            sourceReference: "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9afc5d50-8df7-46e9-b5a0-5573627fc1bc", notes: "0.5 mg/mL injectable product. VetPilot converts the 40 mcg/kg dose to mg before volume conversion. Verify cardiovascular/respiratory contraindications and monitored setting.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "propofol-dog-1", generic: "Propofol", species: .dog,
-            label: "IV induction to effect", doseBasis: .mgKg, minDose: 2.6, maxDose: 5.5,
+            label: "AAHA IV induction after sedation; titrate to effect", doseBasis: .mgKg, minDose: 2, maxDose: 6,
             frequency: "titrate to effect", route: "IV", strengths: [], concentration: 10.0,
-            sourceReference: "Veterinary anesthesia sources; fixed dose must not override effect titration.", notes: "Apnea/hypotension; monitored setting **Dose to effect**; cannot safely auto-select full induction dose Research preload rule: IV induction titrated to effect, approximately dog 2.6–5.5 mg/kg and cat 4–8 mg/kg",
+            sourceReference: "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_induction_iv.pdf", notes: "Reference range after sedation, not a bolus target. Frail or heavily sedated patients can need less. Slow titration with airway, ventilation and cardiovascular monitoring is required.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "propofol-cat-1", generic: "Propofol", species: .cat,
             label: "IV induction to effect", doseBasis: .mgKg, minDose: 4, maxDose: 8,
             frequency: "titrate to effect", route: "IV", strengths: [], concentration: 10.0,
-            sourceReference: "Veterinary anesthesia sources; fixed dose must not override effect titration.", notes: "Apnea/hypotension; monitored setting **Dose to effect**; cannot safely auto-select full induction dose Research preload rule: IV induction titrated to effect, approximately dog 2.6–5.5 mg/kg and cat 4–8 mg/kg",
+            sourceReference: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10816483/", notes: "AAFP feline induction range; titrate to effect. Co-induction reduces requirements. Confirm a cat-appropriate formulation: benzyl-alcohol-preserved canine multidose products are not interchangeable.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "alfaxalone-dog-1", generic: "Alfaxalone", species: .dog,
-            label: "IV induction to effect", doseBasis: .mgKg, minDose: 1.5, maxDose: 3,
+            label: "AAHA canine IV induction; titrate to effect", doseBasis: .mgKg, minDose: 1, maxDose: 3,
             frequency: "titrate to effect", route: "IV", strengths: [], concentration: 10.0,
-            sourceReference: "Veterinary anesthesia literature; 10 mg/mL formulation.", notes: "Premedication drastically changes requirement **Dose to effect** Research preload rule: Dog ~1.5–3 mg/kg; cat ~2–5 mg/kg IV to effect",
+            sourceReference: "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_induction_iv.pdf", notes: "Reference range after sedation. Individualize to premedication and condition; ensure airway and cardiorespiratory monitoring.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "alfaxalone-cat-1", generic: "Alfaxalone", species: .cat,
             label: "IV induction to effect", doseBasis: .mgKg, minDose: 2, maxDose: 5,
             frequency: "titrate to effect", route: "IV", strengths: [], concentration: 10.0,
-            sourceReference: "Veterinary anesthesia literature; 10 mg/mL formulation.", notes: "Premedication drastically changes requirement **Dose to effect** Research preload rule: Dog ~1.5–3 mg/kg; cat ~2–5 mg/kg IV to effect",
+            sourceReference: "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_induction_iv.pdf", notes: "AAHA feline IV induction reference after sedation; titrate to effect. Do not use the complete range as a fixed bolus.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
@@ -767,31 +767,31 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "ampicillin-sulbactam-dog-1", generic: "Ampicillin + sulbactam", species: .dog,
-            label: "10–30 mg/kg IV q6–8h; CRI 3.75–8.3 mg/kg/h — 10-30 mg/kg branch", doseBasis: .mgKg, minDose: 10.0, maxDose: 30.0,
-            frequency: "q6-8h", route: "IV", strengths: [], concentration: nil,
-            sourceReference: "MSD penicillin table.", notes: "Must define combined-product mg convention Extra-label Research preload rule: 10–30 mg/kg IV q6–8h; CRI 3.75–8.3 mg/kg/h",
-            confidence: "High", highRisk: false
+            label: "Combined ampicillin + sulbactam amount", doseBasis: .mgKg, minDose: 20, maxDose: 50,
+            frequency: "q8h", route: "IV", strengths: [], concentration: nil,
+            sourceReference: "https://pmc.ncbi.nlm.nih.gov/articles/PMC7167523/ — Ford and Mazzaferro, Charts and Tables; 20–50 mg/kg total combined ampicillin + sulbactam q8h.", notes: "Dose and concentration both mean TOTAL COMBINED ampicillin plus sulbactam in the 2:1 product. Enter the final prepared combined mg/mL, not ampicillin-only mg/mL. IV administration rate, dilution, compatibility and renal adjustment require the veterinarian/pharmacist plan. This named handbook regimen is not interchangeable with component-based dosing.",
+            confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "ampicillin-sulbactam-dog-2", generic: "Ampicillin + sulbactam", species: .dog,
-            label: "10–30 mg/kg IV q6–8h; CRI 3.75–8.3 mg/kg/h — 3.75-8.3 mg/kg/h branch", doseBasis: .mgKgHr, minDose: 3.75, maxDose: 8.3,
+            label: "CRI reference — mass convention unresolved", doseBasis: .mgKgHr, minDose: 3.75, maxDose: 8.3,
             frequency: "continuous", route: "IV CRI", strengths: [], concentration: nil,
-            sourceReference: "MSD penicillin table.", notes: "Must define combined-product mg convention Extra-label Research preload rule: 10–30 mg/kg IV q6–8h; CRI 3.75–8.3 mg/kg/h",
-            confidence: "High", highRisk: false
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/dosages-of-penicillins", notes: "Automatic calculation blocked: this summary does not explicitly distinguish total combined mass from ampicillin-component mass. A reviewed clinic protocol must define the mass convention, loading dose, final prepared concentration, compatibility and infusion stability.",
+            confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "ampicillin-sulbactam-cat-1", generic: "Ampicillin + sulbactam", species: .cat,
-            label: "10–30 mg/kg IV q6–8h; CRI 3.75–8.3 mg/kg/h — 10-30 mg/kg branch", doseBasis: .mgKg, minDose: 10.0, maxDose: 30.0,
-            frequency: "q6-8h", route: "IV", strengths: [], concentration: nil,
-            sourceReference: "MSD penicillin table.", notes: "Must define combined-product mg convention Extra-label Research preload rule: 10–30 mg/kg IV q6–8h; CRI 3.75–8.3 mg/kg/h",
-            confidence: "High", highRisk: false
+            label: "Combined ampicillin + sulbactam amount", doseBasis: .mgKg, minDose: 20, maxDose: 50,
+            frequency: "q8h", route: "IV", strengths: [], concentration: nil,
+            sourceReference: "https://pmc.ncbi.nlm.nih.gov/articles/PMC7167523/ — Ford and Mazzaferro, Charts and Tables; 20–50 mg/kg total combined ampicillin + sulbactam q8h.", notes: "Dose and concentration both mean TOTAL COMBINED ampicillin plus sulbactam in the 2:1 product. Enter the final prepared combined mg/mL, not ampicillin-only mg/mL. IV administration rate, dilution, compatibility and renal adjustment require the veterinarian/pharmacist plan. This named handbook regimen is not interchangeable with component-based dosing.",
+            confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "ampicillin-sulbactam-cat-2", generic: "Ampicillin + sulbactam", species: .cat,
-            label: "10–30 mg/kg IV q6–8h; CRI 3.75–8.3 mg/kg/h — 3.75-8.3 mg/kg/h branch", doseBasis: .mgKgHr, minDose: 3.75, maxDose: 8.3,
+            label: "CRI reference — mass convention unresolved", doseBasis: .mgKgHr, minDose: 3.75, maxDose: 8.3,
             frequency: "continuous", route: "IV CRI", strengths: [], concentration: nil,
-            sourceReference: "MSD penicillin table.", notes: "Must define combined-product mg convention Extra-label Research preload rule: 10–30 mg/kg IV q6–8h; CRI 3.75–8.3 mg/kg/h",
-            confidence: "High", highRisk: false
+            sourceReference: "https://www.msdvetmanual.com/multimedia/table/dosages-of-penicillins", notes: "Automatic calculation blocked: this summary does not explicitly distinguish total combined mass from ampicillin-component mass. A reviewed clinic protocol must define the mass convention, loading dose, final prepared concentration, compatibility and infusion stability.",
+            confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "cephalexin-dog-1", generic: "Cephalexin", species: .dog,
@@ -1110,30 +1110,30 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "dexamethasone-dog-1", generic: "Dexamethasone", species: .dog,
-            label: "Anti-inflammatory 0.05–0.2 mg/kg; selected immune protocol 0.2–0.4 mg/kg — 0.05-0.2 mg/kg branch", doseBasis: .mgKg, minDose: 0.05, maxDose: 0.2,
-            frequency: "veterinarian-selected protocol", route: "indication/formulation-specific", strengths: [], concentration: nil,
-            sourceReference: "Veterinary corticosteroid literature.", notes: "Dose-intensity template only. Dexamethasone route and interval vary materially by indication/formulation; veterinarian must select and verify the intended clinical protocol before use.",
+            label: "Short-term refractory allergic pruritus: oral regimen", doseBasis: .mgKg, minDose: 0.1, maxDose: 0.3,
+            frequency: "q24h initially; taper by response", route: "PO", strengths: [], concentration: nil,
+            sourceReference: "https://www.cliniciansbrief.com/article/which-drugs-are-most-effective-managing-atopic-dermatitis-part-1", notes: "Specific oral pruritus regimen described by a dermatologist; extra-label in cats. Taper under supervision. Not an IV emergency, immunosuppressive IMHA or depot regimen.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "dexamethasone-dog-2", generic: "Dexamethasone", species: .dog,
-            label: "Anti-inflammatory 0.05–0.2 mg/kg; selected immune protocol 0.2–0.4 mg/kg — 0.2-0.4 mg/kg branch", doseBasis: .mgKg, minDose: 0.2, maxDose: 0.4,
-            frequency: "veterinarian-selected protocol", route: "indication/formulation-specific", strengths: [], concentration: nil,
-            sourceReference: "Veterinary corticosteroid literature.", notes: "Dose-intensity template only. Dexamethasone route and interval vary materially by indication/formulation; veterinarian must select and verify the intended clinical protocol before use.",
+            label: "IMHA temporary IV alternative when oral medication is not feasible", doseBasis: .mgKg, minDose: 0.2, maxDose: 0.4,
+            frequency: "q24h; temporary monitored regimen", route: "IV", strengths: [], concentration: nil,
+            sourceReference: "https://www.msdvetmanual.com/circulatory-system/anemia/regenerative-anemias-in-animals", notes: "Selected immunosuppressive IMHA protocol. Use a suitable soluble IV formulation; not a depot injection. Transition to the reviewed oral regimen when feasible.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "dexamethasone-cat-1", generic: "Dexamethasone", species: .cat,
-            label: "Anti-inflammatory 0.05–0.2 mg/kg; selected immune protocol 0.2–0.4 mg/kg — 0.05-0.2 mg/kg branch", doseBasis: .mgKg, minDose: 0.05, maxDose: 0.2,
-            frequency: "veterinarian-selected protocol", route: "indication/formulation-specific", strengths: [], concentration: nil,
-            sourceReference: "Veterinary corticosteroid literature.", notes: "Dose-intensity template only. Dexamethasone route and interval vary materially by indication/formulation; veterinarian must select and verify the intended clinical protocol before use.",
+            label: "Short-term refractory allergic pruritus: oral regimen", doseBasis: .mgKg, minDose: 0.1, maxDose: 0.3,
+            frequency: "q24h initially; taper by response", route: "PO", strengths: [], concentration: nil,
+            sourceReference: "https://www.cliniciansbrief.com/article/which-drugs-are-most-effective-managing-atopic-dermatitis-part-1", notes: "Specific oral pruritus regimen described by a dermatologist; extra-label in cats. Taper under supervision. Not an IV emergency, immunosuppressive IMHA or depot regimen.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "dexamethasone-cat-2", generic: "Dexamethasone", species: .cat,
-            label: "Anti-inflammatory 0.05–0.2 mg/kg; selected immune protocol 0.2–0.4 mg/kg — 0.2-0.4 mg/kg branch", doseBasis: .mgKg, minDose: 0.2, maxDose: 0.4,
-            frequency: "veterinarian-selected protocol", route: "indication/formulation-specific", strengths: [], concentration: nil,
-            sourceReference: "Veterinary corticosteroid literature.", notes: "Dose-intensity template only. Dexamethasone route and interval vary materially by indication/formulation; veterinarian must select and verify the intended clinical protocol before use.",
+            label: "IMHA temporary IV alternative when oral medication is not feasible", doseBasis: .mgKg, minDose: 0.2, maxDose: 0.4,
+            frequency: "q24h; temporary monitored regimen", route: "IV", strengths: [], concentration: nil,
+            sourceReference: "https://www.msdvetmanual.com/circulatory-system/anemia/regenerative-anemias-in-animals", notes: "Selected immunosuppressive IMHA protocol. Use a suitable soluble IV formulation; not a depot injection. Transition to the reviewed oral regimen when feasible.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
@@ -1145,30 +1145,30 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "methylprednisolone-cat-2", generic: "Methylprednisolone", species: .cat,
-            label: "Feline asthma depot branch", doseBasis: .fixedMg, minDose: 20, maxDose: 20,
+            label: "Historical feline lower-airway depot regimen; specialist review", doseBasis: .fixedMg, minDose: 20, maxDose: 20,
             frequency: "q3wk", route: "IM", strengths: [], concentration: nil,
-            sourceReference: "Secondary veterinary literature; Moderate confidence", notes: "Do not interchange depot/soluble rules Formulation/route distinctions Research preload rule: Anti-inflammatory and feline dermatologic branches",
-            confidence: "Moderate-high", highRisk: false
+            sourceReference: "https://journals.sagepub.com/doi/10.1016/j.jfms.2003.09.004", notes: "20 mg/cat IM every 2–3 weeks was reported in a 2004 retrospective series. This is a historical acetate-depot option, not routine first-line asthma treatment; long action prevents prompt withdrawal. Assess diabetes/infection risk and current alternatives.",
+            confidence: "Historical case-series regimen", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "methylprednisolone-dog-1", generic: "Methylprednisolone", species: .dog,
             label: "Anti-inflammatory oral-equivalent branch", doseBasis: .mgKg, minDose: 0.4, maxDose: 0.8,
             frequency: "q24h", route: "PO", strengths: [], concentration: nil,
-            sourceReference: "Secondary veterinary literature; Moderate confidence", notes: "Do not interchange depot/soluble rules Formulation/route distinctions Research preload rule: Anti-inflammatory and feline dermatologic branches",
+            sourceReference: "https://doi.org/10.3390/vetsci9040149", notes: "Canine pruritus induction for 5–7 days, then veterinarian-directed taper. Oral formulation only; do not substitute methylprednisolone acetate depot.",
             confidence: "Moderate-high", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "triamcinolone-dog-1", generic: "Triamcinolone", species: .dog,
-            label: "Anti-inflammatory 0.1–0.2; immunosuppressive 0.2–0.4 mg/kg", doseBasis: .mgKg, minDose: 0.2, maxDose: 0.4,
-            frequency: "veterinarian-selected protocol", route: "indication/formulation-specific", strengths: [], concentration: nil,
-            sourceReference: "Secondary veterinary literature; Moderate confidence", notes: "Moderate-confidence dose-intensity template. Route, formulation (including depot/topical products), and interval are not interchangeable; veterinarian protocol confirmation is required before use.",
+            label: "Short-term refractory allergic pruritus: oral regimen", doseBasis: .mgKg, minDose: 0.2, maxDose: 0.4,
+            frequency: "q24h initially; taper by response", route: "PO", strengths: [], concentration: nil,
+            sourceReference: "https://www.cliniciansbrief.com/article/which-drugs-are-most-effective-managing-atopic-dermatitis-part-1", notes: "Oral regimen described by a veterinary dermatologist; not a depot or topical dose. Avoid concurrent NSAIDs and assess infection, diabetes and steroid adverse effects.",
             confidence: "Moderate", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "triamcinolone-cat-1", generic: "Triamcinolone", species: .cat,
-            label: "Anti-inflammatory 0.1–0.2; immunosuppressive 0.2–0.4 mg/kg", doseBasis: .mgKg, minDose: 0.2, maxDose: 0.4,
-            frequency: "veterinarian-selected protocol", route: "indication/formulation-specific", strengths: [], concentration: nil,
-            sourceReference: "Secondary veterinary literature; Moderate confidence", notes: "Moderate-confidence dose-intensity template. Route, formulation (including depot/topical products), and interval are not interchangeable; veterinarian protocol confirmation is required before use.",
+            label: "Short-term refractory allergic pruritus: oral regimen", doseBasis: .mgKg, minDose: 0.2, maxDose: 0.4,
+            frequency: "q24h initially; taper by response", route: "PO", strengths: [], concentration: nil,
+            sourceReference: "https://www.cliniciansbrief.com/article/which-drugs-are-most-effective-managing-atopic-dermatitis-part-1", notes: "Oral regimen described by a veterinary dermatologist; not a depot or topical dose. Avoid concurrent NSAIDs and assess infection, diabetes and steroid adverse effects.",
             confidence: "Moderate", highRisk: true
         ),
         BuiltInProtocolPreset(
@@ -1448,14 +1448,14 @@ enum BuiltInProtocolCatalog {
             id: "mitotane-dog-1", generic: "Mitotane", species: .dog,
             label: "Loading 25 mg/kg", doseBasis: .mgKg, minDose: 25, maxDose: 25,
             frequency: "q12h during loading phase", route: "PO", strengths: [500], concentration: nil,
-            sourceReference: "MSD Veterinary Manual hyperadrenocorticism guidance.", notes: "Loading phase only; transition is determined by clinical response and adrenal-function testing. Risk of hypoadrenocorticism/adrenal crisis requires veterinarian-directed monitoring.",
+            sourceReference: "https://www.msdvetmanual.com/endocrine-system/the-pituitary-gland/cushing-disease-pituitary-dependent-hyperadrenocorticism-in-animals", notes: "Loading phase only; transition is determined by clinical response and adrenal-function testing. Risk of hypoadrenocorticism/adrenal crisis requires veterinarian-directed monitoring.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "mitotane-dog-2", generic: "Mitotane", species: .dog,
             label: "Maintenance total 25–50 mg/kg/week", doseBasis: .mgKg, minDose: 25, maxDose: 50,
             frequency: "total per week; divide per monitored protocol", route: "PO", strengths: [500], concentration: nil,
-            sourceReference: "MSD Veterinary Manual hyperadrenocorticism guidance.", notes: "Weekly TOTAL maintenance dose, not q12h. Divide according to the veterinarian's monitored maintenance protocol and adrenal-function testing.",
+            sourceReference: "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-integumentary-system/hormonal-treatment-for-integumentary-disease-in-animals", notes: "Weekly TOTAL maintenance dose, not q12h. Divide according to the veterinarian's monitored maintenance protocol and adrenal-function testing.",
             confidence: "High", highRisk: true
         ),
         BuiltInProtocolPreset(
@@ -1544,9 +1544,9 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "sertraline-cat-1", generic: "Sertraline", species: .cat,
-            label: "Feline clinic-reviewed SSRI template", doseBasis: .mgKg, minDose: 0.5, maxDose: 1.5,
+            label: "AAFP intercat-tension adjunct", doseBasis: .mgKg, minDose: 0.5, maxDose: 1,
             frequency: "q24h", route: "PO", strengths: [100], concentration: nil,
-            sourceReference: "MSD dog behavior guidance; feline use extra-label.", notes: "Delayed onset, serotonin syndrome, taper Extra-label Research preload rule: Dog 0.5–4 mg/kg q24h; feline lower-dose branch",
+            sourceReference: "https://journals.sagepub.com/doi/10.1177/1098612X241263465", notes: "Extra-label oral SSRI alongside environmental and behavior treatment. Start low, monitor appetite and assess response over 4–6 weeks; review serotonergic interactions.",
             confidence: "Moderate", highRisk: false
         ),
         BuiltInProtocolPreset(
@@ -1558,9 +1558,9 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "paroxetine-cat-1", generic: "Paroxetine", species: .cat,
-            label: "Feline clinic-reviewed SSRI template", doseBasis: .mgKg, minDose: 0.5, maxDose: 1,
+            label: "AAFP intercat-tension adjunct", doseBasis: .mgKg, minDose: 0.25, maxDose: 0.5,
             frequency: "q24h", route: "PO", strengths: [40], concentration: nil,
-            sourceReference: "MSD dog/cat behavior sources.", notes: "Serotonergic/withdrawal Extra-label Research preload rule: Dog 1–2 mg/kg q24h; feline lower-dose branch",
+            sourceReference: "https://journals.sagepub.com/doi/10.1177/1098612X241263465", notes: "Extra-label oral SSRI with behavior treatment. Monitor appetite and urinary retention; review serotonergic interactions and taper under supervision.",
             confidence: "Moderate", highRisk: false
         ),
         BuiltInProtocolPreset(
@@ -1574,7 +1574,7 @@ enum BuiltInProtocolCatalog {
             id: "buspirone-cat-1", generic: "Buspirone", species: .cat,
             label: "Feline anxiety/urine-marking fixed dose", doseBasis: .fixedMg, minDose: 2.5, maxDose: 7.5,
             frequency: "q12h", route: "PO", strengths: [30], concentration: nil,
-            sourceReference: "MSD canine/feline behavior sources.", notes: "Delayed onset Extra-label Research preload rule: Dog 0.5–2 mg/kg q8–12h; feline fixed-dose branch",
+            sourceReference: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11148882/", notes: "Selected AAFP/ISFM urine-marking regimen. Start low and assess response; other feline behavior guidelines use different weight-based schedules.",
             confidence: "Moderate", highRisk: false
         ),
         BuiltInProtocolPreset(
@@ -1623,7 +1623,7 @@ enum BuiltInProtocolCatalog {
             id: "lokivetmab-dog-1", generic: "Lokivetmab", species: .dog,
             label: "~2 mg/kg SC; repeat q4–8 wk as needed", doseBasis: .mgKg, minDose: 2.0, maxDose: 2.0,
             frequency: "q4-8wk", route: "SC", strengths: [], concentration: nil,
-            sourceReference: "Current CYTOPOINT manufacturer information.", notes: "Select vial combination FDA veterinary biologic/product workflow Research preload rule: Minimum ~2 mg/kg SC via vial/weight-band selection; repeat q4–8wk PRN",
+            sourceReference: "https://www.zoetisus.com/products/dogs/cytopoint-lasting-relief/", notes: "US CYTOPOINT minimum-dose reference; select complete vial combinations from manufacturer weight table. Repeat based on response. USDA-regulated veterinary biologic; this is not an FDA drug label.",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
@@ -1635,101 +1635,101 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "cyclosporine-ophthalmic-cat-1", generic: "Cyclosporine ophthalmic", species: .cat,
-            label: "Compounded 0.2% ophthalmic template", doseBasis: .dropsEye, minDose: 1, maxDose: 1,
+            label: "Feline eosinophilic keratitis: compounded 1.5% solution", doseBasis: .dropsEye, minDose: 1, maxDose: 1,
             frequency: "q12h", route: "Ophthalmic", strengths: [], concentration: nil,
-            sourceReference: "Veterinary ophthalmology/KCS guidance.", notes: "Tear/ocular monitoring Approved/compounded formulations must not be conflated Research preload rule: 0.2% q12h; selected refractory compounded 1–2% branch",
-            confidence: "Moderate-high", highRisk: false
+            sourceReference: "https://onlinelibrary.wiley.com/doi/10.1111/j.1463-5224.2008.00679.x", notes: "Selected twice-daily regimen from a 35-cat series; severe cases used every 8 hours. Confirm ophthalmologist-prescribed drop and sterile compounded formulation. This is not 0.2% commercial ointment. Evaluate concurrent herpesvirus disease.",
+            confidence: "Feline case-series evidence", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "tacrolimus-ophthalmic-dog-1", generic: "Tacrolimus ophthalmic", species: .dog,
-            label: "0.02–0.03%, one drop q12h", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
+            label: "Compounded 0.03% ophthalmic solution, one drop q12h", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
             frequency: "q12h", route: "Ophthalmic", strengths: [], concentration: nil,
-            sourceReference: "Compounded veterinary ophthalmology literature; Moderate confidence", notes: "Ocular monitoring Compounded only; concentration mandatory Research preload rule: 0.02–0.03%, one drop q12h",
+            sourceReference: "https://pmc.ncbi.nlm.nih.gov/articles/PMC3103853/", notes: "Canine dry-eye study regimen. Confirm sterile ophthalmic compound and concentration; skin ointments must not be applied to the eye. Monitor tear production and corneal health.",
             confidence: "Moderate", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "tacrolimus-ophthalmic-cat-1", generic: "Tacrolimus ophthalmic", species: .cat,
-            label: "0.02–0.03%, one drop q12h", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
+            label: "Compounded 0.02% ophthalmic solution; feline specialist selection", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
             frequency: "q12h", route: "Ophthalmic", strengths: [], concentration: nil,
-            sourceReference: "Compounded veterinary ophthalmology literature; Moderate confidence", notes: "Ocular monitoring Compounded only; concentration mandatory Research preload rule: 0.02–0.03%, one drop q12h",
-            confidence: "Moderate", highRisk: false
+            sourceReference: "https://www.merckvetmanual.com/eye-diseases-and-disorders/ophthalmology/nasolacrimal-and-lacrimal-apparatus-in-animals", notes: "General lacrimogenic reference supports 0.02% every 8–12 hours. Feline disease selection and compounded drop regimen require ophthalmologist review; do not use dermatologic tacrolimus products.",
+            confidence: "Limited feline-specific evidence", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "latanoprost-dog-1", generic: "Latanoprost", species: .dog,
             label: "0.005%, one drop q12h", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
             frequency: "q12h", route: "ophthalmic", strengths: [], concentration: nil,
-            sourceReference: "MSD glaucoma guidance; efficacy is limited in cats.", notes: "IOP/glaucoma-type dependent Human product extra-label; contraindication logic needed Research preload rule: 0.005%, one drop q12h",
+            sourceReference: "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-eye/treatment-of-glaucoma-in-animals", notes: "Measure IOP and establish glaucoma type. Do not use with anterior lens luxation; intense miosis can worsen pupillary block. Not a feline pressure-lowering regimen.",
             confidence: "Moderate-high", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "dorzolamide-dog-1", generic: "Dorzolamide", species: .dog,
             label: "2%, one drop q8h", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
             frequency: "q8h", route: "ophthalmic", strengths: [], concentration: nil,
-            sourceReference: "MSD glaucoma guidance.", notes: "IOP monitoring Extra-label Research preload rule: 2%, one drop q8h",
+            sourceReference: "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-eye/treatment-of-glaucoma-in-animals", notes: "IOP monitoring Extra-label Research preload rule: 2%, one drop q8h",
             confidence: "Moderate-high", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "dorzolamide-cat-1", generic: "Dorzolamide", species: .cat,
             label: "2%, one drop q8h", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
             frequency: "q8h", route: "ophthalmic", strengths: [], concentration: nil,
-            sourceReference: "MSD glaucoma guidance.", notes: "IOP monitoring Extra-label Research preload rule: 2%, one drop q8h",
+            sourceReference: "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-eye/treatment-of-glaucoma-in-animals", notes: "IOP monitoring Extra-label Research preload rule: 2%, one drop q8h",
             confidence: "Moderate-high", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "timolol-ophthalmic-dog-1", generic: "Timolol ophthalmic", species: .dog,
             label: "0.5%, one drop q8–12h", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
             frequency: "q8-12h", route: "ophthalmic", strengths: [], concentration: nil,
-            sourceReference: "MSD glaucoma guidance.", notes: "Systemic beta-blockade possible Extra-label; systemic beta-blocker precautions Research preload rule: 0.5%, one drop q8–12h",
+            sourceReference: "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-eye/treatment-of-glaucoma-in-animals", notes: "Systemic beta-blockade possible Extra-label; systemic beta-blocker precautions Research preload rule: 0.5%, one drop q8–12h",
             confidence: "Moderate-high", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "timolol-ophthalmic-cat-1", generic: "Timolol ophthalmic", species: .cat,
             label: "0.5%, one drop q8–12h", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
             frequency: "q8-12h", route: "ophthalmic", strengths: [], concentration: nil,
-            sourceReference: "MSD glaucoma guidance.", notes: "Systemic beta-blockade possible Extra-label; systemic beta-blocker precautions Research preload rule: 0.5%, one drop q8–12h",
+            sourceReference: "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-eye/treatment-of-glaucoma-in-animals", notes: "Systemic beta-blockade possible Extra-label; systemic beta-blocker precautions Research preload rule: 0.5%, one drop q8–12h",
             confidence: "Moderate-high", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "atropine-ophthalmic-dog-1", generic: "Atropine ophthalmic", species: .dog,
-            label: "1%, one drop q6–12h initially, then to cycloplegic effect", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
-            frequency: "q6-12h", route: "ophthalmic", strengths: [], concentration: nil,
-            sourceReference: "Veterinary ophthalmology guidance; contraindicated in glaucoma/ocular hypertension.", notes: "Avoid/caution with glaucoma/high IOP Must not default in glaucoma-risk situations Research preload rule: 1%, one drop q6–12h initially, then to cycloplegic effect",
+            label: "1% solution after proptosis repair; one drop per affected eye", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
+            frequency: "q12h initially; taper to cycloplegic effect", route: "ophthalmic", strengths: [], concentration: nil,
+            sourceReference: "https://todaysveterinarypractice.com/ophthalmology/ocular-proptosis/", notes: "Selected postoperative cycloplegic regimen. Reassess pupil and IOP; avoid in glaucoma or ocular hypertension. Do not continue a fixed frequent schedule once cycloplegia is established.",
             confidence: "Moderate-high", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "atropine-ophthalmic-cat-1", generic: "Atropine ophthalmic", species: .cat,
-            label: "1%, one drop q6–12h initially, then to cycloplegic effect", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
-            frequency: "q6-12h", route: "ophthalmic", strengths: [], concentration: nil,
-            sourceReference: "Veterinary ophthalmology guidance; contraindicated in glaucoma/ocular hypertension.", notes: "Avoid/caution with glaucoma/high IOP Must not default in glaucoma-risk situations Research preload rule: 1%, one drop q6–12h initially, then to cycloplegic effect",
+            label: "1% solution for infected-ulcer reflex uveitis; one drop per affected eye", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
+            frequency: "q8–12h initially; taper after mydriasis", route: "ophthalmic", strengths: [], concentration: nil,
+            sourceReference: "https://todaysveterinarypractice.com/ophthalmology/feline-corneal-ulcers-diagnosis-and-management/", notes: "Selected infected-ulcer cycloplegic regimen. Less frequent treatment is used for noninfected ulcers. Check IOP and taper when pupil dilation occurs; avoid in glaucoma/ocular hypertension.",
             confidence: "Moderate-high", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "ofloxacin-ophthalmic-dog-1", generic: "Ofloxacin ophthalmic", species: .dog,
-            label: "0.3%, one drop q4–6h; severe keratitis branch q1–2h", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
-            frequency: "q4-6h, q1-2h", route: "ophthalmic", strengths: [], concentration: nil,
-            sourceReference: "Veterinary ophthalmic secondary literature; Moderate confidence", notes: "Ulcer protocols differ markedly Extra-label Research preload rule: 0.3%, one drop q4–6h; severe keratitis branch q1–2h",
-            confidence: "Moderate", highRisk: false
+            label: "0.3% solution: selected infected/deep corneal ulcer", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
+            frequency: "q1–2h initially; taper after infection control", route: "ophthalmic", strengths: [], concentration: nil,
+            sourceReference: "https://www.ivis.org/library/evc/evc-voorjaarsdagen-hague-2017/diagnosis-and-treatment-of-corneal-diseases", notes: "One drop per affected eye within an ophthalmologist-selected antimicrobial plan. Culture/cytology guide therapy; additional gram-positive coverage may be needed. Not routine prophylaxis for a simple noninfected ulcer.",
+            confidence: "Moderate", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "ofloxacin-ophthalmic-cat-1", generic: "Ofloxacin ophthalmic", species: .cat,
-            label: "0.3%, one drop q4–6h; severe keratitis branch q1–2h", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
-            frequency: "q4-6h, q1-2h", route: "ophthalmic", strengths: [], concentration: nil,
-            sourceReference: "Veterinary ophthalmic secondary literature; Moderate confidence", notes: "Ulcer protocols differ markedly Extra-label Research preload rule: 0.3%, one drop q4–6h; severe keratitis branch q1–2h",
-            confidence: "Moderate", highRisk: false
+            label: "0.3% solution: selected infected/deep corneal ulcer", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
+            frequency: "q1–2h initially; taper after infection control", route: "ophthalmic", strengths: [], concentration: nil,
+            sourceReference: "https://todaysveterinarypractice.com/ophthalmology/feline-corneal-ulcers-diagnosis-and-management/", notes: "One drop per affected eye within an ophthalmologist-selected antimicrobial plan. Culture/cytology guide therapy; additional gram-positive coverage may be needed. Not routine prophylaxis for a simple noninfected ulcer.",
+            confidence: "Moderate", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "ciprofloxacin-ophthalmic-dog-1", generic: "Ciprofloxacin ophthalmic", species: .dog,
-            label: "0.3%, one drop q4–6h; severe keratitis branch q1–2h", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
-            frequency: "q4-6h, q1-2h", route: "ophthalmic", strengths: [], concentration: nil,
-            sourceReference: "Veterinary ophthalmic secondary literature; Moderate confidence", notes: "Culture/stewardship Extra-label Research preload rule: 0.3%, one drop q4–6h; severe keratitis branch q1–2h",
-            confidence: "Moderate", highRisk: false
+            label: "0.3% solution: selected infected/deep corneal ulcer", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
+            frequency: "q1–2h initially; taper after infection control", route: "ophthalmic", strengths: [], concentration: nil,
+            sourceReference: "https://www.ivis.org/library/evc/evc-voorjaarsdagen-hague-2017/diagnosis-and-treatment-of-corneal-diseases", notes: "One drop per affected eye within an ophthalmologist-selected antimicrobial plan. Culture/cytology guide therapy; additional gram-positive coverage may be needed. Not routine prophylaxis for a simple noninfected ulcer.",
+            confidence: "Moderate", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "ciprofloxacin-ophthalmic-cat-1", generic: "Ciprofloxacin ophthalmic", species: .cat,
-            label: "0.3%, one drop q4–6h; severe keratitis branch q1–2h", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
-            frequency: "q4-6h, q1-2h", route: "ophthalmic", strengths: [], concentration: nil,
-            sourceReference: "Veterinary ophthalmic secondary literature; Moderate confidence", notes: "Culture/stewardship Extra-label Research preload rule: 0.3%, one drop q4–6h; severe keratitis branch q1–2h",
-            confidence: "Moderate", highRisk: false
+            label: "0.3% solution: selected infected/deep corneal ulcer", doseBasis: .dropsEye, minDose: 1.0, maxDose: 1.0,
+            frequency: "q1–2h initially; taper after infection control", route: "ophthalmic", strengths: [], concentration: nil,
+            sourceReference: "https://todaysveterinarypractice.com/ophthalmology/feline-corneal-ulcers-diagnosis-and-management/", notes: "One drop per affected eye within an ophthalmologist-selected antimicrobial plan. Culture/cytology guide therapy; additional gram-positive coverage may be needed. Not routine prophylaxis for a simple noninfected ulcer.",
+            confidence: "Moderate", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "epinephrine-dog-1", generic: "Epinephrine", species: .dog,
@@ -1887,16 +1887,16 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "potassium-chloride-dog-1", generic: "Potassium chloride", species: .dog,
-            label: "0.05–0.5 mEq/kg/h IV, serum-K guided; never IV bolus", doseBasis: .mEqKgHr, minDose: 0.05, maxDose: 0.5,
+            label: "Prescribed potassium replacement infusion", doseBasis: .mEqKgHr, minDose: 0.05, maxDose: 0.5,
             frequency: "continuous; serum-K guided", route: "IV infusion", strengths: [], concentration: nil,
-            sourceReference: "Veterinary critical-care electrolyte protocol", notes: "Never IV push; infusion hard-limit High-alert electrolyte; hard rate limits + double check Research preload rule: 0.05–0.5 mEq/kg/h IV, serum-K guided; **never IV bolus**",
+            sourceReference: "https://www.aaha.org/resources/2024-aaha-fluid-therapy-guidelines-for-dogs-and-cats/section-5-fluid-therapy-in-ill-patients/ — Table 11, 2024 AAHA Fluid Therapy Guidelines.", notes: "Enter the veterinarian-prescribed mEq/kg/hr rate based on current serum potassium and the full fluid plan. The app does not choose a rate or use a midpoint. Never exceed 0.5 mEq/kg/hr; never bolus KCl-containing fluids. Enter FINAL thoroughly mixed infusion concentration in mEq/mL, not stock concentrate. Account for potassium in all concurrent fluids and monitor potassium, renal function, urine production and fluid balance.",
             confidence: "High for arithmetic", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "potassium-chloride-cat-1", generic: "Potassium chloride", species: .cat,
-            label: "0.05–0.5 mEq/kg/h IV, serum-K guided; never IV bolus", doseBasis: .mEqKgHr, minDose: 0.05, maxDose: 0.5,
+            label: "Prescribed potassium replacement infusion", doseBasis: .mEqKgHr, minDose: 0.05, maxDose: 0.5,
             frequency: "continuous; serum-K guided", route: "IV infusion", strengths: [], concentration: nil,
-            sourceReference: "Veterinary critical-care electrolyte protocol", notes: "Never IV push; infusion hard-limit High-alert electrolyte; hard rate limits + double check Research preload rule: 0.05–0.5 mEq/kg/h IV, serum-K guided; **never IV bolus**",
+            sourceReference: "https://www.aaha.org/resources/2024-aaha-fluid-therapy-guidelines-for-dogs-and-cats/section-5-fluid-therapy-in-ill-patients/ — Table 11, 2024 AAHA Fluid Therapy Guidelines.", notes: "Enter the veterinarian-prescribed mEq/kg/hr rate based on current serum potassium and the full fluid plan. The app does not choose a rate or use a midpoint. Never exceed 0.5 mEq/kg/hr; never bolus KCl-containing fluids. Enter FINAL thoroughly mixed infusion concentration in mEq/mL, not stock concentrate. Account for potassium in all concurrent fluids and monitor potassium, renal function, urine production and fluid balance.",
             confidence: "High for arithmetic", highRisk: true
         ),
         BuiltInProtocolPreset(
@@ -1950,79 +1950,79 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "ivermectin-dog-1", generic: "Ivermectin", species: .dog,
-            label: "Selected parasite treatment - ABCB1 screening required", doseBasis: .mgKg, minDose: 0.2, maxDose: 0.3,
-            frequency: "per parasite protocol", route: "PO/SC", strengths: [], concentration: nil,
-            sourceReference: "MSD parasitology; high-dose use requires special caution.", notes: "ABCB1/MDR1 toxicity concern; never generic-dose across indications High-dose extra-label branch needs genetic/risk warning Research preload rule: Preventive microdose branch separate from high-dose parasite branch; ABCB1 hard stop",
+            label: "Selected mite treatment; ABCB1 risk assessment required", doseBasis: .mgKg, minDose: 0.2, maxDose: 0.3,
+            frequency: "every 1–2 weeks for 3–4 treatments", route: "PO/SC", strengths: [], concentration: nil,
+            sourceReference: "https://www.msdvetmanual.com/ear-disorders/diseases-of-the-pinna/mite-infestations-affecting-the-pinna-in-animals", notes: "Extra-label mite regimen: 200–300 mcg/kg equals 0.2–0.3 mg/kg. Assess ABCB1/MDR1 susceptibility, interactions and heartworm status; potentially severe neurotoxicity. Not a heartworm-preventive microdose. This app does not determine genetic eligibility.",
             confidence: "Moderate-high", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "ivermectin-cat-1", generic: "Ivermectin", species: .cat,
             label: "Selected feline preventive/parasite branch", doseBasis: .mgKg, minDose: 0.024, maxDose: 0.024,
             frequency: "q30d", route: "PO", strengths: [], concentration: nil,
-            sourceReference: "MSD parasitology; high-dose use requires special caution.", notes: "ABCB1/MDR1 toxicity concern; never generic-dose across indications High-dose extra-label branch needs genetic/risk warning Research preload rule: Preventive microdose branch separate from high-dose parasite branch; ABCB1 hard stop",
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk", notes: "ABCB1/MDR1 toxicity concern; never generic-dose across indications High-dose extra-label branch needs genetic/risk warning Research preload rule: Preventive microdose branch separate from high-dose parasite branch; ABCB1 hard stop",
             confidence: "Moderate-high", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "milbemycin-oxime-dog-1", generic: "Milbemycin oxime", species: .dog,
             label: "~0.5 mg/kg floor in cited monthly combo", doseBasis: .mgKg, minDose: 0.5, maxDose: 0.5,
             frequency: "monthly", route: "PO", strengths: [], concentration: nil,
-            sourceReference: "MSD US-approved helminth table.", notes: "Exact product label preferred Product/combination SKU matters Research preload rule: ≥0.5 mg/kg/weight-band monthly",
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk", notes: "Exact product label preferred Product/combination SKU matters Research preload rule: ≥0.5 mg/kg/weight-band monthly",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "selamectin-dog-1", generic: "Selamectin", species: .dog,
             label: "6 mg/kg monthly", doseBasis: .mgKg, minDose: 6.0, maxDose: 6.0,
             frequency: "monthly", route: "Topical", strengths: [], concentration: nil,
-            sourceReference: "MSD feline antiparasitic guidance.", notes: "Species/age/product label Dog and cat products/bands differ Research preload rule: 6 mg/kg topical q30d",
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk", notes: "Species/age/product label Dog and cat products/bands differ Research preload rule: 6 mg/kg topical q30d",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "selamectin-cat-1", generic: "Selamectin", species: .cat,
             label: "6 mg/kg monthly", doseBasis: .mgKg, minDose: 6.0, maxDose: 6.0,
             frequency: "monthly", route: "Topical", strengths: [], concentration: nil,
-            sourceReference: "MSD feline antiparasitic guidance.", notes: "Species/age/product label Dog and cat products/bands differ Research preload rule: 6 mg/kg topical q30d",
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk", notes: "Species/age/product label Dog and cat products/bands differ Research preload rule: 6 mg/kg topical q30d",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "moxidectin-dog-1", generic: "Moxidectin", species: .dog,
-            label: "Canine topical minimum", doseBasis: .mgKg, minDose: 2.5, maxDose: 2.5,
-            frequency: "per labeled product interval", route: "Topical", strengths: [], concentration: nil,
-            sourceReference: "MSD antiparasitic tables.", notes: "Exact product essential Multiple formulations/routes make generic auto-dose unsafe Research preload rule: Cat topical 1 mg/kg; dog topical 2.5 mg/kg; long-acting canine injectable branches",
+            label: "Moxidectin component of imidacloprid topical combination", doseBasis: .mgKg, minDose: 2.5, maxDose: 2.5,
+            frequency: "monthly", route: "Topical", strengths: [], concentration: nil,
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk", notes: "Use the exact species-specific combination-product weight table. This component minimum cannot be applied to oral or long-acting injectable moxidectin products.",
             confidence: "High when product selected", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "moxidectin-cat-1", generic: "Moxidectin", species: .cat,
-            label: "Feline topical minimum", doseBasis: .mgKg, minDose: 1, maxDose: 1,
-            frequency: "per labeled product interval", route: "Topical", strengths: [], concentration: nil,
-            sourceReference: "MSD antiparasitic tables.", notes: "Exact product essential Multiple formulations/routes make generic auto-dose unsafe Research preload rule: Cat topical 1 mg/kg; dog topical 2.5 mg/kg; long-acting canine injectable branches",
+            label: "Moxidectin component of imidacloprid topical combination", doseBasis: .mgKg, minDose: 1, maxDose: 1,
+            frequency: "monthly", route: "Topical", strengths: [], concentration: nil,
+            sourceReference: "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk", notes: "Use the exact species-specific combination-product weight table. This component minimum cannot be applied to oral or long-acting injectable moxidectin products.",
             confidence: "High when product selected", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "afoxolaner-dog-1", generic: "Afoxolaner", species: .dog,
             label: "Label weight-band delivering ≥~2.5 mg/kg q30d", doseBasis: .mgKg, minDose: 2.5, maxDose: 2.5,
             frequency: "q30d", route: "PO chewable", strengths: [], concentration: nil,
-            sourceReference: "Veterinary product-label based template; isoxazoline neurologic warning retained", notes: "Isoxazoline neurologic warning/product rules Isoxazoline neurologic warning/product label Research preload rule: Label weight-band delivering ≥~2.5 mg/kg q30d",
+            sourceReference: "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e10f7434-d00c-44de-af79-7b0886b2e948", notes: "Isoxazoline neurologic warning/product rules Isoxazoline neurologic warning/product label Research preload rule: Label weight-band delivering ≥~2.5 mg/kg q30d",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "fluralaner-dog-1", generic: "Fluralaner", species: .dog,
             label: "Canine oral minimum exposure", doseBasis: .mgKg, minDose: 25, maxDose: 25,
             frequency: "per product label interval", route: "PO", strengths: [], concentration: nil,
-            sourceReference: "Product-label/parasite references", notes: "Dog/cat products and intervals differ Formulation + species + interval differ Research preload rule: Dog oral ≥25 mg/kg; cat topical ≥40 mg/kg; formulation/interval selector",
+            sourceReference: "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1fcbf232-cfd4-481e-ba9b-6251b7b468d7", notes: "Dog/cat products and intervals differ Formulation + species + interval differ Research preload rule: Dog oral ≥25 mg/kg; cat topical ≥40 mg/kg; formulation/interval selector",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "fluralaner-cat-1", generic: "Fluralaner", species: .cat,
             label: "Feline topical minimum exposure", doseBasis: .mgKg, minDose: 40, maxDose: 40,
             frequency: "per product label interval", route: "Topical", strengths: [], concentration: nil,
-            sourceReference: "Product-label/parasite references", notes: "Dog/cat products and intervals differ Formulation + species + interval differ Research preload rule: Dog oral ≥25 mg/kg; cat topical ≥40 mg/kg; formulation/interval selector",
+            sourceReference: "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=fed84d87-049a-4e22-8091-451cde091815", notes: "Dog/cat products and intervals differ Formulation + species + interval differ Research preload rule: Dog oral ≥25 mg/kg; cat topical ≥40 mg/kg; formulation/interval selector",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
             id: "sarolaner-dog-1", generic: "Sarolaner", species: .dog,
             label: "≥2 mg/kg via weight-band q30d", doseBasis: .mgKg, minDose: 2.0, maxDose: 2.0,
             frequency: "q30d", route: "PO chewable", strengths: [], concentration: nil,
-            sourceReference: "Product-label based template", notes: "Product-specific Do not substitute Simparica Trio tables Research preload rule: ≥2 mg/kg via weight-band q30d",
+            sourceReference: "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=91fc9ba1-35e6-4e37-8c37-c5e40699bd5b", notes: "Product-specific Do not substitute Simparica Trio tables Research preload rule: ≥2 mg/kg via weight-band q30d",
             confidence: "High", highRisk: false
         ),
         BuiltInProtocolPreset(
@@ -2043,14 +2043,14 @@ enum BuiltInProtocolCatalog {
             id: "toceranib-phosphate-dog-1", generic: "Toceranib phosphate", species: .dog,
             label: "PALLADIA FDA-label initial dose — 3.25 mg/kg PO q48h", doseBasis: .mgKg, minDose: 3.25, maxDose: 3.25,
             frequency: "q48h (every other day)", route: "PO", strengths: [10, 15, 50], concentration: nil,
-            sourceReference: "FDA PALLADIA (toceranib phosphate) labeling, NADA 141-295.", notes: "Do not split tablets. Label permits dose interruptions and reductions in 0.5 mg/kg steps down to 2.2 mg/kg q48h to manage adverse reactions; use the FDA weight/tablet chart and oncology monitoring rather than freehand tablet rounding.",
+            sourceReference: "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ae09ae83-0812-4ddc-92e3-730f7a1ae449", notes: "Do not split tablets. Label permits dose interruptions and reductions in 0.5 mg/kg steps down to 2.2 mg/kg q48h to manage adverse reactions; use the FDA weight/tablet chart and oncology monitoring rather than freehand tablet rounding.",
             confidence: "FDA-labeled canine protocol", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "toceranib-phosphate-dog-2", generic: "Toceranib phosphate", species: .dog,
             label: "PALLADIA FDA-label minimum reduced dose — 2.2 mg/kg PO q48h", doseBasis: .mgKg, minDose: 2.2, maxDose: 2.2,
             frequency: "q48h (every other day)", route: "PO", strengths: [10, 15, 50], concentration: nil,
-            sourceReference: "FDA PALLADIA (toceranib phosphate) labeling, NADA 141-295.", notes: "This is the label-described minimum reduced dose, not an automatic titration target. Dose reduction/interruption must be selected by the treating veterinarian based on toxicity/response; do not split tablets.",
+            sourceReference: "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ae09ae83-0812-4ddc-92e3-730f7a1ae449", notes: "This is the label-described minimum reduced dose, not an automatic titration target. Dose reduction/interruption must be selected by the treating veterinarian based on toxicity/response; do not split tablets.",
             confidence: "FDA-labeled canine dose-reduction floor", highRisk: true
         ),
         BuiltInProtocolPreset(
@@ -2071,35 +2071,35 @@ enum BuiltInProtocolCatalog {
             id: "chlorambucil-cat-2", generic: "Chlorambucil", species: .cat,
             label: "Feline low-grade GI/cholangitis protocol — 2 mg/cat PO q48–72h", doseBasis: .fixedMg, minDose: 2.0, maxDose: 2.0,
             frequency: "q48–72h", route: "PO", strengths: [2], concentration: nil,
-            sourceReference: "MSD Veterinary Manual — feline colitis/cholangitis and GI lymphoma guidance.", notes: "Cytotoxic handling and CBC monitoring required. Other feline lymphoma schedules exist; choose the disease-specific oncology protocol rather than interchanging schedules.",
+            sourceReference: "https://www.msdvetmanual.com/digestive-system/diseases-of-the-large-intestine-in-small-animals/colitis-in-small-animals", notes: "Cytotoxic handling and CBC monitoring required. Other feline lymphoma schedules exist; choose the disease-specific oncology protocol rather than interchanging schedules.",
             confidence: "High for selected feline protocol", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "cyclophosphamide-dog-1", generic: "Cyclophosphamide", species: .dog,
-            label: "Pulse oncology protocol — 200–250 mg/m²", doseBasis: .mgM2, minDose: 200.0, maxDose: 250.0,
-            frequency: "protocol-specific cycle; oncologist selection required", route: "PO/IV — protocol-specific", strengths: [], concentration: nil,
-            sourceReference: "Veterinary oncology protocol literature; MSD documents 200–250 mg/m² rescue schedules in GI lymphoma.", notes: "Do not infer a cycle from the dose alone. CBC, urinalysis/cystitis monitoring, hydration and protocol-specific handling required; sterile hemorrhagic cystitis requires discontinuation.",
+            label: "Canine lymphoma combination-protocol component", doseBasis: .mgM2, minDose: 200.0, maxDose: 250.0,
+            frequency: "protocol-specific cycle; oncologist selection required", route: "PO", strengths: [], concentration: nil,
+            sourceReference: "https://pmc.ncbi.nlm.nih.gov/articles/PMC12784993/", notes: "200–250 mg/m² oral pulse is documented in a canine lymphoma combination protocol. The oncologist must prescribe cycle timing, concurrent drugs, CBC and urinary monitoring. Not the feline divided-course regimen.",
             confidence: "Moderate-high; protocol-specific", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "cyclophosphamide-dog-2", generic: "Cyclophosphamide", species: .dog,
             label: "Metronomic oncology protocol — 10–15 mg/m²", doseBasis: .mgM2, minDose: 10.0, maxDose: 15.0,
             frequency: "short-interval continuous protocol; exact schedule must be selected by oncologist", route: "PO", strengths: [], concentration: nil,
-            sourceReference: "Veterinary metronomic oncology literature; MSD describes metronomic chemotherapy as low-dose oral therapy at short intervals, often daily.", notes: "The app calculates the selected mg/m² amount but does not choose the schedule. CBC/urinalysis and hemorrhagic-cystitis monitoring are mandatory.",
+            sourceReference: "https://pmc.ncbi.nlm.nih.gov/articles/PMC5157738/", notes: "The app calculates the selected mg/m² amount but does not choose the schedule. CBC/urinalysis and hemorrhagic-cystitis monitoring are mandatory.",
             confidence: "Moderate; clinic oncology protocol confirmation required", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "cyclophosphamide-cat-1", generic: "Cyclophosphamide", species: .cat,
             label: "Refractory GI lymphoma rescue — 200–250 mg/m²", doseBasis: .mgM2, minDose: 200.0, maxDose: 250.0,
             frequency: "administered over 2 days on days 1 and 3, q2wk in cited rescue protocol", route: "IV or PO", strengths: [], concentration: nil,
-            sourceReference: "MSD Veterinary Manual — Gastrointestinal Neoplasia in Dogs and Cats.", notes: "Cited rescue protocol; not interchangeable with other lymphoma protocols. CBC, urine/cystitis and oncology monitoring required.",
-            confidence: "High for selected rescue protocol", highRisk: true
+            sourceReference: "https://www.msdvetmanual.com/digestive-system/neoplasia-of-the-gastrointestinal-tract-in-small-animals/gastrointestinal-neoplasia-in-dogs-and-cats", notes: "The source describes 200–250 mg/m² administered over days 1 and 3 of a 2-week rescue cycle. This amount is a cycle total; this preset must not be interpreted as the amount on EACH day. Automatic calculation is blocked until an oncologist supplies the explicit divided-dose order.",
+            confidence: "Cycle-total interpretation requires specialist order", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "cyclophosphamide-cat-2", generic: "Cyclophosphamide", species: .cat,
             label: "Metronomic oncology protocol — 10–15 mg/m²", doseBasis: .mgM2, minDose: 10.0, maxDose: 15.0,
             frequency: "short-interval continuous protocol; exact schedule must be selected by oncologist", route: "PO", strengths: [], concentration: nil,
-            sourceReference: "Veterinary metronomic oncology literature; MSD describes metronomic chemotherapy as low-dose oral therapy at short intervals, often daily.", notes: "The app calculates the selected mg/m² amount but does not choose the schedule. CBC/urinalysis and hemorrhagic-cystitis monitoring are mandatory.",
+            sourceReference: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11164162/", notes: "The app calculates the selected mg/m² amount but does not choose the schedule. CBC/urinalysis and hemorrhagic-cystitis monitoring are mandatory.",
             confidence: "Moderate; clinic oncology protocol confirmation required", highRisk: true
         ),
         BuiltInProtocolPreset(
@@ -2111,9 +2111,9 @@ enum BuiltInProtocolCatalog {
         ),
         BuiltInProtocolPreset(
             id: "vincristine-cat-1", generic: "Vincristine", species: .cat,
-            label: "Feline multidrug oncology protocol — 0.5–0.75 mg/m² IV", doseBasis: .mgM2, minDose: 0.5, maxDose: 0.75,
+            label: "Feline MOMP rescue-protocol component", doseBasis: .mgM2, minDose: 0.5, maxDose: 0.75,
             frequency: "protocol-specific cycle; oncologist selection required", route: "IV only", strengths: [], concentration: nil,
-            sourceReference: "Veterinary feline lymphoma multidrug protocol literature; MSD confirms vincristine is an IV antineoplastic agent used for lymphoma/leukemia.", notes: "Vesicant; never intrathecal. Numeric range requires clinic/oncologist protocol confirmation before activation; CBC, neuro/GI and extravasation monitoring required.",
+            sourceReference: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11129245/", notes: "Selected published MOMP range; days 0 and 7 within a 28-day cycle. Whole combination and dose modifications require oncologist selection. IV vesicant; never intrathecal. Monitor CBC and neurologic/GI toxicity.",
             confidence: "Moderate; clinic oncology protocol confirmation required", highRisk: true
         ),
         BuiltInProtocolPreset(
@@ -2134,21 +2134,21 @@ enum BuiltInProtocolCatalog {
             id: "doxorubicin-cat-1", generic: "Doxorubicin", species: .cat,
             label: "Feline oncology protocol", doseBasis: .mgKg, minDose: 1, maxDose: 1,
             frequency: "q3wk protocol", route: "IV", strengths: [], concentration: 2.0,
-            sourceReference: "MSD specifies these canine size-based rules and notes cumulative canine cardiotoxicity around a 180 mg/m² lifetime exposure ceiling.", notes: "Vesicant; cardiac/renal species-specific monitoring Cardiac/cumulative-dose and small-dog protocol issues Research preload rule: Dog >10 kg 30 mg/m²; ≤10 kg and cat ~1 mg/kg; q3wk protocol branch",
+            sourceReference: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10816589/", notes: "Feline-specific 1 mg/kg IV every 3 weeks is described in oncology review. Nephrotoxicity is a major feline concern; monitor renal function, CBC and cumulative exposure. Do not apply canine lifetime ceilings to cats.",
             confidence: "High for arithmetic", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "lomustine-dog-1", generic: "Lomustine", species: .dog,
             label: "Canine oncology protocol", doseBasis: .mgM2, minDose: 60, maxDose: 70,
             frequency: "protocol-specific interval", route: "PO", strengths: [], concentration: nil,
-            sourceReference: "Veterinary oncology secondary literature; Moderate confidence, mandatory oncology review", notes: "Delayed myelosuppression/hepatotoxicity Cytotoxic; hepatic/myelosuppression monitoring and protocol variation Research preload rule: Dog ~60–70 mg/m²; cat ~50–60 mg/m², protocol-specific interval",
+            sourceReference: "https://pubmed.ncbi.nlm.nih.gov/17186855/", notes: "Delayed myelosuppression/hepatotoxicity Cytotoxic; hepatic/myelosuppression monitoring and protocol variation Research preload rule: Dog ~60–70 mg/m²; cat ~50–60 mg/m², protocol-specific interval",
             confidence: "Moderate-high", highRisk: true
         ),
         BuiltInProtocolPreset(
             id: "lomustine-cat-1", generic: "Lomustine", species: .cat,
             label: "Feline oncology protocol", doseBasis: .mgM2, minDose: 50, maxDose: 60,
             frequency: "protocol-specific interval", route: "PO", strengths: [], concentration: nil,
-            sourceReference: "Veterinary oncology secondary literature; Moderate confidence, mandatory oncology review", notes: "Delayed myelosuppression/hepatotoxicity Cytotoxic; hepatic/myelosuppression monitoring and protocol variation Research preload rule: Dog ~60–70 mg/m²; cat ~50–60 mg/m², protocol-specific interval",
+            sourceReference: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10816491/", notes: "50–60 mg/m² oral target reported for feline mast-cell tumors. Interval depends on protocol and delayed cytopenias; do not substitute canine scheduling. CBC and hepatic monitoring required.",
             confidence: "Moderate-high", highRisk: true
         ),
     ]

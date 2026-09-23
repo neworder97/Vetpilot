@@ -173,6 +173,12 @@ extension MedicationSafety {
 
     static func protocolEligibilityIssue(key: String, kg: Double) -> String? {
         guard let id = builtinID(key) else { return nil }
+        if ["ampicillin-sulbactam-dog-2", "ampicillin-sulbactam-cat-2"].contains(id) {
+            return "This CRI reference does not establish whether mg means combined drug or ampicillin alone. Use an individually reviewed protocol with an explicit mass convention and final infusion preparation."
+        }
+        if id == "cyclophosphamide-cat-1" {
+            return "The source specifies a cyclophosphamide total across days 1 and 3, not an amount for each day. An oncologist must supply an explicit divided-dose order before calculation."
+        }
         if id == "levetiracetam-cat-2" {
             return "Feline extended-release levetiracetam needs a specialist-selected regimen and intact-tablet assessment. The cited general dog/cat summary does not establish this preset for cats."
         }
@@ -221,3 +227,15 @@ extension MedicationSafety {
     }
 }
 
+
+extension MedicationSafety {
+    static func requiresPrescribedPotassiumRate(key: String) -> Bool {
+        guard let id = builtinID(key) else { return false }
+        return id == "potassium-chloride-dog-1" || id == "potassium-chloride-cat-1"
+    }
+
+    static func validPotassiumRate(_ rate: Double?) -> Bool {
+        guard let rate else { return false }
+        return positiveFinite(rate) && rate <= 0.5
+    }
+}

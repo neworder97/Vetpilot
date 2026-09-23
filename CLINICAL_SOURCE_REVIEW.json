@@ -5,13 +5,15 @@
     "Product-specific insulin concentration engine and UI regression passed on eadbe53cb1ddd561b138e61dd8dda0d7d200ef99.",
     "Canine AAHA insulin instructions need ideal-weight and whole-unit-rounding context; notes now state it.",
     "Removed oral tablet strength metadata from three non-oral furosemide branches.",
-    "Potassium lower-range and final-dilution workflow remain pending; a maximum infusion rate alone is not a complete protocol.",
     "8d2e22d arithmetic candidate: zero numeric/rendered mismatches. SwiftPM 74/75 passed; stale mixed-route fixture corrected for next run.",
     "Added explicit final-infusion concentration verification in UI and buprenorphine product-specific concentration guards; next CI required.",
     "dc35c0d9967d46a698c2ea8d6398cf331219134d passed arithmetic run 35807452217 and iOS run 35807452287: 90 unit and 9 UI tests; device-target compile passed. Source matching does not establish clinical clearance.",
     "Additional source review confirmed TMP-sulfamethoxazole skin regimens are explicitly present in the antistaphylococcal table; prior search snippets omitted that row. Added canine mirtazapine weight-band enforcement (7 kg source gap intentionally not guessed), and fixed-volume product-concentration engine guard.",
     "Replaced canine commercial cyclosporine drops with a separate ointment-strip dose basis; mass and volume conversions disabled. Corrected ketamine/pregabalin indication wording and removed oral strengths from IV methocarbamol. Weight-band protocols now require weight in view validation even for fixed-mg arithmetic.",
-    "Canine doxorubicin >10 kg versus <=10 kg now enforced in both calculators and independently tested. Fenbendazole single-dose and three-day courses separated. Canine praziquantel 170 mg ceiling enforced; weights whose lower range exceeds ceiling require product-table review. Canine pyrantel 5 mg/kg corresponds to Nemex-2 base-dose label; MSD small-dog 10 mg/kg is a distinct alternative, not a universal correction. Credelio dog source and food instruction corrected."
+    "Canine doxorubicin >10 kg versus <=10 kg now enforced in both calculators and independently tested. Fenbendazole single-dose and three-day courses separated. Canine praziquantel 170 mg ceiling enforced; weights whose lower range exceeds ceiling require product-table review. Canine pyrantel 5 mg/kg corresponds to Nemex-2 base-dose label; MSD small-dog 10 mg/kg is a distinct alternative, not a universal correction. Credelio dog source and food instruction corrected.",
+    "Added direct source checks for anesthesia, seizure, behavior and antiparasitic protocols. Updated propofol/alfaxalone canine induction and midazolam adjunct to named AAHA regimens; narrowed feline paroxetine and sertraline to 2024 AAFP intercat-tension ranges. Feline intranasal midazolam explicitly retains limited-evidence status.",
+    "Completed initial source comparison for all 307 entries; this does not mean clinical clearance. Remaining source-limited and protocol-dependent records stay explicitly qualified. Feline cyclophosphamide rescue cycle total is blocked from automatic per-administration calculation to prevent doubling a divided course.",
+    "Potassium requires an explicit prescribed infusion rate, maximum 0.5 mEq/kg/hr, and verified final dilution. Ampicillin\u2013sulbactam intermittent entry now explicitly uses combined mass; ambiguous CRI entries are blocked. These are arithmetic safeguards, not clinical clearance."
   ],
   "entries": [
     {
@@ -123,8 +125,8 @@
     },
     {
       "id": "omeprazole-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://journals.sagepub.com/doi/10.1177/1098612x16631234"
     },
     {
       "id": "famotidine-dog-1",
@@ -267,8 +269,8 @@
     },
     {
       "id": "methimazole-transdermal-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/endocrine-system/the-thyroid-gland/hyperthyroidism-in-animals"
     },
     {
       "id": "insulin-glargine-dog-1",
@@ -498,68 +500,69 @@
     },
     {
       "id": "midazolam-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_premedicationandsedation.pdf"
     },
     {
       "id": "midazolam-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients"
     },
     {
       "id": "midazolam-dog-3",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients"
     },
     {
       "id": "midazolam-dog-4",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients"
     },
     {
       "id": "midazolam-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_premedicationandsedation.pdf"
     },
     {
       "id": "midazolam-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients"
     },
     {
       "id": "midazolam-cat-3",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "SOURCE_LIMITED_REFERENCE_REQUIRES_INDIVIDUAL_REVIEW",
+      "source": "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients",
+      "review_note": "General reference matches number. ACVIM 2024 feline intranasal evidence grade E; no claim of feline validation."
     },
     {
       "id": "midazolam-cat-4",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients"
     },
     {
       "id": "diazepam-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients"
     },
     {
       "id": "diazepam-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients"
     },
     {
       "id": "diazepam-dog-3",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients"
     },
     {
       "id": "diazepam-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients"
     },
     {
       "id": "diazepam-cat-3",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients"
     },
     {
       "id": "alprazolam-dog-1",
@@ -574,38 +577,41 @@
     },
     {
       "id": "dexmedetomidine-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9afc5d50-8df7-46e9-b5a0-5573627fc1bc",
+      "review_note": "Dose basis and .5 mg/mL strength match DEXDOMITOR label; clinical use still requires product weight table and patient contraindication assessment."
     },
     {
       "id": "dexmedetomidine-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9afc5d50-8df7-46e9-b5a0-5573627fc1bc",
+      "review_note": "Dose basis and .5 mg/mL strength match DEXDOMITOR label; clinical use still requires product weight table and patient contraindication assessment."
     },
     {
       "id": "dexmedetomidine-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9afc5d50-8df7-46e9-b5a0-5573627fc1bc",
+      "review_note": "Dose basis and .5 mg/mL strength match DEXDOMITOR label; clinical use still requires product weight table and patient contraindication assessment."
     },
     {
       "id": "propofol-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_induction_iv.pdf"
     },
     {
       "id": "propofol-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10816483/"
     },
     {
       "id": "alfaxalone-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_induction_iv.pdf"
     },
     {
       "id": "alfaxalone-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_induction_iv.pdf"
     },
     {
       "id": "amoxicillin-dog-1",
@@ -635,27 +641,31 @@
     },
     {
       "id": "ampicillin-sulbactam-dog-1",
-      "status": "SOURCE_RANGE_MATCHES_WORKFLOW_REVIEW_PENDING",
-      "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-penicillins",
-      "finding": "Numerical range matches; combined-drug mass convention and final infusion formulation need explicit verification."
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7167523/ \u2014 Ford and Mazzaferro, Charts and Tables; 20\u201350 mg/kg total combined ampicillin + sulbactam q8h.",
+      "finding": "Numerical range matches; combined-drug mass convention and final infusion formulation need explicit verification.",
+      "review_note": "Replaced ambiguous merged 10\u201330 range with a reference explicitly defining total combined mass; no default concentration."
     },
     {
       "id": "ampicillin-sulbactam-dog-2",
-      "status": "SOURCE_RANGE_MATCHES_WORKFLOW_REVIEW_PENDING",
+      "status": "AUTOMATIC_CALCULATION_BLOCKED_PENDING_SPECIALIST_REVIEW",
       "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-penicillins",
-      "finding": "Numerical range matches; combined-drug mass convention and final infusion formulation need explicit verification."
+      "finding": "Numerical range matches; combined-drug mass convention and final infusion formulation need explicit verification.",
+      "review_note": "Do not infer the mass convention for 3.75\u20138.3 mg/kg/hr from another regimen."
     },
     {
       "id": "ampicillin-sulbactam-cat-1",
-      "status": "SOURCE_RANGE_MATCHES_WORKFLOW_REVIEW_PENDING",
-      "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-penicillins",
-      "finding": "Numerical range matches; combined-drug mass convention and final infusion formulation need explicit verification."
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7167523/ \u2014 Ford and Mazzaferro, Charts and Tables; 20\u201350 mg/kg total combined ampicillin + sulbactam q8h.",
+      "finding": "Numerical range matches; combined-drug mass convention and final infusion formulation need explicit verification.",
+      "review_note": "Replaced ambiguous merged 10\u201330 range with a reference explicitly defining total combined mass; no default concentration."
     },
     {
       "id": "ampicillin-sulbactam-cat-2",
-      "status": "SOURCE_RANGE_MATCHES_WORKFLOW_REVIEW_PENDING",
+      "status": "AUTOMATIC_CALCULATION_BLOCKED_PENDING_SPECIALIST_REVIEW",
       "source": "https://www.msdvetmanual.com/multimedia/table/dosages-of-penicillins",
-      "finding": "Numerical range matches; combined-drug mass convention and final infusion formulation need explicit verification."
+      "finding": "Numerical range matches; combined-drug mass convention and final infusion formulation need explicit verification.",
+      "review_note": "Do not infer the mass convention for 3.75\u20138.3 mg/kg/hr from another regimen."
     },
     {
       "id": "cephalexin-dog-1",
@@ -937,23 +947,23 @@
     },
     {
       "id": "dexamethasone-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.cliniciansbrief.com/article/which-drugs-are-most-effective-managing-atopic-dermatitis-part-1"
     },
     {
       "id": "dexamethasone-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.msdvetmanual.com/circulatory-system/anemia/regenerative-anemias-in-animals"
     },
     {
       "id": "dexamethasone-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.cliniciansbrief.com/article/which-drugs-are-most-effective-managing-atopic-dermatitis-part-1"
     },
     {
       "id": "dexamethasone-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.msdvetmanual.com/circulatory-system/anemia/regenerative-anemias-in-animals"
     },
     {
       "id": "methylprednisolone-cat-1",
@@ -963,23 +973,23 @@
     },
     {
       "id": "methylprednisolone-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "SOURCE_LIMITED_REFERENCE_REQUIRES_INDIVIDUAL_REVIEW",
+      "source": "https://journals.sagepub.com/doi/10.1016/j.jfms.2003.09.004"
     },
     {
       "id": "methylprednisolone-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://doi.org/10.3390/vetsci9040149"
     },
     {
       "id": "triamcinolone-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.cliniciansbrief.com/article/which-drugs-are-most-effective-managing-atopic-dermatitis-part-1"
     },
     {
       "id": "triamcinolone-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.cliniciansbrief.com/article/which-drugs-are-most-effective-managing-atopic-dermatitis-part-1"
     },
     {
       "id": "amlodipine-dog-1",
@@ -1207,13 +1217,14 @@
     },
     {
       "id": "mitotane-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/endocrine-system/the-pituitary-gland/cushing-disease-pituitary-dependent-hyperadrenocorticism-in-animals"
     },
     {
       "id": "mitotane-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-integumentary-system/hormonal-treatment-for-integumentary-disease-in-animals",
+      "review_note": "25\u201350 mg/kg is a weekly total; ACTH testing determines amount and divided schedule. Not an independently executable per-dose prescription."
     },
     {
       "id": "zonisamide-dog-1",
@@ -1283,8 +1294,8 @@
     },
     {
       "id": "sertraline-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://journals.sagepub.com/doi/10.1177/1098612X241263465"
     },
     {
       "id": "paroxetine-dog-1",
@@ -1293,8 +1304,8 @@
     },
     {
       "id": "paroxetine-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://journals.sagepub.com/doi/10.1177/1098612X241263465"
     },
     {
       "id": "buspirone-dog-1",
@@ -1303,8 +1314,8 @@
     },
     {
       "id": "buspirone-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11148882/"
     },
     {
       "id": "clonidine-dog-1",
@@ -1341,8 +1352,8 @@
     },
     {
       "id": "lokivetmab-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.zoetisus.com/products/dogs/cytopoint-lasting-relief/"
     },
     {
       "id": "cyclosporine-ophthalmic-dog-1",
@@ -1352,73 +1363,73 @@
     },
     {
       "id": "cyclosporine-ophthalmic-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://onlinelibrary.wiley.com/doi/10.1111/j.1463-5224.2008.00679.x"
     },
     {
       "id": "tacrolimus-ophthalmic-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3103853/"
     },
     {
       "id": "tacrolimus-ophthalmic-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "SOURCE_LIMITED_REFERENCE_REQUIRES_INDIVIDUAL_REVIEW",
+      "source": "https://www.merckvetmanual.com/eye-diseases-and-disorders/ophthalmology/nasolacrimal-and-lacrimal-apparatus-in-animals"
     },
     {
       "id": "latanoprost-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-eye/treatment-of-glaucoma-in-animals"
     },
     {
       "id": "dorzolamide-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-eye/treatment-of-glaucoma-in-animals"
     },
     {
       "id": "dorzolamide-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-eye/treatment-of-glaucoma-in-animals"
     },
     {
       "id": "timolol-ophthalmic-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-eye/treatment-of-glaucoma-in-animals"
     },
     {
       "id": "timolol-ophthalmic-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-eye/treatment-of-glaucoma-in-animals"
     },
     {
       "id": "atropine-ophthalmic-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://todaysveterinarypractice.com/ophthalmology/ocular-proptosis/"
     },
     {
       "id": "atropine-ophthalmic-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://todaysveterinarypractice.com/ophthalmology/feline-corneal-ulcers-diagnosis-and-management/"
     },
     {
       "id": "ofloxacin-ophthalmic-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.ivis.org/library/evc/evc-voorjaarsdagen-hague-2017/diagnosis-and-treatment-of-corneal-diseases"
     },
     {
       "id": "ofloxacin-ophthalmic-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://todaysveterinarypractice.com/ophthalmology/feline-corneal-ulcers-diagnosis-and-management/"
     },
     {
       "id": "ciprofloxacin-ophthalmic-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.ivis.org/library/evc/evc-voorjaarsdagen-hague-2017/diagnosis-and-treatment-of-corneal-diseases"
     },
     {
       "id": "ciprofloxacin-ophthalmic-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://todaysveterinarypractice.com/ophthalmology/feline-corneal-ulcers-diagnosis-and-management/"
     },
     {
       "id": "epinephrine-dog-1",
@@ -1556,15 +1567,17 @@
     },
     {
       "id": "potassium-chloride-dog-1",
-      "status": "SOURCE_RANGE_MATCHES_WORKFLOW_REVIEW_PENDING",
-      "source": "https://www.aaha.org/resources/2024-aaha-fluid-therapy-guidelines-for-dogs-and-cats/section-5-fluid-therapy-in-ill-patients/",
-      "finding": "AAHA Table 11 supports numerical range by serum-K band. A single selectable range does not replace serum-K-specific prescription; final diluted concentration workflow still needs explicit UI."
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.aaha.org/resources/2024-aaha-fluid-therapy-guidelines-for-dogs-and-cats/section-5-fluid-therapy-in-ill-patients/ \u2014 Table 11, 2024 AAHA Fluid Therapy Guidelines.",
+      "finding": "AAHA Table 11 supports numerical range by serum-K band. A single selectable range does not replace serum-K-specific prescription; final diluted concentration workflow still needs explicit UI.",
+      "review_note": "Explicit prescribed-rate entry replaces automatic low/middle/high selection. Both engines reject absent, nonfinite, nonpositive or above-ceiling input."
     },
     {
       "id": "potassium-chloride-cat-1",
-      "status": "SOURCE_RANGE_MATCHES_WORKFLOW_REVIEW_PENDING",
-      "source": "https://www.aaha.org/resources/2024-aaha-fluid-therapy-guidelines-for-dogs-and-cats/section-5-fluid-therapy-in-ill-patients/",
-      "finding": "AAHA Table 11 supports numerical range by serum-K band. A single selectable range does not replace serum-K-specific prescription; final diluted concentration workflow still needs explicit UI."
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.aaha.org/resources/2024-aaha-fluid-therapy-guidelines-for-dogs-and-cats/section-5-fluid-therapy-in-ill-patients/ \u2014 Table 11, 2024 AAHA Fluid Therapy Guidelines.",
+      "finding": "AAHA Table 11 supports numerical range by serum-K band. A single selectable range does not replace serum-K-specific prescription; final diluted concentration workflow still needs explicit UI.",
+      "review_note": "Explicit prescribed-rate entry replaces automatic low/middle/high selection. Both engines reject absent, nonfinite, nonpositive or above-ceiling input."
     },
     {
       "id": "fenbendazole-dog-1",
@@ -1603,58 +1616,62 @@
     },
     {
       "id": "ivermectin-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.msdvetmanual.com/ear-disorders/diseases-of-the-pinna/mite-infestations-affecting-the-pinna-in-animals"
     },
     {
       "id": "ivermectin-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk"
     },
     {
       "id": "milbemycin-oxime-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk"
     },
     {
       "id": "selamectin-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk"
     },
     {
       "id": "selamectin-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk"
     },
     {
       "id": "moxidectin-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk"
     },
     {
       "id": "moxidectin-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk"
     },
     {
       "id": "afoxolaner-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e10f7434-d00c-44de-af79-7b0886b2e948",
+      "review_note": "Minimum exposure matches named product. Exact product/age/weight bands and parasite-specific interval still control dispensing; no automatic tablet/tube quantity is inferred."
     },
     {
       "id": "fluralaner-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1fcbf232-cfd4-481e-ba9b-6251b7b468d7",
+      "review_note": "Minimum exposure matches named product. Exact product/age/weight bands and parasite-specific interval still control dispensing; no automatic tablet/tube quantity is inferred."
     },
     {
       "id": "fluralaner-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=fed84d87-049a-4e22-8091-451cde091815",
+      "review_note": "Minimum exposure matches named product. Exact product/age/weight bands and parasite-specific interval still control dispensing; no automatic tablet/tube quantity is inferred."
     },
     {
       "id": "sarolaner-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=91fc9ba1-35e6-4e37-8c37-c5e40699bd5b",
+      "review_note": "Minimum exposure matches named product. Exact product/age/weight bands and parasite-specific interval still control dispensing; no automatic tablet/tube quantity is inferred."
     },
     {
       "id": "lotilaner-dog-1",
@@ -1668,13 +1685,13 @@
     },
     {
       "id": "toceranib-phosphate-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ae09ae83-0812-4ddc-92e3-730f7a1ae449"
     },
     {
       "id": "toceranib-phosphate-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ae09ae83-0812-4ddc-92e3-730f7a1ae449"
     },
     {
       "id": "chlorambucil-dog-1",
@@ -1690,28 +1707,30 @@
     },
     {
       "id": "chlorambucil-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://www.msdvetmanual.com/digestive-system/diseases-of-the-large-intestine-in-small-animals/colitis-in-small-animals"
     },
     {
       "id": "cyclophosphamide-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_CORRECTED_PENDING_REGRESSION",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12784993/"
     },
     {
       "id": "cyclophosphamide-dog-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5157738/",
+      "review_note": "Selected range lies within published metronomic dose variation; optimal dose/schedule is not established. Schedule is deliberately not inferred."
     },
     {
       "id": "cyclophosphamide-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "AUTOMATIC_CALCULATION_BLOCKED_PENDING_SPECIALIST_REVIEW",
+      "source": "https://www.msdvetmanual.com/digestive-system/neoplasia-of-the-gastrointestinal-tract-in-small-animals/gastrointestinal-neoplasia-in-dogs-and-cats"
     },
     {
       "id": "cyclophosphamide-cat-2",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11164162/",
+      "review_note": "Primary feline toxicity series includes 10\u201315 mg/m\u00b2 doses with varying schedules. Regimen selection remains with oncology; not a universal daily schedule."
     },
     {
       "id": "vincristine-dog-1",
@@ -1721,8 +1740,8 @@
     },
     {
       "id": "vincristine-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11129245/"
     },
     {
       "id": "doxorubicin-dog-1",
@@ -1736,18 +1755,19 @@
     },
     {
       "id": "doxorubicin-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10816589/"
     },
     {
       "id": "lomustine-dog-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://pubmed.ncbi.nlm.nih.gov/17186855/",
+      "review_note": "Selected 60\u201370 mg/m\u00b2 range is within reported canine oncology doses; additional primary 70 mg/m\u00b2 q3wk rescue study PMID 17338160. Tumor/protocol interval deliberately requires oncology selection."
     },
     {
       "id": "lomustine-cat-1",
-      "status": "NOT_YET_REVIEWED",
-      "source": null
+      "status": "DOSE_PARAMETERS_MATCH_SOURCE_NOT_CLINICALLY_CLEARED",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10816491/"
     }
   ],
   "last_validated_source": "3b02880b17d95fa062c654020ba3e94c5d106892",

@@ -10,7 +10,7 @@ def check(actual,expected,label):
  n+=1
  if not math.isclose(float(actual),float(expected),rel_tol=2e-10,abs_tol=1e-11):errors.append({'case':label,'actual':actual,'expected':str(expected)})
 def source_ineligible(identifier, kg):
- return (identifier == 'levetiracetam-cat-2' or
+ return (identifier in ('levetiracetam-cat-2', 'cyclophosphamide-cat-1', 'ampicillin-sulbactam-dog-2', 'ampicillin-sulbactam-cat-2', 'potassium-chloride-dog-1', 'potassium-chloride-cat-1') or
          (identifier == 'praziquantel-dog-1' and kg > 34) or
          (identifier == 'doxorubicin-dog-1' and not (kg > 10)) or
          (identifier == 'doxorubicin-dog-2' and not (0 < kg <= 10)) or

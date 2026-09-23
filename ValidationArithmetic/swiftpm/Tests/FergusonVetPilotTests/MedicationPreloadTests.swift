@@ -5,7 +5,7 @@ final class MedicationPreloadTests: XCTestCase {
     // Expected clinical eligibility is asserted independently of the engine.
     private func expectedEligibility(_ id: String, weight: Double) -> Bool {
         switch id {
-        case "levetiracetam-cat-2": return false
+        case "levetiracetam-cat-2", "cyclophosphamide-cat-1", "ampicillin-sulbactam-dog-2", "ampicillin-sulbactam-cat-2", "potassium-chloride-dog-1", "potassium-chloride-cat-1": return false
         case "praziquantel-dog-1": return weight > 0 && weight <= 34
         case "doxorubicin-dog-1": return weight > 10
         case "doxorubicin-dog-2": return weight > 0 && weight <= 10

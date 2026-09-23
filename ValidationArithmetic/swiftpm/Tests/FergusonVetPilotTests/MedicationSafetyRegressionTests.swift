@@ -30,6 +30,19 @@ final class MedicationSafetyRegressionTests: XCTestCase {
             }
         }
     }
+    func testCycleTotalCannotBecomeAFullDoseOnEachTreatmentDay() throws {
+        let p = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == "cyclophosphamide-cat-1" })
+        for kg in [1.0, 4.0, 10.0] {
+            for level in DoseSelectionLevel.allCases {
+                XCTAssertNil(AdministrationMath.selection(for:p.definition, kg:kg, level:level))
+            }
+            let result = ProtocolDoseCalculator.calculate(definition:p.definition, kg:kg,
+                strength:50, concentration:20)
+            XCTAssertFalse(result.available)
+            XCTAssertTrue(result.formulation.isEmpty)
+            XCTAssertTrue(result.warning.contains("divided-dose"))
+        }
+    }
     func testPraziquantelOralRangeCannotExceedPerDogCeiling() throws {
         let p = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == "praziquantel-dog-1" })
         for (kg, high) in [(10.0, 125.0), (20.0, 170.0), (34.0, 170.0)] {
@@ -283,5 +296,49 @@ final class MedicationSafetyRegressionTests: XCTestCase {
     func testInvalidCustomSavedDefinitionIsNotAnAutomaticCalculator() {
         let d=CustomMedicationDefinition(generic:"Test",brand:"",drugClass:"",speciesRaw:"Dog",formRaw:"Tablet",indication:"",doseBasisRaw:"BROKEN",minDose:1,maxDose:2,frequency:"q12h",route:"PO",concentration:nil,sourceReference:"test",notes:"")
         XCTAssertEqual(d.asMedication.kind,.protocolOnly)
+    }
+
+    func testPotassiumRequiresPrescribedRateAndEnforcesCeiling() throws {
+        for id in ["potassium-chloride-dog-1", "potassium-chloride-cat-1"] {
+            let p = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == id })
+            let invalidRates: [Double?] = [nil, 0, -0.1, .nan, .infinity, 0.5000001]
+            for rate in invalidRates {
+                let result = ProtocolDoseCalculator.calculate(definition: p.definition, kg: 10, strength: nil,
+                    concentration: 0.04, prescribedRate: rate)
+                XCTAssertFalse(result.available)
+                XCTAssertTrue(result.formulation.isEmpty)
+                for level in DoseSelectionLevel.allCases {
+                    XCTAssertNil(AdministrationMath.selection(for: p.definition, kg: 10, level: level, prescribedRate: rate))
+                }
+            }
+            // A prescription is a single rate; low/middle/high cannot change it.
+            for (rate, amount, volume) in [(0.05, 0.5, 12.5), (0.1, 1, 25), (0.5, 5, 125)] {
+                let result = ProtocolDoseCalculator.calculate(definition: p.definition, kg: 10, strength: nil,
+                    concentration: 0.04, prescribedRate: rate)
+                XCTAssertTrue(result.available)
+                for level in DoseSelectionLevel.allCases {
+                    let s = try XCTUnwrap(AdministrationMath.selection(for: p.definition, kg: 10, level: level, prescribedRate: rate))
+                    XCTAssertFalse(s.hasRange)
+                    XCTAssertEqual(s.selected, amount, accuracy: 1e-12)
+                    XCTAssertEqual(try XCTUnwrap(AdministrationMath.volume(selection: s, basis: .mEqKgHr, concentration: 0.04)).value, volume, accuracy: 1e-12)
+                }
+            }
+        }
+    }
+
+    func testAmpicillinSulbactamCombinedMassAndAmbiguousCri() throws {
+        for species in ["dog", "cat"] {
+            let p = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == "ampicillin-sulbactam-\(species)-1" })
+            // 20 mg/kg combined × 10 kg = 200 mg combined / 30 mg/mL combined.
+            let s = try XCTUnwrap(AdministrationMath.selection(for: p.definition, kg: 10, level: .low))
+            XCTAssertEqual(s.selected, 200, accuracy: 1e-12)
+            XCTAssertEqual(try XCTUnwrap(AdministrationMath.volume(selection: s, basis: .mgKg, concentration: 30)).value, 20.0/3.0, accuracy: 1e-12)
+            XCTAssertTrue(p.notes.contains("TOTAL COMBINED"))
+            let cri = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == "ampicillin-sulbactam-\(species)-2" })
+            let result = ProtocolDoseCalculator.calculate(definition: cri.definition, kg: 10, strength: nil, concentration: 10)
+            XCTAssertFalse(result.available)
+            XCTAssertTrue(result.formulation.isEmpty)
+            XCTAssertNil(AdministrationMath.selection(for: cri.definition, kg: 10, level: .middle))
+        }
     }
 }
