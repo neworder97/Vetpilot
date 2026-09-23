@@ -14,7 +14,7 @@ struct LabworkView: View {
                 Section {
                     Text("Specimen quick reference")
                         .font(.title2.bold()).foregroundStyle(AppTheme.blue)
-                    Text("Selected dog/cat tests. Check the current laboratory order before collection; panels and requirements can change.")
+                    Text("Selected dog/cat tests, including U.S. IDEXX send-out wellness, senior, geriatric and cardiac panels. Check the current order before collection; panels and requirements can change.")
                         .font(.footnote).foregroundStyle(.secondary)
                     Picker("Laboratory", selection: $provider) {
                         Text("All").tag("All")
@@ -50,6 +50,7 @@ struct LabworkView: View {
                     }
                 }
                 Section("Full laboratory directories") {
+                    Link("IDEXX • public U.S. test directory", destination: URL(string: "https://www.idexx.com/en/veterinary/reference-laboratories/tests-and-services/")!)
                     Link("IDEXX • VetConnect PLUS", destination: URL(string: "https://www.vetconnectplus.com/")!)
                     Link("Michigan State • complete catalog", destination: URL(string: "https://vdl.msu.edu/Bin/Catalog.exe")!)
                     Text("If a test or required volume is not listed, use the official directory or contact the laboratory. Do not substitute another test’s specimen rules.")
@@ -77,6 +78,11 @@ private struct LabTestDetail: View {
                 }
                 Text(test.purpose)
             }
+            if !test.components.isEmpty {
+                Section("Tests included") {
+                    Text(test.components).accessibilityIdentifier("labwork.components")
+                }
+            }
             if test.available {
                 Section("Specimen and amount") {
                     Text(test.specimen).font(.headline)
@@ -98,6 +104,8 @@ private struct LabTestDetail: View {
                 }
                 if test.provider == "IDEXX", let url = URL(string: LabworkCatalog.idexxGuide) {
                     Link("IDEXX specimen preparation guide", destination: url)
+                    Text("Use the exact test code in the current U.S. directory or your VetConnect PLUS order. Standard CBC and CBC-Select profiles have different codes.")
+                        .font(.footnote).foregroundStyle(.secondary)
                 }
                 Text("Source reviewed \(LabworkCatalog.reviewed). Confirm the current order, patient requirements, and local handling procedure before drawing.")
                     .font(.footnote).foregroundStyle(.secondary)

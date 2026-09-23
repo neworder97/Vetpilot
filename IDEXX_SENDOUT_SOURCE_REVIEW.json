@@ -1,0 +1,174 @@
+{
+  "reviewed": "2026-09-23",
+  "region": "United States (IDEXX regionId 16)",
+  "directory": "https://www.idexx.com/en/veterinary/reference-laboratories/tests-and-services/",
+  "collection_guide": "https://www.idexx.com/files/06-0013212-06-irl-specimen-guide-en-us.pdf",
+  "notes": [
+    "Code is the official displayed order code; id is the separate API service identifier. Do not truncate codes ending 9999.",
+    "The profiles refer storage to component tests; collection guidance is paired with the general specimen guide.",
+    "The specimen guide mixes rpm and g in centrifuge tables; use validated tube and centrifuge settings.",
+    "No universal fasting duration is stated for the six basic panel families. cPL combinations request overnight fasting; fPL combinations prefer fasting serum.",
+    "Canine 2665 uses the specimen field (EDTA plasma), despite legacy serum wording elsewhere in its record. Interpretation cutoffs were not imported."
+  ],
+  "records": [
+    {
+      "source_url": "https://api.idexx.com/dxd/v2/services?regionId=16&id=57294",
+      "id": 57294,
+      "code": "28079999",
+      "name": "Young Wellness",
+      "specimen": "2 mL serum, 1 mL LTT",
+      "storage": "See individual test components",
+      "includes": "Chem 10 with IDEXX SDMA® Test, IDEXX CBC®"
+    },
+    {
+      "source_url": "https://api.idexx.com/dxd/v2/services?regionId=16&id=57348",
+      "id": 57348,
+      "code": "2807",
+      "name": "Young Wellness Select",
+      "specimen": "2 mL serum, 1 mL LTT",
+      "storage": "See individual test components",
+      "includes": "Chem 10 with IDEXX SDMA® Test, IDEXX CBC-Select®"
+    },
+    {
+      "source_url": "https://api.idexx.com/dxd/v2/services?regionId=16&id=57019",
+      "id": 57019,
+      "code": "10139999",
+      "name": "Total Health™ Profile",
+      "specimen": "2 mL serum, 1 mL LTT",
+      "storage": "See individual test components.",
+      "includes": "Chem 27 with IDEXX SDMA® Test, IDEXX CBC®"
+    },
+    {
+      "source_url": "https://api.idexx.com/dxd/v2/services?regionId=16&id=57113",
+      "id": 57113,
+      "code": "1013",
+      "name": "Total Health™ Profile Select",
+      "specimen": "2 mL serum, 1 mL LTT",
+      "storage": "See individual test components",
+      "includes": "Chem 27 with IDEXX SDMA® Test, IDEXX CBC-Select®"
+    },
+    {
+      "source_url": "https://api.idexx.com/dxd/v2/services?regionId=16&id=63266",
+      "id": 63266,
+      "code": "759999",
+      "name": "Total Health™ Plus Profile",
+      "specimen": "2 mL serum, 1 mL LTT",
+      "storage": "See individual test components.",
+      "includes": "Chem 27 with IDEXX SDMA® Test, IDEXX CBC®, total T4"
+    },
+    {
+      "source_url": "https://api.idexx.com/dxd/v2/services?regionId=16&id=59319",
+      "id": 59319,
+      "code": "75",
+      "name": "Total Health™ Plus Profile Select",
+      "specimen": "2 mL serum, 1 mL LTT",
+      "storage": "See individual test components",
+      "includes": "Chem 27 with IDEXX SDMA® Test, IDEXX CBC-Select®, total T4"
+    },
+    {
+      "source_url": "https://api.idexx.com/dxd/v2/services?regionId=16&id=61324",
+      "id": 61324,
+      "code": "7809999",
+      "name": "Senior Profile",
+      "specimen": "2 mL serum, 1 mL LTT, 5 mL urine in a sterile container",
+      "storage": "See individual test components.",
+      "includes": "Chem 27 with IDEXX SDMA® Test, IDEXX CBC®, IDEXX Cystatin B Test (canine/feline only), total T4, urinalysis"
+    },
+    {
+      "source_url": "https://api.idexx.com/dxd/v2/services?regionId=16&id=60742",
+      "id": 60742,
+      "code": "780",
+      "name": "Senior Profile Select",
+      "specimen": "2 mL serum, 1 mL LTT, 5 mL urine in a sterile container",
+      "storage": "See individual test components",
+      "includes": "Chem 27 with IDEXX SDMA® Test, IDEXX CBC-Select®, IDEXX Cystatin B Test (canine/feline only), total T4, urinalysis"
+    },
+    {
+      "source_url": "https://api.idexx.com/dxd/v2/services?regionId=16&id=62914",
+      "id": 62914,
+      "code": "21769999",
+      "name": "Geriatric Profile",
+      "specimen": "2 mL serum, 1 mL LTT, 5 mL urine in a sterile container",
+      "storage": "See individual test components.",
+      "includes": "Chem 27 with IDEXX SDMA® Test, IDEXX CBC®, IDEXX Cystatin B Test, free T4, total T4, urinalysis"
+    },
+    {
+      "source_url": "https://api.idexx.com/dxd/v2/services?regionId=16&id=60684",
+      "id": 60684,
+      "code": "2176",
+      "name": "Geriatric Profile Select",
+      "specimen": "2 mL serum, 1 mL LTT, 5 mL urine in a sterile container",
+      "storage": "See individual test components",
+      "includes": "Chem 27 with IDEXX SDMA® Test, IDEXX CBC-Select®, IDEXX Cystatin B Test, free T4, total T4, urinalysis"
+    },
+    {
+      "source_url": "https://api.idexx.com/dxd/v2/services?regionId=16&id=61350",
+      "id": 61350,
+      "code": "8659999",
+      "name": "Senior Screen",
+      "specimen": "2 mL serum, 1 mL LTT, 5 mL urine in a sterile container",
+      "storage": "See individual test components.",
+      "includes": "Chem 25 with IDEXX SDMA® Test, IDEXX CBC®, IDEXX Cystatin B Test (canine/feline only), total T4, urinalysis"
+    },
+    {
+      "source_url": "https://api.idexx.com/dxd/v2/services?regionId=16&id=62890",
+      "id": 62890,
+      "code": "865",
+      "name": "Senior Screen Select",
+      "specimen": "2 mL serum, 1 mL LTT, 5 mL urine in a sterile container",
+      "storage": "See individual test components",
+      "includes": "Chem 25 with IDEXX SDMA® Test, IDEXX CBC-Select®, IDEXX Cystatin B Test (canine/feline only), total T4, urinalysis"
+    },
+    {
+      "source_url": "https://api.idexx.com/dxd/v2/services?regionId=16&id=62415",
+      "id": 62415,
+      "code": "2377",
+      "name": "Total Health™ Plus Profile with Spec cPL® Test Select—Canine",
+      "specimen": "2 mL serum after an overnight fast, 1 mL LTT",
+      "storage": "See individual test components",
+      "includes": "Chem 27 with IDEXX SDMA® Test, triglycerides, IDEXX CBC-Select®, Spec cPL® Test, total T4"
+    },
+    {
+      "source_url": "https://api.idexx.com/dxd/v2/services?regionId=16&id=63339",
+      "id": 63339,
+      "code": "2500",
+      "name": "Senior Screen with Spec cPL® Test Select—Canine",
+      "specimen": "2 mL serum after an overnight fast, 1 mL LTT, 5 mL urine in a sterile container",
+      "storage": "See individual test components",
+      "includes": "Chem 25 with IDEXX SDMA® Test, triglycerides, IDEXX CBC-Select®, IDEXX Cystatin B Test, Spec cPL® Test, total T4, urinalysis"
+    },
+    {
+      "source_url": "https://api.idexx.com/dxd/v2/services?regionId=16&id=61731",
+      "id": 61731,
+      "code": "2743",
+      "name": "Senior Screen with Spec fPL® Test Select—Feline",
+      "specimen": "2 mL serum (fasting specimen preferred), 1 mL LTT, 5 mL urine in a sterile container",
+      "storage": "See individual test components",
+      "includes": "Chem 25 with IDEXX SDMA® Test, IDEXX CBC-Select®, IDEXX Cystatin B Test, Spec fPL® Test, total T4, urinalysis"
+    },
+    {
+      "source_url": "https://api.idexx.com/dxd/v2/services?regionId=16&id=61735",
+      "id": 61735,
+      "code": "2732",
+      "name": "ADRChek® Profile Plus with Spec fPL® Test Select—Feline",
+      "specimen": "2 mL serum (fasting specimen preferred), 1 mL LTT",
+      "includes": "Chem 25 with IDEXX SDMA® Test, IDEXX CBC-Select®, Spec fPL® Test, total T4"
+    },
+    {
+      "source_url": "https://api.idexx.com/dxd/v2/services?regionId=16&id=56045",
+      "id": 56045,
+      "code": "2665",
+      "name": "Cardiopet® proBNP—Canine",
+      "specimen": "1 mL EDTA plasma (spin and separate plasma into an RTT or a WTT [plain, plastic tube]) ",
+      "storage": "7 days at 2-8° C; freeze for longer storage. Serum specimens must be kept refrigerated."
+    },
+    {
+      "source_url": "https://api.idexx.com/dxd/v2/services?regionId=16&id=58390",
+      "id": 58390,
+      "code": "2666",
+      "name": "Cardiopet® proBNP—Feline",
+      "specimen": "1 mL serum or 1 mL EDTA plasma (LTT; spin and separate plasma into an RTT or a WTT [plain plastic tube])",
+      "storage": "7 days at 2°-8° C; freeze for longer storage"
+    }
+  ]
+}

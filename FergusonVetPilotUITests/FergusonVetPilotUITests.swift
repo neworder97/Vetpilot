@@ -34,6 +34,46 @@ final class FergusonVetPilotUITests: XCTestCase {
         XCTAssertTrue(preparation.label.contains("30–60"))
     }
 
+    func testIDEXXSendOutSearchSpecimensAndWellnessComponents() throws {
+        app.tabBars.buttons["Labwork"].tap()
+        let search = app.searchFields.firstMatch
+        XCTAssertTrue(search.waitForExistence(timeout: 5))
+        search.tap()
+        search.typeText("bnp dog")
+        if app.keyboards.buttons["Search"].exists { app.keyboards.buttons["Search"].tap() }
+        let canineBNP = app.buttons["labwork.test.IDEXX-2665"]
+        XCTAssertTrue(canineBNP.waitForExistence(timeout: 4))
+        for _ in 0..<6 where !canineBNP.isHittable { app.swipeUp() }
+        XCTAssertTrue(canineBNP.isHittable)
+        canineBNP.tap()
+
+        let amount = app.staticTexts["labwork.amount"]
+        for _ in 0..<6 where !amount.isHittable { app.swipeUp() }
+        XCTAssertEqual(amount.label, "1 mL separated EDTA plasma")
+        let preparation = app.staticTexts["labwork.preparation"]
+        for _ in 0..<6 where !preparation.isHittable { app.swipeUp() }
+        XCTAssertTrue(preparation.label.contains("Do not clot"))
+
+        app.navigationBars.buttons["Labwork"].tap()
+        XCTAssertTrue(search.waitForExistence(timeout: 4))
+        search.tap()
+        search.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: "bnp dog".count))
+        search.typeText("young wellness")
+        if app.keyboards.buttons["Search"].exists { app.keyboards.buttons["Search"].tap() }
+        let youngWellness = app.buttons["labwork.test.IDEXX-2807"]
+        XCTAssertTrue(youngWellness.waitForExistence(timeout: 4))
+        for _ in 0..<6 where !youngWellness.isHittable { app.swipeUp() }
+        XCTAssertTrue(youngWellness.isHittable)
+        youngWellness.tap()
+
+        let components = app.staticTexts["labwork.components"]
+        for _ in 0..<6 where !components.isHittable { app.swipeUp() }
+        XCTAssertTrue(components.label.contains("Chem 10"))
+        XCTAssertTrue(components.label.contains("CBC-Select"))
+        for _ in 0..<6 where !amount.isHittable { app.swipeUp() }
+        XCTAssertEqual(amount.label, "2 mL serum + 1 mL EDTA whole blood")
+    }
+
     func testNutritionOversizedInputDoesNotCrash() throws {
         app.tabBars.buttons["Nutrition"].tap()
         app.segmentedControls.buttons["kg"].tap()
