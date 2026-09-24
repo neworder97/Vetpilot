@@ -1,0 +1,87 @@
+name: VetPilot iOS Scribe Validation
+on:
+  push:
+    branches: [vetpilot-ios-scribe]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: vetpilot-ios-scribe
+  cancel-in-progress: true
+jobs:
+  backend-validation:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: vetpilot-ci-only
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test Backend/tests/core.test.mjs
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: deno check Backend/supabase/functions/vetpilot-scribe/index.ts Backend/supabase/functions/vetpilot-account/index.ts
+      - name: Database isolation and revision tests
+        env:
+          PGPASSWORD: vetpilot-ci-only
+        run: psql -h localhost -U postgres -d postgres -f Backend/tests/database.sql
+  ios-validation:
+    needs: backend-validation
+    runs-on: macos-15
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Independent arithmetic and extracted-core regression gate
+        run: python3 ValidationArithmetic/run_local_audit.py
+      - name: Configure optional cloud connection
+        env:
+          CLOUD_URL: ${{ vars.VETPILOT_SUPABASE_URL }}
+          CLOUD_KEY: ${{ vars.VETPILOT_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          python3 - <<'PYTHON'
+          import json,os,pathlib
+          url=os.environ.get('CLOUD_URL','');key=os.environ.get('CLOUD_KEY','')
+          if url and key:
+              pathlib.Path('FergusonVetPilot/VetPilotCloud.json').write_text(json.dumps({'url':url,'publishableKey':key}))
+          PYTHON
+      - run: brew install xcodegen
+      - name: Simulator unit and UI tests
+        run: bash ValidationPrepared/run_ios_validation.sh
+      - name: Compile physical-device app
+        run: |
+          set -o pipefail
+          xcodebuild build -project FergusonVetPilot.xcodeproj -scheme FergusonVetPilot -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath .build CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='' 2>&1 | tee ValidationResults/device-build.log
+      - name: Restore original visual resources
+        run: |
+          APP=$(find .build/Build/Products/Release-iphoneos -maxdepth 1 -name '*.app' -print -quit)
+          test -n "$APP"
+          bash Scripts/restore_original_bundle_resources.sh "$APP"
+          for F in PreservedOriginalBundleResources/*; do cmp "$F" "$APP/$(basename "$F")"; done
+      - name: Package unsigned Signulous IPA after validation
+        run: bash Scripts/package_validated_ipa.sh
+      - name: Save unsigned IPA and release manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: VetPilot-0.6.0-Signulous-IPA
+          path: ReleaseArtifacts/
+          if-no-files-found: error
+      - name: Save validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: VetPilot-Scribe-Evidence
+          path: |
+            ValidationResults/
+            ValidationArithmetic/evidence/
+            ValidationArithmetic/candidate-independent-numeric-audit.json
+            ValidationArithmetic/candidate-rendered-oracle.json
+

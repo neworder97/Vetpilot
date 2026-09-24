@@ -1,0 +1,7 @@
+project_id = "vetpilot"
+[functions.vetpilot-scribe]
+verify_jwt = false
+[functions.vetpilot-account]
+verify_jwt = false
+# Both functions validate the bearer token against /auth/v1/user before any work.
+# This supports Supabase's asymmetric JWT signing keys without legacy gateway assumptions.

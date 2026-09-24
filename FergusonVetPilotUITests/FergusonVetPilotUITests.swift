@@ -18,8 +18,17 @@ final class FergusonVetPilotUITests: XCTestCase {
         add(attachment)
     }
 
+    private func selectTab(_ name: String) {
+        if app.tabBars.buttons[name].exists { app.tabBars.buttons[name].tap() }
+        else {
+            app.tabBars.buttons["More"].tap()
+            let item = app.staticTexts[name].firstMatch
+            XCTAssertTrue(item.waitForExistence(timeout: 4)); item.tap()
+        }
+    }
+
     func testLabworkSearchAndPreparation() throws {
-        app.tabBars.buttons["Labwork"].tap()
+        selectTab("Labwork")
         let search = app.searchFields.firstMatch
         XCTAssertTrue(search.waitForExistence(timeout: 5))
         search.tap()
@@ -35,7 +44,7 @@ final class FergusonVetPilotUITests: XCTestCase {
     }
 
     func testIDEXXSendOutSearchSpecimensAndWellnessComponents() throws {
-        app.tabBars.buttons["Labwork"].tap()
+        selectTab("Labwork")
         let search = app.searchFields.firstMatch
         XCTAssertTrue(search.waitForExistence(timeout: 5))
         search.tap()

@@ -1,0 +1,3 @@
+
+# Optional public cloud connection is generated during the iOS build. Never commit keys.
+FergusonVetPilot/VetPilotCloud.json
