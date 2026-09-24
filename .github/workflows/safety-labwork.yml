@@ -19,7 +19,7 @@ jobs:
       - name: Independent arithmetic and extracted-core regression gate
         run: python3 ValidationArithmetic/run_local_audit.py
       - run: brew install xcodegen
-      - name: Simulator unit and UI tests with real radiograph
+      - name: Simulator unit and UI tests
         run: bash ValidationPrepared/run_ios_validation.sh
       - name: Compile physical-device app
         run: |
@@ -36,7 +36,7 @@ jobs:
       - name: Save unsigned IPA and release manifest
         uses: actions/upload-artifact@v4
         with:
-          name: VetPilot-0.4.3-Signulous-IPA
+          name: VetPilot-0.5.0-Signulous-IPA
           path: ReleaseArtifacts/
           if-no-files-found: error
       - name: Save validation evidence

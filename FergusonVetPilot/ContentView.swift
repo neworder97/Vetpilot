@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var tab = 0
+    @StateObject private var clinicStore = ClinicStore()
 
     var body: some View {
         VStack(spacing: 0) {
@@ -11,9 +12,9 @@ struct ContentView: View {
                     .tag(0)
                     .tabItem { Label("Dose", systemImage: "cross.case.fill") }
 
-                RadiologyView()
+                MyClinicView(store: clinicStore)
                     .tag(1)
-                    .tabItem { Label("X-Ray", systemImage: "waveform.path.ecg.rectangle") }
+                    .tabItem { Label("My Clinic", systemImage: "list.clipboard.fill") }
 
                 BreedView()
                     .tag(2)
@@ -29,6 +30,10 @@ struct ContentView: View {
             }
         }
         .background(Color.white)
+        .onOpenURL { url in
+            tab = 1
+            clinicStore.prepareImport(url)
+        }
     }
 }
 

@@ -401,6 +401,7 @@ private struct DoseCalculatorSheet: View {
 
     var body: some View {
         NavigationStack {
+            ScrollViewReader { scrollProxy in
             Form {
                 Section {
                     Text(medication.displayName)
@@ -581,6 +582,83 @@ private struct DoseCalculatorSheet: View {
                     }
                 }
 
+                if let selection = doseSelection, selection.hasRange {
+                    Section("Dose level") {
+                                Picker("Dose level", selection: $selectedDoseLevel) {
+                                    ForEach(DoseSelectionLevel.allCases) { level in
+                                        Text(level.rawValue).tag(level)
+                                    }
+                                }
+                                .pickerStyle(.segmented)
+                                .accessibilityIdentifier("dose.level")
+                    }
+                }
+                if selectedSolidPlan != nil {
+                    Section("Tablet / capsule rounding") {
+                                Picker("Whole-unit rounding", selection: $solidRounding) {
+                                    ForEach(SolidDoseRounding.allCases) { mode in
+                                        Text(mode.rawValue).tag(mode)
+                                    }
+                                }
+                                .accessibilityIdentifier("dose.rounding")
+                    }
+                }
+                    if (medication.kind != .protocolOnly || protocolDefinition != nil), medication.form != .injection {
+                        Section("Optional veterinarian frequency") {
+                            Text("Use the source-backed recommended frequency unless the prescribing veterinarian directs a different schedule. Choosing an override does not validate the new schedule. For total-daily-dose entries, the selected daily amount is divided by administrations/day before formulation rounding.")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+
+                            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
+                                frequencyButton(.recommended, title: "Recommended")
+                                frequencyButton(.q8h, title: "Every 8 h")
+                                frequencyButton(.q12h, title: "Every 12 h")
+                                frequencyButton(.q24h, title: "Every 24 h")
+                            }
+
+                            HStack {
+                                Text("Active schedule")
+                                Spacer()
+                                Text(activeFrequencyLabel)
+                                    .foregroundStyle(.secondary)
+                                    .accessibilityIdentifier("dose.frequency.active")
+                            }
+
+                            if selectedFrequency != .recommended {
+                                Text("Prescriber override selected. Confirm indication, duration, maximums, and patient-specific risks with the veterinarian before use.")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(AppTheme.orange)
+                                    .accessibilityIdentifier("dose.frequency.override.warning")
+                            }
+
+                            if selectedFrequency != .recommended, MedicationSafety.dailyTotal(recommendedFrequency) {
+                                Text("This entry is calculated as a total daily dose. The unrounded daily target is kept unchanged and divided by the selected number of administrations per day. Confirm the delivered amount after any formulation rounding.")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                    if canPlanSupply {
+                        Section("Quantity / treatment duration") {
+                            if medication.kind == .robenacoxibCatBand {
+                                Toggle("Prior oral/injectable doses in this course reviewed", isOn: $priorCourseHistoryConfirmed)
+                                Stepper("Previous treatment-day doses: \(priorCourseDoses)", value: $priorCourseDoses, in: 0...3)
+                                Text("Maximum 3 total doses on 3 consecutive days, no more than one dose/day, including injections already given. Confirm age ≥4 months and the next dose time.").font(.caption)
+                                HStack {
+                                    supplyButton(days: 1, title: "1 day")
+                                    supplyButton(days: 2, title: "2 days")
+                                    supplyButton(days: 3, title: "3 days")
+                                }
+                            } else {
+                            HStack {
+                                supplyButton(days: 7, title: "7 days")
+                                supplyButton(days: 14, title: "2 weeks")
+                                supplyButton(days: 30, title: "30 days")
+                            }
+                            }
+
+                        }
+                    }
                 Section {
                     Button {
                         if let error = prescribedRateInputError {
@@ -612,10 +690,8 @@ private struct DoseCalculatorSheet: View {
                                 concentration: activeConcentration
                             )
                         }
-                        supplyDays = nil
-                        selectedFrequency = .recommended
-                        selectedDoseLevel = .middle
-                        solidRounding = .nearest
+                        weightFieldFocused = false
+                        DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } }
                     } label: {
                         Label("Calculate dose", systemImage: "function")
                             .frame(maxWidth: .infinity)
@@ -626,22 +702,20 @@ private struct DoseCalculatorSheet: View {
                 }
 
                 if let result {
-                    Section("Result") {
-                        Text(result.headline)
-                            .font(.title3.bold())
-                            .foregroundStyle(result.available ? AppTheme.blue : AppTheme.orange)
-
-                        if !result.math.isEmpty {
-                            LabeledContent("Math", value: result.math)
-                        }
-                        if !result.formulation.isEmpty {
-                            LabeledContent("Formulation", value: result.formulation)
+                    Section("Calculated candidate") {
+                        if result.available, let selected = administrationSelection ?? doseSelection {
+                            Text("\(ClinicalData.format(selected.selected)) \(selected.unit) • \(activeFrequencyLabel)")
+                                .font(.title3.bold())
+                                .foregroundStyle(AppTheme.blue)
+                                .accessibilityIdentifier("dose.candidate.amount")
+                        } else {
+                            Text(result.headline).font(.headline).foregroundStyle(AppTheme.orange)
                         }
                         if result.available, let summary = readableAdministrationSummary {
                             VStack(alignment: .leading, spacing: 6) {
                                 Text("Selected dose — quantity and schedule")
                                     .font(.caption.bold())
-                                Text(summary)
+                                Text(summary.components(separatedBy: "\n").first ?? summary)
                                     .font(.headline)
                                     .foregroundStyle(AppTheme.blue)
                                     .accessibilityIdentifier("dose.result.quantity")
@@ -653,6 +727,39 @@ private struct DoseCalculatorSheet: View {
                                 }
                             }
                         }
+                        if result.available, let solid = selectedSolidPlan {
+                            Text(administrationInstruction(for: solid))
+                                .font(.subheadline.weight(.semibold))
+                                .accessibilityIdentifier("dose.candidate.rounded")
+                        }
+                        if let days = supplyDays, result.available {
+                            Text(supplySummary(days: days))
+                                .font(.subheadline.weight(.semibold))
+                                .accessibilityIdentifier("dose.supply.summary")
+                        }
+                        if !activeRoute.isEmpty { LabeledContent("Route", value: activeRoute) }
+                        Text("Calculation for veterinarian review; verify product, patient and plan before use.")
+                            .font(.caption)
+                    }
+                    .id("dose.candidate.anchor")
+
+                    Section("Equation, math & reference") {
+                        Text(result.headline)
+                            .font(.title3.bold())
+                            .foregroundStyle(result.available ? AppTheme.blue : AppTheme.orange)
+
+                        if !result.math.isEmpty {
+                            LabeledContent("Math", value: result.math)
+                                .accessibilityIdentifier("dose.result.math")
+                        }
+                        if let summary = readableAdministrationSummary, summary.contains("\n") {
+                            Text(summary.components(separatedBy: "\n").dropFirst().joined(separator: "\n"))
+                                .font(.footnote)
+                        }
+                        if !result.formulation.isEmpty {
+                            LabeledContent("Formulation", value: result.formulation)
+                        }
+
 
                         if !result.warning.isEmpty {
                             VStack(alignment: .leading, spacing: 4) {
@@ -680,13 +787,7 @@ private struct DoseCalculatorSheet: View {
                     if result.available, let selection = doseSelection {
                         Section("Dose range choice") {
                             if selection.hasRange {
-                                Picker("Dose level", selection: $selectedDoseLevel) {
-                                    ForEach(DoseSelectionLevel.allCases) { level in
-                                        Text(level.rawValue).tag(level)
-                                    }
-                                }
-                                .pickerStyle(.segmented)
-                                .accessibilityIdentifier("dose.level")
+
 
                                 doseLevelRow(.low)
                                 doseLevelRow(.middle)
@@ -722,12 +823,7 @@ private struct DoseCalculatorSheet: View {
                             } else if let solid = selectedSolidPlan {
                                 LabeledContent("Raw formulation", value: "\(ClinicalData.format(solid.rawUnits)) \(solidUnitName)")
 
-                                Picker("Whole-unit rounding", selection: $solidRounding) {
-                                    ForEach(SolidDoseRounding.allCases) { mode in
-                                        Text(mode.rawValue).tag(mode)
-                                    }
-                                }
-                                .accessibilityIdentifier("dose.rounding")
+
 
                                 if solid.roundedUnits > 0 {
                                     Text(administrationInstruction(for: solid))
@@ -767,41 +863,7 @@ private struct DoseCalculatorSheet: View {
                         }
                     }
 
-                    if result.available, (medication.kind != .protocolOnly || protocolDefinition != nil), medication.form != .injection {
-                        Section("Optional veterinarian frequency") {
-                            Text("Use the source-backed recommended frequency unless the prescribing veterinarian directs a different schedule. Choosing an override does not validate the new schedule. For total-daily-dose entries, the selected daily amount is divided by administrations/day before formulation rounding.")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
 
-                            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
-                                frequencyButton(.recommended, title: "Recommended")
-                                frequencyButton(.q8h, title: "Every 8 h")
-                                frequencyButton(.q12h, title: "Every 12 h")
-                                frequencyButton(.q24h, title: "Every 24 h")
-                            }
-
-                            HStack {
-                                Text("Active schedule")
-                                Spacer()
-                                Text(activeFrequencyLabel)
-                                    .foregroundStyle(.secondary)
-                                    .accessibilityIdentifier("dose.frequency.active")
-                            }
-
-                            if selectedFrequency != .recommended {
-                                Text("Prescriber override selected. Confirm indication, duration, maximums, and patient-specific risks with the veterinarian before use.")
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(AppTheme.orange)
-                                    .accessibilityIdentifier("dose.frequency.override.warning")
-                            }
-
-                            if selectedFrequency != .recommended, MedicationSafety.dailyTotal(recommendedFrequency) {
-                                Text("This entry is calculated as a total daily dose. The unrounded daily target is kept unchanged and divided by the selected number of administrations per day. Confirm the delivered amount after any formulation rounding.")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                    }
 
                     if result.available, medication.form == .injection {
                         Section("Injectable administration") {
@@ -812,37 +874,7 @@ private struct DoseCalculatorSheet: View {
                         }
                     }
 
-                    if result.available, canPlanSupply {
-                        Section("Quantity dispensed — math only") {
-                            if medication.kind == .robenacoxibCatBand {
-                                Toggle("Prior oral/injectable doses in this course reviewed", isOn: $priorCourseHistoryConfirmed)
-                                Stepper("Previous treatment-day doses: \(priorCourseDoses)", value: $priorCourseDoses, in: 0...3)
-                                Text("Maximum 3 total doses on 3 consecutive days, no more than one dose/day, including injections already given. Confirm age ≥4 months and the next dose time.").font(.caption)
-                                HStack {
-                                    supplyButton(days: 1, title: "1 day")
-                                    supplyButton(days: 2, title: "2 days")
-                                    supplyButton(days: 3, title: "3 days")
-                                }
-                            } else {
-                            HStack {
-                                supplyButton(days: 7, title: "7 days")
-                                supplyButton(days: 14, title: "2 weeks")
-                                supplyButton(days: 30, title: "30 days")
-                            }
-                            }
 
-                            if let days = supplyDays {
-                                VStack(alignment: .leading, spacing: 6) {
-                                    Text(supplySummary(days: days))
-                                        .font(.subheadline.weight(.semibold))
-                                        .accessibilityIdentifier("dose.supply.summary")
-                                    Text("Quantity dispensed uses the selected dose level, selected whole-unit rounding (for tablets/capsules), active schedule, and chosen duration. It does not choose treatment duration or override labeled/protocol maximums. Verify the final prescription and dispense quantity with the veterinarian.")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                        }
-                    }
                 }
             }
             .scrollDismissesKeyboard(.interactively)
@@ -868,32 +900,22 @@ private struct DoseCalculatorSheet: View {
             }
             .onChange(of: patientWeight) { _, _ in
                 result = nil
-                supplyDays = nil
-                selectedFrequency = .recommended
             }
             .onChange(of: patientWeightUnit) { _, _ in
                 result = nil
-                supplyDays = nil
-                selectedFrequency = .recommended
             }
             .onChange(of: selectedStrengthIndex) { _, _ in
                 result = nil
-                supplyDays = nil
-                selectedFrequency = .recommended
             }
             .onChange(of: concentration) { _, _ in
                 infusionConcentrationConfirmed = false
                 result = nil
-                supplyDays = nil
-                selectedFrequency = .recommended
             }
             .onChange(of: prescribedPotassiumRate) { _, _ in
                 result = nil
-                supplyDays = nil
             }
             .onChange(of: infusionConcentrationConfirmed) { _, _ in
                 result = nil
-                supplyDays = nil
             }
             .sheet(isPresented: $showProtocolEditor) {
                 ProtocolMedicationEditorView(
@@ -904,11 +926,14 @@ private struct DoseCalculatorSheet: View {
                 )
             }
             .onChange(of: selectedDoseLevel) { _, _ in
-                supplyDays = nil
+                result = nil
             }
             .onChange(of: solidRounding) { _, _ in
-                supplyDays = nil
+                result = nil
             }
+            .onChange(of: selectedFrequency) { _, _ in result = nil }
+            .onChange(of: priorCourseDoses) { _, _ in result = nil }
+            .onChange(of: priorCourseHistoryConfirmed) { _, _ in result = nil }
             .onChange(of: selectedPresetIndex) { _, _ in
                 prescribedPotassiumRate = ""
                 infusionConcentrationConfirmed = false
@@ -923,6 +948,8 @@ private struct DoseCalculatorSheet: View {
                 }
             }
             .onChange(of: protocolStore.definitions) { _, _ in
+                supplyDays = nil
+                selectedFrequency = .recommended
                 prescribedPotassiumRate = ""
                 infusionConcentrationConfirmed = false
                 result = nil
@@ -932,6 +959,7 @@ private struct DoseCalculatorSheet: View {
                 } else if medication.kind == .protocolOnly {
                     concentration = ""
                 }
+            }
             }
         }
     }
@@ -972,14 +1000,12 @@ private struct DoseCalculatorSheet: View {
         if selectedFrequency == choice {
             Button(title) {
                 selectedFrequency = choice
-                supplyDays = nil
             }
             .buttonStyle(.borderedProminent)
             .accessibilityIdentifier(identifier)
         } else {
             Button(title) {
                 selectedFrequency = choice
-                supplyDays = nil
             }
             .buttonStyle(.bordered)
             .accessibilityIdentifier(identifier)

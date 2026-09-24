@@ -10,11 +10,11 @@ STAGING=$(mktemp -d)
 trap 'rm -rf "$STAGING"' EXIT
 mkdir "$STAGING/Payload"
 ditto "$APP" "$STAGING/Payload/$(basename "$APP")"
-ditto -c -k --keepParent "$STAGING/Payload" ReleaseArtifacts/VetPilot-0.4.3-Signulous.ipa
+ditto -c -k --keepParent "$STAGING/Payload" ReleaseArtifacts/VetPilot-0.5.0-Signulous.ipa
 python3 - <<'PYTHON'
 from pathlib import Path
 import hashlib,json,os,plistlib,zipfile
-r=Path('ReleaseArtifacts');ipa=r/'VetPilot-0.4.3-Signulous.ipa'
+r=Path('ReleaseArtifacts');ipa=r/'VetPilot-0.5.0-Signulous.ipa'
 with zipfile.ZipFile(ipa) as z:
     assert z.testzip() is None
     infofiles=[n for n in z.namelist() if n.startswith('Payload/') and n.count('/')==2 and n.endswith('.app/Info.plist')]
@@ -23,8 +23,8 @@ with zipfile.ZipFile(ipa) as z:
     assert info['CFBundleIdentifier']=='com.ferguson.vetpilot'
     assert info['CFBundleDisplayName']=='VetPilot'
     assert info['CFBundleName']=='VetPilot'
-    assert info['CFBundleShortVersionString']=='0.4.3', ('version',info['CFBundleShortVersionString'])
-    assert info['CFBundleVersion']=='7', ('build',info['CFBundleVersion'])
+    assert info['CFBundleShortVersionString']=='0.5.0', ('version',info['CFBundleShortVersionString'])
+    assert info['CFBundleVersion']=='8', ('build',info['CFBundleVersion'])
     assert 'iPhoneOS' in info['CFBundleSupportedPlatforms']
     assert z.getinfo(infofiles[0].rsplit('/',1)[0]+'/'+info['CFBundleExecutable']).file_size>0
 numeric=json.loads(Path('ValidationArithmetic/candidate-independent-numeric-audit.json').read_text())
@@ -38,7 +38,7 @@ manifest={'source_commit':os.environ['GITHUB_SHA'],'workflow_run':os.environ['GI
  'sha256':hashlib.sha256(ipa.read_bytes()).hexdigest(),
  'signing':'Unsigned device build; Signulous or another authorized signing service is required before installation.',
  'gates':['independent numeric and rendered oracles','extracted-core Swift tests including PNA nutrition vectors','iOS unit and UI simulator tests','iphoneos Release compile','original bundle resource byte comparisons','arm64 and IPA structure'],
- 'limitations':['Source comparison and regression checks do not establish clinical clearance for every patient, product or medication regimen.','Four ambiguous or unsupported presets remain blocked; source-limited entries require an individualized plan.','X-ray high/low confidence is exploratory and uncalibrated.','Labwork contains 42 selected entries (29 IDEXX and 13 MSU), not complete provider directories.','Physical iPhone installation, camera capture and clinical performance have not been tested.','Nutrition uses the PNA calculator method checked 2026-09-23, not a universal nutrition prescription. Unsupported low BCS and below-floor calorie results require an individualized plan.']}
+ 'limitations':['Source comparison and regression checks do not establish clinical clearance for every patient, product or medication regimen.','Four ambiguous or unsupported presets remain blocked; source-limited entries require an individualized plan.','My Clinic replaces the X-ray tab. User-created/imported content requires clinical review; sharing sends copies, not live sync.','Labwork contains 42 selected entries (29 IDEXX and 13 MSU), not complete provider directories.','Physical iPhone installation, camera capture and clinical performance have not been tested.','Nutrition uses the PNA calculator method checked 2026-09-23, not a universal nutrition prescription. Unsupported low BCS and below-floor calorie results require an individualized plan.']}
 (r/'VetPilot-release-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 print(json.dumps(manifest,indent=2))
 PYTHON

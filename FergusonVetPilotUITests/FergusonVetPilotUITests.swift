@@ -90,7 +90,7 @@ final class FergusonVetPilotUITests: XCTestCase {
     func testCoreVetPilotFlow() throws {
         XCTAssertTrue(app.staticTexts["VetPilot"].exists)
         XCTAssertTrue(app.tabBars.buttons["Dose"].exists)
-        XCTAssertTrue(app.tabBars.buttons["X-Ray"].exists)
+        XCTAssertTrue(app.tabBars.buttons["My Clinic"].exists)
         XCTAssertTrue(app.tabBars.buttons["Breeds"].exists)
         XCTAssertTrue(app.tabBars.buttons["Nutrition"].exists)
 
@@ -123,6 +123,7 @@ final class FergusonVetPilotUITests: XCTestCase {
         let calculate = app.buttons["dose.calculate"]
         XCTAssertTrue(calculate.waitForExistence(timeout: 3))
         XCTAssertTrue(calculate.isEnabled)
+        for _ in 0..<12 where !calculate.isHittable { app.swipeUp() }
         calculate.tap()
 
         let doseResult = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "44 mg")).firstMatch
@@ -133,6 +134,7 @@ final class FergusonVetPilotUITests: XCTestCase {
         XCTAssertTrue(quantity.label.contains("tablet(s) equivalent"))
 
 
+        for _ in 0..<12 { app.swipeDown() }
         let q12 = app.buttons["dose.frequency.q12h"]
         for _ in 0..<12 {
             if q12.exists && q12.isHittable { break }
@@ -145,6 +147,9 @@ final class FergusonVetPilotUITests: XCTestCase {
         for _ in 0..<5 where !overrideWarning.isHittable { app.swipeUp() }
         XCTAssertTrue(overrideWarning.exists)
 
+        for _ in 0..<12 where !calculate.isHittable { app.swipeUp() }
+        for _ in 0..<12 where !calculate.isHittable { app.swipeUp() }
+        calculate.tap()
         // This specific 25-mg strength cannot exactly deliver the fixed 22-mg
         // per-administration target. It must not become a dispense instruction.
         let blocked = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "outside the selected dose range")).firstMatch
@@ -154,14 +159,9 @@ final class FergusonVetPilotUITests: XCTestCase {
 
         app.buttons["dose.done"].tap()
 
-        // Production X-ray screen must never manufacture a result when no radiograph is loaded.
-        app.tabBars.buttons["X-Ray"].tap()
-        XCTAssertTrue(app.staticTexts["Radiology AI Second Look"].waitForExistence(timeout: 3))
-        let secondLook = app.buttons["radiology.secondLook"]
-        XCTAssertTrue(secondLook.waitForExistence(timeout: 3))
-        secondLook.tap()
-        XCTAssertFalse(app.navigationBars["X-Ray Second Look"].waitForExistence(timeout: 1))
-        XCTAssertTrue(app.staticTexts["Load a radiograph first."].waitForExistence(timeout: 3))
+        app.tabBars.buttons["My Clinic"].tap()
+        XCTAssertTrue(app.navigationBars["My Clinic"].waitForExistence(timeout: 3))
+        XCTAssertFalse(app.tabBars.buttons["X-Ray"].exists)
 
         app.tabBars.buttons["Breeds"].tap()
         XCTAssertTrue(app.staticTexts["Breed predisposition library"].waitForExistence(timeout: 3))
@@ -171,89 +171,6 @@ final class FergusonVetPilotUITests: XCTestCase {
         breedSearch.typeText("German")
         XCTAssertTrue(app.staticTexts["German Shepherd Dog"].waitForExistence(timeout: 3))
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "Hip/elbow dysplasia")).firstMatch.waitForExistence(timeout: 3))
-    }
-
-    func testLiveRadiographImportAndProductionSecondLook() throws {
-        app.tabBars.buttons["X-Ray"].tap()
-        XCTAssertTrue(app.staticTexts["Radiology AI Second Look"].waitForExistence(timeout: 4))
-
-        let region = app.textFields["Study/region + view — thorax lateral, thorax VD, abdomen…"]
-        XCTAssertTrue(region.waitForExistence(timeout: 3))
-        region.tap()
-        region.typeText("thorax VD")
-
-        let importButton = app.buttons["Import X-ray"]
-        XCTAssertTrue(importButton.waitForExistence(timeout: 3))
-        importButton.tap()
-
-        // The CI simulator receives a real canine VD thoracic radiograph via
-        // `xcrun simctl addmedia`. We select that actual image through the
-        // production PhotosPicker; no scan result is injected or mocked.
-        let photosNav = app.navigationBars["Photos"]
-        XCTAssertTrue(photosNav.waitForExistence(timeout: 8), "System PhotosPicker did not appear")
-
-        let firstPhoto = app.images
-            .matching(NSPredicate(format: "identifier == 'PXGGridLayout-Info' AND label BEGINSWITH[c] 'Photo'"))
-            .firstMatch
-        XCTAssertTrue(firstPhoto.waitForExistence(timeout: 8), "No simulator photo was visible in PhotosPicker")
-        // PhotosPicker can expose a visible thumbnail with isHittable=false on Simulator.
-        // Tap the center coordinate of that real photo frame; no image/result is injected.
-        firstPhoto.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-
-        // Depending on the iOS PhotosPicker version, single selection may either
-        // dismiss immediately or wait for an Add/Done confirmation. Track the actual
-        // Photos navigation bar, not the privacy banner, because that banner may
-        // disappear while the picker is still on-screen.
-        if photosNav.exists {
-            let add = app.buttons["Add"]
-            let done = app.buttons["Done"]
-            if add.waitForExistence(timeout: 3) {
-                add.tap()
-            } else if done.waitForExistence(timeout: 3) {
-                done.tap()
-            }
-        }
-
-        let pickerDismissed = NSPredicate(format: "exists == false")
-        expectation(for: pickerDismissed, evaluatedWith: photosNav)
-        waitForExpectations(timeout: 10)
-
-        let gate = app.descendants(matching: .any).matching(identifier: "radiology.xrayGate").firstMatch
-        XCTAssertTrue(gate.waitForExistence(timeout: 20), "Production X-ray precheck did not finish")
-        XCTAssertFalse(gate.label.contains("Does not look like"), "Real radiograph was rejected by production precheck")
-
-        let scan = app.buttons["radiology.secondLook"]
-        if !scan.waitForExistence(timeout: 2) || !scan.isHittable {
-            app.swipeUp()
-        }
-        XCTAssertTrue(scan.waitForExistence(timeout: 3))
-        scan.tap()
-
-        let analyzeAnyway = app.buttons["Analyze anyway"]
-        if analyzeAnyway.waitForExistence(timeout: 3) {
-            analyzeAnyway.tap()
-        }
-
-        let resultsTitle = app.navigationBars["X-Ray Second Look"]
-        XCTAssertTrue(resultsTitle.waitForExistence(timeout: 40), "Production second-look result did not appear")
-
-        // The result is a multi-page Form. The first production pattern opinion
-        // is intentionally below the image/precheck summary on smaller iPhones,
-        // so scroll the real result UI until that opinion is materialized.
-        let topOpinion = app.staticTexts["radiology.ai.topDifferential"]
-        if !topOpinion.waitForExistence(timeout: 3) {
-            for _ in 0..<5 {
-                app.swipeUp()
-                if topOpinion.waitForExistence(timeout: 2) { break }
-            }
-        }
-        XCTAssertTrue(topOpinion.exists, "No production pattern opinion was displayed")
-
-        let screenshot = XCUIScreen.main.screenshot()
-        let attachment = XCTAttachment(screenshot: screenshot)
-        attachment.name = "VetPilot live production X-ray result"
-        attachment.lifetime = .keepAlways
-        add(attachment)
     }
 
     func testInjectableIsSingleDoseOnly() throws {
@@ -278,6 +195,7 @@ final class FergusonVetPilotUITests: XCTestCase {
 
         let calculate = app.buttons["dose.calculate"]
         XCTAssertTrue(calculate.waitForExistence(timeout: 3))
+        for _ in 0..<12 where !calculate.isHittable { app.swipeUp() }
         calculate.tap()
 
         let injectableNotice = app.staticTexts["dose.injectable.single"]
@@ -312,14 +230,16 @@ final class FergusonVetPilotUITests: XCTestCase {
             keyboardDone.tap()
         }
 
+        for _ in 0..<12 where !app.buttons["dose.calculate"].isHittable { app.swipeUp() }
         app.buttons["dose.calculate"].tap()
-        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "100–150 mg")).firstMatch.waitForExistence(timeout: 3))
+        let referenceRange = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "100–150 mg")).firstMatch
+        for _ in 0..<8 where !referenceRange.exists { app.swipeUp() }
+        XCTAssertTrue(referenceRange.waitForExistence(timeout: 3))
         sleep(2)
 
         app.buttons["dose.done"].tap()
-        app.tabBars.buttons["X-Ray"].tap()
-        XCTAssertTrue(app.staticTexts["Radiology AI Second Look"].waitForExistence(timeout: 3))
-        XCTAssertTrue(app.buttons["radiology.secondLook"].waitForExistence(timeout: 3))
+        app.tabBars.buttons["My Clinic"].tap()
+        XCTAssertTrue(app.navigationBars["My Clinic"].waitForExistence(timeout: 3))
         sleep(2)
 
         app.tabBars.buttons["Breeds"].tap()
@@ -565,6 +485,7 @@ final class FergusonVetPilotUITests: XCTestCase {
         app.buttons["dose.keyboard.done"].tap()
         for _ in 0..<3 where !calculate.isHittable { app.swipeUp() }
         XCTAssertTrue(calculate.isEnabled)
+        for _ in 0..<12 where !calculate.isHittable { app.swipeUp() }
         calculate.tap()
         XCTAssertEqual(app.state, .runningForeground)
         let result = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "mEq/hr")).firstMatch
@@ -572,4 +493,91 @@ final class FergusonVetPilotUITests: XCTestCase {
         XCTAssertTrue(result.exists)
         XCTAssertFalse(app.segmentedControls["dose.level"].exists)
     }
+    func testMedicationInputsPrecedeCalculateAndSelectionsSurvive() throws {
+        let search = app.textFields["Search medications…"]
+        search.tap(); search.typeText("Cefpodoxime")
+        let med = app.staticTexts["Cefpodoxime proxetil (Simplicef)"]
+        XCTAssertTrue(med.waitForExistence(timeout: 4)); med.tap()
+        app.segmentedControls.buttons["kg"].tap()
+        let weight = app.textFields["dose.sheet.weight"]
+        weight.tap(); weight.typeText("10")
+        app.buttons["dose.keyboard.done"].tap()
+        let level = app.segmentedControls["dose.level"]
+        for _ in 0..<8 where !level.isHittable { app.swipeUp() }
+        XCTAssertTrue(level.exists)
+        level.buttons["High"].tap()
+        let frequency = app.buttons["dose.frequency.recommended"]
+        for _ in 0..<8 where !frequency.isHittable { app.swipeUp() }
+        XCTAssertTrue(frequency.exists)
+        let days = app.buttons["dose.supply.7"]
+        for _ in 0..<8 where !days.isHittable { app.swipeUp() }
+        XCTAssertTrue(days.exists); days.tap()
+        XCTAssertFalse(app.staticTexts["dose.candidate.amount"].exists)
+        let calculate = app.buttons["dose.calculate"]
+        for _ in 0..<8 where !calculate.isHittable { app.swipeUp() }
+        calculate.tap()
+        let amount = app.staticTexts["dose.candidate.amount"]
+        for _ in 0..<8 where !amount.isHittable { app.swipeUp() }
+        XCTAssertTrue(amount.label.contains("100 mg"))
+        let quantity = app.staticTexts["dose.result.quantity"]
+        XCTAssertTrue(quantity.label.contains("1 tablet(s)"))
+        let supply = app.staticTexts["dose.supply.summary"]
+        for _ in 0..<8 where !supply.isHittable { app.swipeUp() }
+        XCTAssertTrue(supply.label.contains("quantity to dispense: 7"))
+        let candidateShot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        candidateShot.name = "Medication-candidate-first"; candidateShot.lifetime = .keepAlways; add(candidateShot)
+        // A changed weight must clear the old calculated candidate, not show stale math.
+        for _ in 0..<16 where !weight.isHittable { app.swipeDown() }
+        weight.tap(); weight.typeText("0")
+        app.buttons["dose.keyboard.done"].tap()
+        XCTAssertFalse(app.staticTexts["dose.candidate.amount"].exists)
+    }
+
+    func testMyClinicCreateSearchFavoriteChecklistAndShare() throws {
+        app.tabBars.buttons["My Clinic"].tap()
+        XCTAssertFalse(app.tabBars.buttons["X-Ray"].exists)
+        app.buttons["clinic.new"].tap()
+        let title = "Exam kit " + UUID().uuidString.prefix(6)
+        let titleField = app.textFields["clinic.editor.title"]
+        XCTAssertTrue(titleField.waitForExistence(timeout: 4))
+        titleField.tap(); titleField.typeText(title)
+        app.buttons["clinic.keyboard.done"].tap()
+        app.buttons["clinic.editor.add.step"].tap()
+        let step = app.textFields["clinic.editor.step"].firstMatch
+        step.tap(); step.typeText("Check room supplies")
+        app.buttons["clinic.keyboard.done"].tap()
+        let equipmentButton = app.buttons["clinic.editor.add.equipment"]
+        for _ in 0..<8 where !equipmentButton.isHittable { app.swipeUp() }
+        equipmentButton.tap()
+        let equipment = app.textFields["clinic.editor.equipment"].firstMatch
+        for _ in 0..<6 where !equipment.isHittable { app.swipeUp() }
+        equipment.tap(); equipment.typeText("Stethoscope")
+        app.buttons["clinic.keyboard.done"].tap()
+        app.buttons["clinic.editor.save"].tap()
+        let search = app.searchFields.firstMatch
+        XCTAssertTrue(search.waitForExistence(timeout: 4)); search.tap(); search.typeText(title)
+        if app.keyboards.buttons["Search"].exists { app.keyboards.buttons["Search"].tap() }
+        let row = app.buttons["clinic.item." + title]
+        XCTAssertTrue(row.waitForExistence(timeout: 4)); row.tap()
+        let check = app.buttons["1. Check room supplies"]
+        XCTAssertTrue(check.waitForExistence(timeout: 4)); check.tap()
+        XCTAssertEqual(check.value as? String, "Checked")
+        app.buttons["clinic.favorite"].tap()
+        let pdf = app.buttons["clinic.share.pdf"]
+        for _ in 0..<16 where !pdf.isHittable { app.swipeUp() }
+        XCTAssertTrue(pdf.exists)
+        pdf.tap()
+        XCTAssertTrue(app.otherElements["ActivityListView"].waitForExistence(timeout: 5) || app.buttons["Copy"].exists || app.buttons["Save to Files"].exists)
+        let shareShot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        shareShot.name = "MyClinic-PDF-share-sheet"; shareShot.lifetime = .keepAlways; add(shareShot)
+        // Persistence survives a normal app restart.
+        app.terminate(); app.launch()
+        XCTAssertTrue(app.staticTexts["Automatic dose calculator"].waitForExistence(timeout: 8))
+        app.tabBars.buttons["My Clinic"].tap()
+        app.segmentedControls.buttons["Favorites"].tap()
+        let saved = app.buttons["clinic.item." + title]
+        XCTAssertTrue(saved.waitForExistence(timeout: 4)); saved.tap()
+        XCTAssertEqual(app.buttons["1. Check room supplies"].value as? String, "Not checked")
+    }
+
 }
