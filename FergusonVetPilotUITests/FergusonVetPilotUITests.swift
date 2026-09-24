@@ -135,20 +135,26 @@ final class FergusonVetPilotUITests: XCTestCase {
         XCTAssertTrue(quantity.label.contains("tablet(s) equivalent"))
 
 
-        for _ in 0..<12 { app.swipeDown() }
+        for _ in 0..<20 where !sheetWeight.isHittable { app.swipeDown() }
         let q12 = app.buttons["dose.frequency.q12h"]
-        for _ in 0..<12 {
-            if q12.exists && q12.isHittable { break }
-            app.swipeUp()
+        // A partially clipped lazy-grid button can be reported as hittable.
+        // Bring its center clear of the navigation bar before tapping.
+        for _ in 0..<24 {
+            if q12.exists && q12.isHittable && q12.frame.midY > 170 && q12.frame.midY < 680 { break }
+            let up = !q12.exists || q12.frame.midY >= 680
+            let start = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: up ? 0.72 : 0.4))
+            let end = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: up ? 0.4 : 0.72))
+            start.press(forDuration: 0.05, thenDragTo: end)
         }
-        XCTAssertTrue(q12.waitForExistence(timeout: 3))
+        XCTAssertTrue(q12.exists && q12.isHittable)
+        XCTAssertGreaterThan(q12.frame.midY, 170)
+        XCTAssertLessThan(q12.frame.midY, 680)
         q12.tap()
 
         let overrideWarning = app.staticTexts["dose.frequency.override.warning"]
         for _ in 0..<5 where !overrideWarning.isHittable { app.swipeUp() }
         XCTAssertTrue(overrideWarning.exists)
 
-        for _ in 0..<12 where !calculate.isHittable { app.swipeUp() }
         for _ in 0..<12 where !calculate.isHittable { app.swipeUp() }
         calculate.tap()
         // This specific 25-mg strength cannot exactly deliver the fixed 22-mg
@@ -591,7 +597,7 @@ final class FergusonVetPilotUITests: XCTestCase {
 
     func testSharingSettingsPersistRecipients() throws {
         app.tabBars.buttons["My Clinic"].tap()
-        let settings = app.buttons["clinic.email.settings"]
+        let settings = app.buttons["clinic.sharing.settings"]
         for _ in 0..<12 where !settings.isHittable { app.swipeUp() }
         settings.tap()
         let email = app.textFields["clinic.email.recipient"]
@@ -611,7 +617,9 @@ final class FergusonVetPilotUITests: XCTestCase {
         phone.typeText("2125550100")
         app.navigationBars.buttons["Done"].tap()
         app.terminate(); app.launch()
+        XCTAssertTrue(app.staticTexts["Automatic dose calculator"].waitForExistence(timeout: 10))
         app.tabBars.buttons["My Clinic"].tap()
+        XCTAssertTrue(app.navigationBars["My Clinic"].waitForExistence(timeout: 5))
         for _ in 0..<12 where !settings.isHittable { app.swipeUp() }
         settings.tap()
         for _ in 0..<8 where !email.isHittable { app.swipeUp() }
@@ -635,7 +643,9 @@ final class FergusonVetPilotUITests: XCTestCase {
         app.alerts.buttons["Choose email app"].tap()
         XCTAssertTrue(app.otherElements["ActivityListView"].waitForExistence(timeout: 5) || app.buttons["Copy"].exists || app.buttons["Save to Files"].exists)
         app.terminate(); app.launch()
+        XCTAssertTrue(app.staticTexts["Automatic dose calculator"].waitForExistence(timeout: 10))
         app.tabBars.buttons["My Clinic"].tap()
+        XCTAssertTrue(app.navigationBars["My Clinic"].waitForExistence(timeout: 5))
         let text = app.buttons["clinic.text.file"]
         for _ in 0..<16 where !text.isHittable { app.swipeUp() }
         text.tap()
