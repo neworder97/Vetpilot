@@ -109,6 +109,15 @@ extension ScribeStore {
             value = try JSONDecoder().decode(ScribeCloudDraft.self, from: data).applying(to: value)
         } else { value.draftFromTranscript() }
         try save(value)
+        if account.configured, let owner = account.userID {
+            let originalDirectory = directory
+            do {
+                let version = try await ScribeCloud.upload(value, account: account)
+                guard account.userID == owner, directory == originalDirectory else { return }
+                value.syncVersion = version; value.syncedAt = Date(); try save(value)
+                syncStatus = "Notes uploaded"
+            } catch { syncStatus = "Notes saved locally; upload pending — " + error.localizedDescription }
+        }
     }
 }
 

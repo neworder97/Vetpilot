@@ -17,7 +17,7 @@ struct AccountSettingsView: View {
                         Text("Notes are stored separately for each signed-in account. Signing out switches to this device's guest notes.").font(.caption)
                         Button("Sign out") { Task { await account.signOut() } }.disabled(account.busy || scribe.accountLocked)
                     } else {
-                        Text("Create an account or sign in to use the same identity in the app and future website.")
+                        Text("Create an account or sign in to use the same identity in the app and website.")
                         Button { Task { await account.signIn(provider: "google") } } label: { Label("Continue with Google", systemImage: "person.crop.circle") }
                             .disabled(!account.configured || account.busy || scribe.accountLocked).accessibilityIdentifier("account.google")
                         Button { Task { await account.signIn(provider: "apple") } } label: { Label("Continue with Apple", systemImage: "apple.logo") }
@@ -28,8 +28,10 @@ struct AccountSettingsView: View {
                     if account.busy { ProgressView("Connecting…") }
                 }
                 Section("Notes & syncing") {
+                    Text(scribe.syncStatus).font(.caption)
+                    Button("Sync now") { Task { await scribe.sync(account: account) } }.disabled(account.userID == nil || scribe.accountLocked)
                     Button("Download my cloud notes") { Task { await download() } }.disabled(account.userID == nil || !account.configured || account.busy || scribe.accountLocked)
-                    Text("Upload individual encounters from Scribe. Download restores your cloud notes here; conflicting local edits are preserved as a separate copy. Audio stays on its original device. My Clinic and medication settings remain local in this version.").font(.caption)
+                    Text("Signed-in notes upload after transcription and sync automatically while the app is open. Failed uploads retry; conflicting edits are preserved as a separate copy. Audio stays on its original device. My Clinic and medication settings remain local in this version.").font(.caption)
                     if let notice { Text(notice).font(.caption) }
                 }
                 Section("Sharing") { Button("Email and text settings") { sharing = true } }

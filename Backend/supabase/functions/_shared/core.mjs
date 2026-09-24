@@ -50,3 +50,12 @@ export async function readJSON(request, maxBytes = 4_000_000) {
   const bytes=new Uint8Array(length); let offset=0; for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.length;}
   try{return JSON.parse(new TextDecoder().decode(bytes));}catch{throw new RequestError('Invalid JSON');}
 }
+
+export function audioFormat(bytes) {
+  if (!(bytes instanceof Uint8Array) || bytes.length < 16) throw new RequestError('Invalid audio');
+  const ascii = (start, end) => new TextDecoder().decode(bytes.slice(start, end));
+  if (ascii(4,8) === 'ftyp') return {type:'audio/mp4',name:'consultation.m4a'};
+  if (ascii(0,4) === 'RIFF' && ascii(8,12) === 'WAVE') return {type:'audio/wav',name:'consultation.wav'};
+  if ([0x1a,0x45,0xdf,0xa3].every((value,index)=>bytes[index]===value)) return {type:'audio/webm',name:'consultation.webm'};
+  throw new RequestError('Unsupported audio container');
+}

@@ -7,6 +7,14 @@ struct ScribeView: View {
     @ObservedObject var account: VetPilotAccount
     @State private var creating = false
     @State private var search = ""
+    @State private var selectedDate = Date()
+    @State private var filterByDate = false
+    private var visibleEncounters: [ScribeEncounter] {
+        store.encounters.filter { encounter in
+            (!filterByDate || Calendar.current.isDate(encounter.sessionDate, inSameDayAs: selectedDate)) &&
+            (search.isEmpty || encounter.title.localizedCaseInsensitiveContains(search) || encounter.patients.contains { $0.name.localizedCaseInsensitiveContains(search) })
+        }.sorted { $0.sessionDate > $1.sessionDate }
+    }
     var body: some View {
         NavigationStack {
             List {
@@ -15,15 +23,23 @@ struct ScribeView: View {
                     Text("Only record with everyone's consent. Drafts can contain errors; review names, clinical terms, numbers and patient attribution.").font(.caption)
                     Button("New encounter", systemImage: "plus") { creating = true }.accessibilityIdentifier("scribe.new")
                 }
-                Section("Saved encounters") {
-                    ForEach(store.encounters.filter { search.isEmpty || $0.title.localizedCaseInsensitiveContains(search) || $0.patients.contains { $0.name.localizedCaseInsensitiveContains(search) } }) { encounter in
+                Section("Session calendar") {
+                    Toggle("Filter by date", isOn: $filterByDate)
+                    if filterByDate {
+                        DatePicker("Session date", selection: $selectedDate, displayedComponents: .date)
+                            .datePickerStyle(.graphical)
+                    }
+                }
+                Section("Saved encounters (\(visibleEncounters.count))") {
+                    if visibleEncounters.isEmpty && !store.encounters.isEmpty { Text("No sessions match this date or search.").foregroundStyle(.secondary) }
+                    ForEach(visibleEncounters) { encounter in
                         NavigationLink {
                             ScribeEncounterView(store: store, account: account, value: encounter)
                         } label: {
                             VStack(alignment: .leading) {
                                 Text(encounter.title).font(.headline)
                                 Text(encounter.patients.map(\.name).joined(separator: ", ")).font(.subheadline)
-                                Text(encounter.createdAt.formatted(date: .abbreviated, time: .shortened)).font(.caption)
+                                Text(encounter.sessionDate.formatted(date: .abbreviated, time: .shortened)).font(.caption)
                                 Text(encounter.notes.allSatisfy { $0.finalizedAt != nil } ? "Reviewed notes" : "Draft — needs review").font(.caption).foregroundStyle(.secondary)
                             }
                         }.accessibilityIdentifier("scribe.encounter.\(encounter.id)")
@@ -44,11 +60,13 @@ private struct ScribeNewEncounter: View {
     @State private var title = ""
     @State private var patients = [ScribePatient(name: "")]
     @State private var historyOnly = true
+    @State private var visitDate = Date()
     @State private var error: String?
     var body: some View {
         NavigationStack {
             Form {
                 TextField("Visit title (optional)", text: $title)
+                DatePicker("Visit date", selection: $visitDate)
                 Toggle("History only", isOn: $historyOnly)
                 Text(historyOnly ? "Only history is drafted. Exam, assessment and plan stay blank for clinician entry." : "SOAP drafting uses only information actually stated. It must not invent examination findings or a treatment plan.").font(.caption)
                 ForEach($patients) { $patient in
@@ -63,7 +81,11 @@ private struct ScribeNewEncounter: View {
                 if patients.count < 8 { Button("Add another patient") { patients.append(ScribePatient(name: "")) }.accessibilityIdentifier("scribe.patient.add") }
                 if let error { Text(error).foregroundStyle(.red) }
                 Button("Create encounter") {
-                    do { try store.save(ScribeEncounter.create(title: title, patients: patients, historyOnly: historyOnly)); dismiss() }
+                    do {
+                        var encounter = try ScribeEncounter.create(title: title, patients: patients, historyOnly: historyOnly)
+                        encounter.visitDate = visitDate
+                        try store.save(encounter); dismiss()
+                    }
                     catch { self.error = error.localizedDescription }
                 }.accessibilityIdentifier("scribe.create")
             }.navigationTitle("New encounter")
@@ -88,9 +110,32 @@ struct ScribeEncounterView: View {
     @State private var confirmAudioDelete = false
     @State private var uploadConfirm = false
     @State private var playback: AVAudioPlayer?
+    @State private var workspace = "Record"
     private var locked: Bool { store.busy || store.hasActiveRecording }
     var body: some View {
         Form {
+            Section {
+                Picker("Workspace", selection: $workspace) {
+                    ForEach(["Record", "SOAP", "Summary", "Email"], id: \.self) { Text($0) }
+                }.pickerStyle(.segmented)
+            }
+            if workspace == "SOAP" {
+                Section("Patient notes") {
+                    ForEach(value.patients) { patient in
+                        NavigationLink(patient.name) { ScribeNoteEditor(store: store, account: account, encounterID: value.id, patientID: patient.id) }
+                    }
+                    Text("History, examination findings, assessment and plan. Blank means not documented.").font(.caption)
+                }
+            } else if workspace == "Summary" || workspace == "Email" {
+                ForEach(value.patients) { patient in
+                    NavigationLink("\(patient.name) — \(workspace)") {
+                        ScribeOutputEditor(store: store, encounterID: value.id, patientID: patient.id, email: workspace == "Email")
+                    }
+                }
+            } else {
+            Section("Visit") {
+                DatePicker("Visit date", selection: Binding(get: { value.sessionDate }, set: { value.visitDate = $0 })).disabled(locked)
+            }
             Section("Patients") {
                 ForEach(value.patients) { patient in Text("\(patient.name) — \(patient.species)") }
                 Text("Say the pet's name before discussing that patient. Statements involving multiple pets or unclear ownership need manual review.").font(.caption)
@@ -162,6 +207,7 @@ struct ScribeEncounterView: View {
             Section {
                 Button("Delete audio only", role: .destructive) { confirmAudioDelete = true }.disabled(locked || value.recordingFiles.isEmpty)
                 Button("Delete local encounter", role: .destructive) { confirmDelete = true }.disabled(locked)
+            }
             }
         }.navigationTitle(value.title).navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("Done") { UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil) }.accessibilityIdentifier("scribe.keyboard.done") } }
@@ -317,5 +363,48 @@ private struct ScribeDeviceTranslation: View {
             catch { self.error = "Translation unavailable for this language or device. Download the requested language support or use configured cloud translation." }
             busy = false
         }
+    }
+}
+
+
+private struct ScribeOutputEditor: View {
+    @ObservedObject var store: ScribeStore
+    let encounterID: UUID
+    let patientID: UUID
+    let email: Bool
+    @State private var share: ClinicShare?
+    private var encounter: ScribeEncounter? { store.encounter(encounterID) }
+    private var note: SOAPNote? { encounter?.notes.first { $0.patientID == patientID } }
+    private var patientName: String { encounter?.patients.first { $0.id == patientID }?.name ?? "Patient" }
+    private var sourceText: String {
+        guard let note else { return "" }
+        return email ? "Visit summary for \(patientName)\n\n\(note.plainText)" : note.plainText
+    }
+    private var text: Binding<String> {
+        Binding(get: { (email ? note?.emailText : note?.summaryText) ?? sourceText }, set: { value in
+            guard var encounter, let i = encounter.notes.firstIndex(where: { $0.patientID == patientID }) else { return }
+            if email { encounter.notes[i].emailText = value } else { encounter.notes[i].summaryText = value }
+            encounter.updatedAt = Date()
+            do { try store.save(encounter) } catch { store.error = error.localizedDescription }
+        })
+    }
+    var body: some View {
+        Form {
+            Section {
+                Text(patientName).font(.headline)
+                Text("Review this document before sharing. It starts from the patient’s SOAP note; edits here do not alter the clinical record.").font(.caption)
+                TextEditor(text: text).frame(minHeight: 340).disabled(store.accountLocked)
+            }
+            Section {
+                Button("Copy text", systemImage: "doc.on.doc") { UIPasteboard.general.string = text.wrappedValue }
+                Button("Share PDF / Email / Print", systemImage: "square.and.arrow.up") {
+                    guard let encounter else { return }
+                    do { share = ClinicShare(urls: [try ScribePDF.export(encounter: encounter, patientID: patientID, output: email ? .email : .summary)]) }
+                    catch { store.error = error.localizedDescription }
+                }.disabled(note?.hasContent != true)
+                Text("Choose Mail to attach the PDF, Print, or Save to Files from the share sheet.").font(.caption)
+            }
+        }.navigationTitle(email ? "Email draft" : "Patient summary")
+            .sheet(item: $share) { item in ClinicShareSheet(urls: item.urls) }
     }
 }

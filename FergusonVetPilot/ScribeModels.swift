@@ -28,9 +28,11 @@ struct SOAPNote: Codable, Identifiable, Equatable {
     var finalizedAt: Date?
     var updatedAt = Date()
     var translation: NoteTranslation?
+    var summaryText: String?
+    var emailText: String?
     var hasContent: Bool { [subjective, objective, assessment, plan].contains { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty } }
     var plainText: String { "SUBJECTIVE / HISTORY\n\(subjective)\n\nOBJECTIVE\n\(objective)\n\nASSESSMENT\n\(assessment)\n\nPLAN\n\(plan)" }
-    mutating func edited() { finalizedAt = nil; reviewer = ""; translation = nil; updatedAt = Date() }
+    mutating func edited() { finalizedAt = nil; reviewer = ""; translation = nil; summaryText = nil; emailText = nil; updatedAt = Date() }
     mutating func finalize(reviewer: String) throws {
         let name = reviewer.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !name.isEmpty, hasContent else { throw ScribeError.invalid("Enter the reviewing clinician's name and review the note before finalizing.") }
@@ -51,6 +53,9 @@ struct ScribeEncounter: Codable, Identifiable, Equatable {
     var updatedAt = Date()
     var title: String
     var patients: [ScribePatient]
+    // Optional for compatibility with encounters saved before calendar support.
+    var visitDate: Date?
+    var sessionDate: Date { visitDate ?? createdAt }
     var consentAt: Date?
     var recordingFiles: [String] = []
     var recordedSeconds: Double = 0

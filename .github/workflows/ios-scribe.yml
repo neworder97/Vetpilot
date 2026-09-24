@@ -23,7 +23,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test Backend/tests/core.test.mjs
+      - run: node --test Backend/tests/*.test.mjs
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
@@ -77,7 +77,7 @@ jobs:
       - name: Save unsigned IPA and release manifest
         uses: actions/upload-artifact@v4
         with:
-          name: VetPilot-0.6.0-Signulous-IPA
+          name: VetPilot-0.7.0-Signulous-IPA
           path: ReleaseArtifacts/
           if-no-files-found: error
       - name: Save validation evidence

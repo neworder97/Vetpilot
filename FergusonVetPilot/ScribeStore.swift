@@ -11,6 +11,7 @@ final class ScribeStore: NSObject, ObservableObject, AVAudioRecorderDelegate {
     @Published private(set) var elapsed: Double = 0
     @Published var busy = false
     @Published var progress = ""
+    @Published var syncStatus = "Not synced"
     @Published var error: String?
     private var recorder: AVAudioRecorder?
     private var timer: Timer?
@@ -71,8 +72,63 @@ final class ScribeStore: NSObject, ObservableObject, AVAudioRecorderDelegate {
             for i in valid.notes.indices { valid.notes[i].edited() }
             valid.updatedAt = Date()
         }
+        if let old = self.encounter(valid.id) {
+            var previous = old; let incoming = valid
+            previous.updatedAt = incoming.updatedAt
+            previous.syncedAt = incoming.syncedAt
+            previous.syncVersion = incoming.syncVersion
+            if previous != incoming { valid.updatedAt = Date() }
+        }
         if let i = values.firstIndex(where: { $0.id == valid.id }) { values[i] = valid } else { values.insert(valid, at: 0) }
         try commit(values)
+    }
+    /// Serial account-scoped sync. CAS conflicts preserve the local revision before retry.
+    func sync(account: VetPilotAccount) async {
+        guard !accountLocked, account.configured, let owner = account.userID,
+              scope == owner.uuidString.lowercased() else { return }
+        busy = true; defer { busy = false }
+        let originalScope = scope
+        syncStatus = "Syncing…"
+        do {
+            let rows = try await ScribeCloud.download(account: account)
+            guard account.userID == owner, scope == originalScope else { return }
+            var values = encounters
+            for row in rows {
+                var remote = try row.payload.validated()
+                guard remote.id == row.id else { throw ScribeError.invalid("Cloud encounter identity mismatch.") }
+                remote.recordingFiles = []
+                if let index = values.firstIndex(where: { $0.id == row.id }) {
+                    let local = values[index]
+                    guard row.version > local.syncVersion else { continue }
+                    if local.syncedAt == nil || local.updatedAt > local.syncedAt! {
+                        var copy = local
+                        copy.id = UUID(); copy.title += " (conflict copy)"
+                        copy.syncVersion = 0; copy.syncedAt = nil
+                        values.append(copy)
+                    } else { remote.recordingFiles = local.recordingFiles }
+                    remote.syncVersion = row.version; remote.syncedAt = Date()
+                    values[index] = remote
+                } else {
+                    remote.syncVersion = row.version; remote.syncedAt = Date()
+                    values.append(remote)
+                }
+            }
+            try commit(values)
+            for candidate in encounters where candidate.syncedAt == nil || candidate.updatedAt > candidate.syncedAt! {
+                let version = try await ScribeCloud.upload(candidate, account: account)
+                guard account.userID == owner, scope == originalScope else { return }
+                // Preserve edits made while the request was in flight, keeping them queued.
+                guard let index = encounters.firstIndex(where: { $0.id == candidate.id }) else { continue }
+                var updated = encounters
+                let unchanged = updated[index] == candidate
+                updated[index].syncVersion = version
+                if unchanged {
+                    updated[index].syncedAt = Date()
+                }
+                try commit(updated)
+            }
+            syncStatus = "Synced " + Date().formatted(date: .omitted, time: .shortened)
+        } catch { syncStatus = "Sync pending — " + error.localizedDescription }
     }
     func encounter(_ id: UUID) -> ScribeEncounter? { encounters.first { $0.id == id } }
     func audioURL(_ filename: String) -> URL { directory.appendingPathComponent(filename) }

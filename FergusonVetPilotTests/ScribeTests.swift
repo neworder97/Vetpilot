@@ -6,6 +6,25 @@ final class ScribeTests: XCTestCase {
     func make(_ names: [String] = ["Max", "Bella"]) throws -> ScribeEncounter {
         try ScribeEncounter.create(title: "Visit", patients: names.map { ScribePatient(name: $0) })
     }
+    func testLegacyEncounterCalendarFallbackAndExplicitVisitDate() throws {
+        let item = try make(["Max"])
+        var object = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(item)) as? [String: Any])
+        object.removeValue(forKey: "visitDate")
+        let decoded = try JSONDecoder().decode(ScribeEncounter.self, from: JSONSerialization.data(withJSONObject: object))
+        XCTAssertEqual(decoded.sessionDate, decoded.createdAt)
+        var changed = decoded
+        changed.visitDate = Date(timeIntervalSince1970: 1_700_000_000)
+        let restored = try JSONDecoder().decode(ScribeEncounter.self, from: JSONEncoder().encode(changed))
+        XCTAssertEqual(restored.sessionDate, changed.visitDate)
+        XCTAssertEqual(restored.createdAt, item.createdAt)
+    }
+    func testClinicalEditsClearDerivedDocuments() throws {
+        var note = SOAPNote(patientID: UUID())
+        note.subjective = "No vomiting."
+        note.summaryText = "No vomiting."; note.emailText = "Visit summary"
+        note.edited()
+        XCTAssertNil(note.summaryText); XCTAssertNil(note.emailText)
+    }
     func testDecimalsNegationAndAmbiguousPatientSeparation() throws {
         var item = try make()
         item.transcript = "Max weighs 12.5 kg and takes 0.25 mL. Bella has no vomiting. She is tired. Max and Bella are here."

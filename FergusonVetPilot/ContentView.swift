@@ -50,6 +50,12 @@ struct ContentView: View {
         .overlay { if scribe.isRecording { Rectangle().strokeBorder(.red, lineWidth: 4).ignoresSafeArea().allowsHitTesting(false).accessibilityHidden(true) } }
         .sheet(isPresented: $settings) { AccountSettingsView(account: account, scribe: scribe) }
         .task { do { try scribe.switchAccount(account.userID) } catch { scribe.error = error.localizedDescription } }
+        .task(id: account.userID) {
+            while !Task.isCancelled {
+                await scribe.sync(account: account)
+                do { try await Task.sleep(nanoseconds: 30_000_000_000) } catch { break }
+            }
+        }
         .onChange(of: account.userID) { _, id in do { try scribe.switchAccount(id) } catch { scribe.error = error.localizedDescription } }
         .alert("Scribe", isPresented: Binding(get: { scribe.error != nil }, set: { if !$0 { scribe.error = nil } })) {
             Button("OK") { scribe.error = nil }
