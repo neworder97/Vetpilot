@@ -12,7 +12,15 @@ final class ScribeUITests: XCTestCase {
     }
     func tab(_ name: String) {
         if app.tabBars.buttons[name].exists { app.tabBars.buttons[name].tap() }
-        else { app.tabBars.buttons["More"].tap(); let target = app.staticTexts[name].firstMatch; XCTAssertTrue(target.waitForExistence(timeout: 5)); target.tap() }
+        else {
+            let more = app.tabBars.buttons["More"]
+            XCTAssertTrue(more.waitForExistence(timeout: 10))
+            more.tap()
+            let target = app.staticTexts[name].firstMatch
+            // A cold relaunch can finish laying out the tab controller after the first tap.
+            if !target.waitForExistence(timeout: 5) { more.tap() }
+            XCTAssertTrue(target.waitForExistence(timeout: 5)); target.tap()
+        }
     }
     func keyboardDone() { if app.buttons["scribe.keyboard.done"].exists { app.buttons["scribe.keyboard.done"].tap() } }
     func reach(_ element: XCUIElement) {
@@ -68,6 +76,7 @@ final class ScribeUITests: XCTestCase {
     }
     func testGuestScribeRequiresAccount() {
         app.terminate(); app.launchArguments = ["ui-no-cloud"]; app.launch()
+        XCTAssertTrue(app.staticTexts["Automatic dose calculator"].waitForExistence(timeout: 10))
         tab("Scribe")
         XCTAssertTrue(app.buttons["Create account or sign in"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["scribe.new"].exists)
