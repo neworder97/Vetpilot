@@ -578,6 +578,10 @@ final class FergusonVetPilotUITests: XCTestCase {
         let saved = app.buttons["clinic.item." + title]
         XCTAssertTrue(saved.waitForExistence(timeout: 4)); saved.tap()
         XCTAssertEqual(app.buttons["1. Check room supplies"].value as? String, "Not checked")
+        let editable = app.buttons["clinic.share.file"]
+        for _ in 0..<16 where !editable.isHittable { app.swipeUp() }
+        XCTAssertTrue(editable.exists); editable.tap()
+        XCTAssertTrue(app.otherElements["ActivityListView"].waitForExistence(timeout: 5) || app.buttons["Copy"].exists || app.buttons["Save to Files"].exists)
     }
 
 }

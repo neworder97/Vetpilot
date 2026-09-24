@@ -18,6 +18,9 @@ RUNTIME=$(xcrun simctl list runtimes -j | python3 -c 'import json,sys; a=[r for 
 DEVICE=$(xcrun simctl list devicetypes -j | python3 -c 'import json,sys; a=[r for r in json.load(sys.stdin)["devicetypes"] if r["name"].startswith("iPhone")]; print(next((r["identifier"] for r in a if r["name"]=="iPhone 16"),a[-1]["identifier"]))')
 SIM=$(xcrun simctl create "VetPilotSafetyAudit-$$" "$DEVICE" "$RUNTIME")
 cleanup() {
+  if [[ -d "$OUT/Tests.xcresult" ]]; then
+    xcrun xcresulttool export attachments --path "$OUT/Tests.xcresult" --output-path "$OUT/Attachments" >/dev/null 2>&1 || true
+  fi
   xcrun simctl io "$SIM" screenshot "$OUT/simulator-final.png" >/dev/null 2>&1 || true
   xcrun simctl shutdown "$SIM" >/dev/null 2>&1 || true
   xcrun simctl delete "$SIM" >/dev/null 2>&1 || true

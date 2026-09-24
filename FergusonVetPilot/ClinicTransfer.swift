@@ -59,7 +59,7 @@ enum ClinicTransfer {
             func text(_ value: String, size: CGFloat = 11, bold: Bool = false) {
                 let font = bold ? UIFont.boldSystemFont(ofSize: size) : UIFont.systemFont(ofSize: size)
                 let storage = NSTextStorage(string: value, attributes: [.font: font, .foregroundColor: UIColor.black])
-                let manager = NSLayoutManager(); let container = NSTextContainer(size: CGSize(width: 528, height: .greatestFiniteMagnitude))
+                let manager = NSLayoutManager(); let container = NSTextContainer(size: CGSize(width: 528, height: CGFloat.greatestFiniteMagnitude))
                 container.lineFragmentPadding = 0; manager.addTextContainer(container); storage.addLayoutManager(manager)
                 manager.ensureLayout(for: container)
                 var glyph = 0
