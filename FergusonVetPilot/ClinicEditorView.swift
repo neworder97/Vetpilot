@@ -37,7 +37,7 @@ struct ClinicEditorView: View {
                     .onMove { draft.steps.move(fromOffsets: $0, toOffset: $1) }
                     Button("Add step") { draft.steps.append(ClinicStep()) }
                         .disabled(draft.steps.count >= 200).accessibilityIdentifier("clinic.editor.add.step")
-                    Text("Use Reorder to move steps or remove rows.").font(.caption).foregroundStyle(.secondary)
+                    Text("Tap Edit to reorder steps or remove rows.").font(.caption).foregroundStyle(.secondary)
                 }
                 Section("Equipment list") {
                     ForEach($draft.equipment) { $equipment in

@@ -543,7 +543,7 @@ final class FergusonVetPilotUITests: XCTestCase {
         titleField.tap(); titleField.typeText(title)
         app.buttons["clinic.keyboard.done"].tap()
         app.buttons["clinic.editor.add.step"].tap()
-        let step = app.textFields["clinic.editor.step"].firstMatch
+        let step = app.descendants(matching: .any).matching(identifier: "clinic.editor.step").firstMatch
         step.tap(); step.typeText("Check room supplies")
         app.buttons["clinic.keyboard.done"].tap()
         let equipmentButton = app.buttons["clinic.editor.add.equipment"]
@@ -581,6 +581,61 @@ final class FergusonVetPilotUITests: XCTestCase {
         let editable = app.buttons["clinic.share.file"]
         for _ in 0..<16 where !editable.isHittable { app.swipeUp() }
         XCTAssertTrue(editable.exists); editable.tap()
+        XCTAssertTrue(app.otherElements["ActivityListView"].waitForExistence(timeout: 5) || app.buttons["Copy"].exists || app.buttons["Save to Files"].exists)
+    }
+
+    func testSharingSettingsPersistRecipients() throws {
+        app.tabBars.buttons["My Clinic"].tap()
+        let settings = app.buttons["clinic.email.settings"]
+        for _ in 0..<12 where !settings.isHittable { app.swipeUp() }
+        settings.tap()
+        let email = app.textFields["clinic.email.recipient"]
+        for _ in 0..<8 where !email.isHittable { app.swipeUp() }
+        email.tap()
+        if let old = email.value as? String, old.contains("@") {
+            email.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: old.count))
+        }
+        email.typeText("review@example.com")
+        app.swipeUp()
+        let phone = app.textFields["clinic.text.recipient"]
+        for _ in 0..<8 where !phone.isHittable { app.swipeUp() }
+        phone.tap()
+        if let old = phone.value as? String, old.contains("555") {
+            phone.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: old.count))
+        }
+        phone.typeText("2125550100")
+        app.navigationBars.buttons["Done"].tap()
+        app.terminate(); app.launch()
+        app.tabBars.buttons["My Clinic"].tap()
+        for _ in 0..<12 where !settings.isHittable { app.swipeUp() }
+        settings.tap()
+        for _ in 0..<8 where !email.isHittable { app.swipeUp() }
+        XCTAssertEqual(email.value as? String, "review@example.com")
+        for _ in 0..<8 where !phone.isHittable { app.swipeUp() }
+        XCTAssertEqual(phone.value as? String, "2125550100")
+    }
+
+    func testEmailAndTextExportOfferShareFallbackOnSimulator() throws {
+        app.tabBars.buttons["My Clinic"].tap()
+        app.buttons["clinic.new"].tap()
+        let titleField = app.textFields["clinic.editor.title"]
+        XCTAssertTrue(titleField.waitForExistence(timeout: 4))
+        titleField.tap(); titleField.typeText("Export fallback " + UUID().uuidString.prefix(6))
+        app.buttons["clinic.keyboard.done"].tap()
+        app.buttons["clinic.editor.save"].tap()
+        let email = app.buttons["clinic.email.pdf"]
+        for _ in 0..<16 where !email.isHittable { app.swipeUp() }
+        email.tap()
+        XCTAssertTrue(app.alerts["Email setup needed"].waitForExistence(timeout: 5))
+        app.alerts.buttons["Choose email app"].tap()
+        XCTAssertTrue(app.otherElements["ActivityListView"].waitForExistence(timeout: 5) || app.buttons["Copy"].exists || app.buttons["Save to Files"].exists)
+        app.terminate(); app.launch()
+        app.tabBars.buttons["My Clinic"].tap()
+        let text = app.buttons["clinic.text.file"]
+        for _ in 0..<16 where !text.isHittable { app.swipeUp() }
+        text.tap()
+        XCTAssertTrue(app.alerts["Messages setup needed"].waitForExistence(timeout: 5))
+        app.alerts.buttons["Choose sharing app"].tap()
         XCTAssertTrue(app.otherElements["ActivityListView"].waitForExistence(timeout: 5) || app.buttons["Copy"].exists || app.buttons["Save to Files"].exists)
     }
 

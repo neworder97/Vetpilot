@@ -59,6 +59,10 @@ struct ClinicDetailView: View {
                         if item.imported { Text("Imported copy; changes do not update the sender's version.").font(.caption) }
                     }
                     Section("Share / export") {
+                        ClinicEmailButton(items: [item], pdf: true)
+                        ClinicEmailButton(items: [item], pdf: false)
+                        ClinicTextButton(items: [item], pdf: true)
+                        ClinicTextButton(items: [item], pdf: false)
                         Button { export(item, pdf: true) } label: { Label("Share PDF", systemImage: "doc.richtext") }
                             .accessibilityIdentifier("clinic.share.pdf")
                         Button { export(item, pdf: false) } label: { Label("Share editable .vetpilot file", systemImage: "square.and.arrow.up") }

@@ -8,6 +8,7 @@ struct MyClinicView: View {
     @State private var category = "All categories"
     @State private var editor: ClinicProtocol?
     @State private var importing = false
+    @State private var emailSettings = false
     @State private var sharing: ClinicShare?
 
     private var filtered: [ClinicProtocol] {
@@ -61,7 +62,15 @@ struct MyClinicView: View {
                         }
                     }
                 }
-                Section {
+                Section("Sharing") {
+                    Button("Email, text & export settings") { emailSettings = true }
+                        .accessibilityIdentifier("clinic.email.settings")
+                    if !store.items.isEmpty {
+                        ClinicEmailButton(items: store.items, pdf: true)
+                        ClinicEmailButton(items: store.items, pdf: false)
+                        ClinicTextButton(items: store.items, pdf: true)
+                        ClinicTextButton(items: store.items, pdf: false)
+                    }
                     Text(ClinicProtocol.reviewNotice).font(.caption).foregroundStyle(.secondary)
                     Text("Share copies with your team using PDF or an editable .vetpilot file. Changes do not sync between devices.").font(.caption).foregroundStyle(.secondary)
                 }
@@ -74,6 +83,8 @@ struct MyClinicView: View {
                         .accessibilityIdentifier("clinic.import")
                 }
                 ToolbarItemGroup(placement: .topBarTrailing) {
+                    Button { emailSettings = true } label: { Label("Sharing settings", systemImage: "gearshape") }
+                        .accessibilityIdentifier("clinic.sharing.settings")
                     Menu {
                         Button("Export all as PDF") { export(pdf: true) }
                         Button("Export all as editable file") { export(pdf: false) }
@@ -84,6 +95,7 @@ struct MyClinicView: View {
                         .accessibilityIdentifier("clinic.new")
                 }
             }
+            .sheet(isPresented: $emailSettings) { ClinicEmailSettings() }
             .sheet(item: $editor) { item in ClinicEditorView(store: store, initial: item) }
             .sheet(item: $sharing) { ClinicShareSheet(urls: $0.urls) }
             .fileImporter(isPresented: $importing, allowedContentTypes: [.vetPilotProtocol, .json]) { result in

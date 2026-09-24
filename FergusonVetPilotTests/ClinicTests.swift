@@ -104,4 +104,30 @@ final class ClinicTests: XCTestCase {
         let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "com.adobe.pdf")
         attachment.name = "MyClinic-multipage-export.pdf"; attachment.lifetime = .keepAlways; add(attachment)
     }
+    func testEmailAttachmentAndDefaultRecipients() throws {
+        let file = try ClinicTransfer.export([example()], pdf: false)
+        defer { try? FileManager.default.removeItem(at: file.deletingLastPathComponent()) }
+        let draft = try ClinicEmailDraft.make(url: file, recipient: " vet@example.com ")
+        XCTAssertEqual(draft.recipients, ["vet@example.com"])
+        XCTAssertEqual(draft.filename, "VetPilot-My-Clinic.vetpilot")
+        XCTAssertEqual(draft.data, try Data(contentsOf: file))
+        XCTAssertEqual(try ClinicPackage.decode(draft.data).items.count, 1)
+        XCTAssertEqual(try ClinicEmailDraft.recipient("  "), [])
+        XCTAssertThrowsError(try ClinicEmailDraft.recipient("invalid"))
+        XCTAssertThrowsError(try ClinicEmailDraft.recipient("a@example.com\nb@example.com"))
+        XCTAssertThrowsError(try ClinicEmailDraft.recipient("a@example.com,b@example.com"))
+        let pdf = try ClinicTransfer.export([example()], pdf: true)
+        defer { try? FileManager.default.removeItem(at: pdf.deletingLastPathComponent()) }
+        let pdfDraft = try ClinicEmailDraft.make(url: pdf, recipient: "")
+        XCTAssertEqual(pdfDraft.mimeType, "application/pdf")
+        XCTAssertNotNil(PDFDocument(data: pdfDraft.data))
+    }
+    func testTextRecipientFormattingAndValidation() throws {
+        XCTAssertEqual(try ClinicTextDraft.recipient("+1 (212) 555-0100"), ["+12125550100"])
+        XCTAssertEqual(try ClinicTextDraft.recipient(""), [])
+        XCTAssertThrowsError(try ClinicTextDraft.recipient("123"))
+        XCTAssertThrowsError(try ClinicTextDraft.recipient("2125550100;2125550101"))
+        XCTAssertThrowsError(try ClinicTextDraft.recipient("212+5550100"))
+    }
+
 }
