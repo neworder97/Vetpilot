@@ -61,6 +61,7 @@ public class AndroidTestRunner extends Instrumentation {
    check(Integer.parseInt(js("document.querySelectorAll('#labList details').length"))>=2,"BNP lab search");
    js("state.tab='clinic';state.page='list';render();newClinic();document.querySelector('#editTitle').value='Android emulator protocol';document.querySelector('#editSummary').value='Offline validation';saveClinic()");
    check("true".equals(js("clinic.some(p=>p.title==='Android emulator protocol')")),"Clinic item saved");
+   check("true".equals(js("state.page==='detail' && currentClinic().title==='Android emulator protocol'")),"Saved item opens with canonical UUID");
    check("true".equals(js("load('clinic',[]).some(p=>p.title==='Android emulator protocol')")),"Clinic native persistence");
    js("state.page='settings';render();document.querySelector('#settingsEmail').value='vet@example.org';document.querySelector('#settingsPhone').value='+15555550100'");click("saveSettings");
    check("true".equals(js("load('settings',{}).email==='vet@example.org'")),"Sharing defaults persisted");

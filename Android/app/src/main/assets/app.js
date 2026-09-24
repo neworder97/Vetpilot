@@ -116,7 +116,7 @@ function saveClinic(){
  p.steps=p.steps.filter(s=>s.text.trim());p.equipment=p.equipment.filter(e=>e.name.trim());p.updatedAt=now();
  if(old){const clinical=x=>JSON.stringify([x.title,x.kind,x.category,x.summary,x.steps,x.equipment,x.notes,x.photos]);if(clinical(old)!==clinical(p)&&p.reviewer===old.reviewer&&p.reviewedOn===old.reviewedOn){p.reviewer='';p.reviewedOn='';}p.revision=old.revision+1;}
  const validated=call({op:'clinicValidate',package:packageOf([p])}).package.items[0];
- const next=clinic.filter(x=>x.id!==p.id).concat(validated);persist('clinic',next);clinic=next;state.edit=null;state.clinicID=p.id;state.page='detail';render();toast('Clinic item saved');
+ const next=clinic.filter(x=>x.id!==p.id).concat(validated);persist('clinic',next);clinic=next;state.edit=null;state.clinicID=validated.id;state.page='detail';render();toast('Clinic item saved');
 }
 function renderImport(){
  const p=state.import;
