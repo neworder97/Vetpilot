@@ -121,6 +121,7 @@ final class FergusonVetPilotUITests: XCTestCase {
         }
 
         let calculate = app.buttons["dose.calculate"]
+        for _ in 0..<12 where !calculate.isHittable { app.swipeUp() }
         XCTAssertTrue(calculate.waitForExistence(timeout: 3))
         XCTAssertTrue(calculate.isEnabled)
         for _ in 0..<12 where !calculate.isHittable { app.swipeUp() }
@@ -452,7 +453,11 @@ final class FergusonVetPilotUITests: XCTestCase {
         concentration.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: prior.count))
         concentration.typeText("0")
         XCTAssertTrue(app.staticTexts["dose.concentration.error"].exists)
-        XCTAssertFalse(app.buttons["dose.calculate"].isEnabled)
+        if app.buttons["dose.keyboard.done"].exists { app.buttons["dose.keyboard.done"].tap() }
+        let calculate = app.buttons["dose.calculate"]
+        for _ in 0..<12 where !calculate.exists { app.swipeUp() }
+        XCTAssertTrue(calculate.exists)
+        XCTAssertFalse(calculate.isEnabled)
     }
 
     func testPotassiumNeedsExplicitPrescription() throws {

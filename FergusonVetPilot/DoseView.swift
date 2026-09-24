@@ -889,6 +889,7 @@ private struct DoseCalculatorSheet: View {
                     Spacer()
                     Button("Done") {
                         weightFieldFocused = false
+                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                     }
                     .accessibilityIdentifier("dose.keyboard.done")
                 }

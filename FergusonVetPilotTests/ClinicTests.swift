@@ -99,7 +99,10 @@ final class ClinicTests: XCTestCase {
         let pdf = try XCTUnwrap(PDFDocument(data: data))
         XCTAssertGreaterThan(pdf.pageCount, 2)
         let text = (0..<pdf.pageCount).compactMap { pdf.page(at: $0)?.string }.joined(separator: "\n")
-        XCTAssertTrue(text.contains("END_OF_LONG_NOTES")); XCTAssertTrue(text.contains("Stethoscope"))
+        // PDFKit may insert whitespace between glyph runs in exported text.
+        let joinedGlyphs = text.filter { !$0.isWhitespace }
+        XCTAssertTrue(joinedGlyphs.contains("END_OF_LONG_NOTES"), "Missing final note marker: \(text.suffix(2000))")
+        XCTAssertTrue(joinedGlyphs.contains("Stethoscope"), "Missing equipment text")
         XCTAssertTrue(text.contains("User-created protocol"))
         let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "com.adobe.pdf")
         attachment.name = "MyClinic-multipage-export.pdf"; attachment.lifetime = .keepAlways; add(attachment)
