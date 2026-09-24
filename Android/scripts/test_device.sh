@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 mkdir -p Android/validation
-adb install -r Android/app/build/manual/debug/VetPilot-debug.apk
+adb install --no-incremental -r Android/app/build/manual/debug/VetPilot-debug.apk
 adb shell am instrument -w com.vetpilot.android/.AndroidTestRunner | tee Android/validation/instrumentation.log
 adb logcat -d > Android/validation/logcat.log
 adb pull /sdcard/Android/data/com.vetpilot.android/files/vetpilot-validation.json Android/validation/emulator.json
@@ -17,7 +17,7 @@ PY
 # this disposable emulator; distributable releases use the separate private key.
 "$ANDROID_HOME/build-tools/35.0.0/apksigner" sign --ks Android/app/build/debug.keystore --ks-pass pass:android --out Android/validation/release-smoke.apk Android/app/build/manual/release/aligned.apk
 adb shell am force-stop com.vetpilot.android
-adb install -r Android/validation/release-smoke.apk
+adb install --no-incremental -r Android/validation/release-smoke.apk
 adb shell am start -n com.vetpilot.android/.MainActivity
 sleep 8
 adb shell pidof com.vetpilot.android
