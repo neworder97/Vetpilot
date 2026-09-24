@@ -21,6 +21,9 @@ cleanup() {
   if [[ -d "$OUT/Tests.xcresult" ]]; then
     xcrun xcresulttool export attachments --path "$OUT/Tests.xcresult" --output-path "$OUT/Attachments" >/dev/null 2>&1 || true
   fi
+  if [[ -d "$OUT/ScribeTests.xcresult" ]]; then
+    xcrun xcresulttool export attachments --path "$OUT/ScribeTests.xcresult" --output-path "$OUT/ScribeAttachments" >/dev/null 2>&1 || true
+  fi
   xcrun simctl io "$SIM" screenshot "$OUT/simulator-final.png" >/dev/null 2>&1 || true
   xcrun simctl shutdown "$SIM" >/dev/null 2>&1 || true
   xcrun simctl delete "$SIM" >/dev/null 2>&1 || true
@@ -32,5 +35,8 @@ xcrun simctl addmedia "$SIM" "$FIXTURE"
 xcodebuild -version | tee "$OUT/xcode-version.txt"
 xcrun simctl getenv "$SIM" HOME > "$OUT/simulator-home.txt"
 test ! -e "$OUT/Tests.xcresult" || { echo 'Use a clean ValidationResults directory before rerunning.' >&2; exit 2; }
-xcodebuild test -project FergusonVetPilot.xcodeproj -scheme FergusonVetPilot   -destination "platform=iOS Simulator,id=$SIM" -parallel-testing-enabled NO   -resultBundlePath "$OUT/Tests.xcresult" CODE_SIGNING_ALLOWED=NO   2>&1 | tee "$OUT/xcodebuild-end-to-end.log"
+# Exercise the newly changed workflow first, then every remaining unit/UI test.
+# Both commands must succeed; no test class is omitted from the release gate.
+xcodebuild test -project FergusonVetPilot.xcodeproj -scheme FergusonVetPilot -destination "platform=iOS Simulator,id=$SIM" -parallel-testing-enabled NO -only-testing:FergusonVetPilotUITests/ScribeUITests -resultBundlePath "$OUT/ScribeTests.xcresult" CODE_SIGNING_ALLOWED=NO 2>&1 | tee "$OUT/xcodebuild-scribe.log"
+xcodebuild test -project FergusonVetPilot.xcodeproj -scheme FergusonVetPilot   -destination "platform=iOS Simulator,id=$SIM" -parallel-testing-enabled NO   -skip-testing:FergusonVetPilotUITests/ScribeUITests -resultBundlePath "$OUT/Tests.xcresult" CODE_SIGNING_ALLOWED=NO   2>&1 | tee "$OUT/xcodebuild-end-to-end.log"
 echo 'Both unit and UI targets executed; inspect xcresult for failures, skips, and attachments.'

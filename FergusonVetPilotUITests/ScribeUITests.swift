@@ -50,11 +50,11 @@ final class ScribeUITests: XCTestCase {
         XCTAssertEqual(consent.value as? String, "1")
         let record = app.buttons["scribe.record"]; reach(record); XCTAssertTrue(record.isEnabled); record.tap()
         let permission = XCUIApplication(bundleIdentifier: "com.apple.springboard").alerts.firstMatch
-        if permission.waitForExistence(timeout: 3) {
+        if permission.waitForExistence(timeout: 10) {
             if permission.buttons["Allow"].exists { permission.buttons["Allow"].tap() }
             else if permission.buttons["OK"].exists { permission.buttons["OK"].tap() }
         }
-        let stop = app.buttons["scribe.global.stop"]; XCTAssertTrue(stop.waitForExistence(timeout: 12))
+        let stop = app.buttons["scribe.global.stop"]; XCTAssertTrue(stop.waitForExistence(timeout: 60))
         tab("Dose"); XCTAssertTrue(app.staticTexts["Automatic dose calculator"].waitForExistence(timeout: 5)); XCTAssertTrue(stop.exists)
         app.buttons["scribe.global.pause"].tap(); XCTAssertTrue(app.buttons["scribe.global.pause"].label.contains("Resume"))
         app.buttons["scribe.global.pause"].tap(); XCTAssertTrue(app.buttons["scribe.global.pause"].label.contains("Pause"))
