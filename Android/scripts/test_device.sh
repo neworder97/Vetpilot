@@ -21,8 +21,17 @@ adb install --no-incremental -r Android/validation/release-smoke.apk
 adb shell am start -n com.vetpilot.android/.MainActivity
 sleep 8
 adb shell pidof com.vetpilot.android
-adb shell uiautomator dump /sdcard/vetpilot-window.xml
-adb pull /sdcard/vetpilot-window.xml Android/validation/release-window.xml
+# Attaching UIAutomator first enables WebView accessibility asynchronously.
+# Poll for its semantic tree instead of treating the initial empty tree as a crash.
+for attempt in $(seq 1 12); do
+  adb shell uiautomator dump /sdcard/vetpilot-window.xml
+  adb pull /sdcard/vetpilot-window.xml Android/validation/release-window.xml
+  if python3 -c "from pathlib import Path; s=Path('Android/validation/release-window.xml').read_text(); assert 'Automatic dose calculator' in s and 'My Clinic' in s"; then
+    break
+  fi
+  sleep 2
+done
+adb logcat -d > Android/validation/release-logcat.log
 adb exec-out screencap -p > Android/validation/release-tablet.png
 python3 - <<'PY'
 from pathlib import Path
