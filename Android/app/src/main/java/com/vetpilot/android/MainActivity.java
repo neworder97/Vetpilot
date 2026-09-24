@@ -4,6 +4,7 @@ import android.app.*;
 import android.content.*;
 import android.graphics.*;
 import android.graphics.pdf.PdfDocument;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.*;
 import android.util.AtomicFile;
@@ -41,8 +42,8 @@ public class MainActivity extends Activity {
     String url=request.getUrl().toString();
     if(!url.startsWith(ORIGIN))return new WebResourceResponse("text/plain","utf-8",new ByteArrayInputStream(new byte[0]));
     String path=request.getUrl().getPath().substring(1);
-    if(!Arrays.asList("index.html","app.js","style.css","icon.png").contains(path))return new WebResourceResponse("text/plain","utf-8",new ByteArrayInputStream(new byte[0]));
-    try{return new WebResourceResponse(path.endsWith("js")?"application/javascript":path.endsWith("css")?"text/css":path.endsWith("png")?"image/png":"text/html","utf-8",getAssets().open(path));}catch(Exception e){return null;}
+    if(!Arrays.asList("index.html","app.js","style.css","icon.png","THIRD-PARTY-NOTICES.txt").contains(path))return new WebResourceResponse("text/plain","utf-8",new ByteArrayInputStream(new byte[0]));
+    try{return new WebResourceResponse(path.endsWith("js")?"application/javascript":path.endsWith("css")?"text/css":path.endsWith("png")?"image/png":path.endsWith("txt")?"text/plain":"text/html","utf-8",getAssets().open(path));}catch(Exception e){return null;}
    }
    @Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest r){
     Uri u=r.getUrl();if(u.toString().startsWith(ORIGIN))return false;
@@ -54,7 +55,7 @@ public class MainActivity extends Activity {
   web.loadUrl(ORIGIN+"index.html");
  }
  @Override protected void onNewIntent(Intent intent){super.onNewIntent(intent);if(intent.getData()!=null)readImport(intent.getData());}
- @Override public void onBackPressed(){web.evaluateJavascript("window.goBack && window.goBack()",null);}
+ @Override public void onBackPressed(){if(web.canGoBack()){web.goBack();return;}web.evaluateJavascript("window.goBack && window.goBack()",null);}
  void event(String type,Object value){runOnUiThread(()->{try{JSONObject data=new JSONObject();data.put("type",type);data.put("value",value);web.evaluateJavascript("window.nativeEvent("+data+")",null);}catch(Exception ignored){}});}
  static byte[] readLimited(InputStream stream,int max)throws IOException{
   if(stream==null)throw new IOException("Unable to open file");try(InputStream in=stream;ByteArrayOutputStream out=new ByteArrayOutputStream()){
@@ -120,6 +121,17 @@ public class MainActivity extends Activity {
    if(o.outWidth<1||o.outHeight<1||((long)o.outWidth)*o.outHeight>100000000)throw new IOException("Unsupported image dimensions");
    int sample=1;while(Math.max(o.outWidth,o.outHeight)/sample>2400)sample*=2;o.inJustDecodeBounds=false;o.inSampleSize=sample;Bitmap bitmap=BitmapFactory.decodeByteArray(b,0,b.length,o);if(bitmap==null)throw new IOException("Invalid image");
    float scale=Math.min(1f,1600f/Math.max(bitmap.getWidth(),bitmap.getHeight()));Bitmap resized=Bitmap.createScaledBitmap(bitmap,Math.max(1,Math.round(bitmap.getWidth()*scale)),Math.max(1,Math.round(bitmap.getHeight()*scale)),true);
+   int orientation=new ExifInterface(new ByteArrayInputStream(b)).getAttributeInt(ExifInterface.TAG_ORIENTATION,ExifInterface.ORIENTATION_NORMAL);
+   Matrix transform=new Matrix();switch(orientation){
+    case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:transform.setScale(-1,1);break;
+    case ExifInterface.ORIENTATION_ROTATE_180:transform.setRotate(180);break;
+    case ExifInterface.ORIENTATION_FLIP_VERTICAL:transform.setScale(1,-1);break;
+    case ExifInterface.ORIENTATION_TRANSPOSE:transform.setRotate(90);transform.postScale(-1,1);break;
+    case ExifInterface.ORIENTATION_ROTATE_90:transform.setRotate(90);break;
+    case ExifInterface.ORIENTATION_TRANSVERSE:transform.setRotate(270);transform.postScale(-1,1);break;
+    case ExifInterface.ORIENTATION_ROTATE_270:transform.setRotate(270);break;
+   }
+   if(!transform.isIdentity()){Bitmap oriented=Bitmap.createBitmap(resized,0,0,resized.getWidth(),resized.getHeight(),transform,true);if(resized!=bitmap)resized.recycle();resized=oriented;}
    ByteArrayOutputStream out=new ByteArrayOutputStream();resized.compress(Bitmap.CompressFormat.JPEG,78,out);if(out.size()>2000000)throw new IOException("Photo exceeds 2 MB");
    event("photo",new JSONObject().put("id",UUID.randomUUID().toString()).put("caption","").put("jpeg",Base64.encodeToString(out.toByteArray(),Base64.NO_WRAP)));if(resized!=bitmap)resized.recycle();bitmap.recycle();
   }catch(Exception e){event("error","Photo could not be added: "+e.getMessage());}}).start();

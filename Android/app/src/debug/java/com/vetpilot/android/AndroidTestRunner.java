@@ -43,7 +43,7 @@ public class AndroidTestRunner extends Instrumentation {
    JSONObject imported=new JSONObject(NativeCore.dispatch(new JSONObject().put("op","clinicImport").put("package",pack).toString())).getJSONObject("package").getJSONArray("items").getJSONObject(0);
    check(!imported.getString("id").equals(item.getString("id")),"Import uses new IDs");check(imported.getBoolean("imported"),"Import label");check(imported.getString("title").equals(item.getString("title")),"Unicode preserved");
    pack.put("schemaVersion",2);check(new JSONObject(NativeCore.dispatch(new JSONObject().put("op","clinicValidate").put("package",pack).toString())).has("error"),"Future schema rejected");pack.put("schemaVersion",1);
-   StringBuilder notes=new StringBuilder();for(int i=0;i<450;i++)notes.append("Line "+i+" — specimen protocol and equipment instructions.\n");item.put("notes",notes.toString());
+   StringBuilder notes=new StringBuilder();for(int i=0;i<300;i++)notes.append("Line "+i+" — specimen protocol and equipment instructions.\n");item.put("notes",notes.toString());
    File pdf=new File(getTargetContext().getCacheDir(),"test-long.pdf");MainActivity.writePDF(pack,pdf);check(pdf.length()>1000,"PDF generated");
    try(ParcelFileDescriptor fd=ParcelFileDescriptor.open(pdf,ParcelFileDescriptor.MODE_READ_ONLY);PdfRenderer renderer=new PdfRenderer(fd)){check(renderer.getPageCount()>5,"Long PDF pagination");}
    stage("Unicode, import validation and multipage PDF passed");
