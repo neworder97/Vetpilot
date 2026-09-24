@@ -32,7 +32,7 @@ struct AccountSettingsView: View {
                             let submittedPassword = password
                             password = ""
                             Task { await account.authenticate(email: loginEmail, password: submittedPassword, create: createAccount) }
-                        }.disabled(!account.configured || account.busy || scribe.accountLocked)
+                        }.disabled(!account.configured || account.busy || scribe.accountLocked).accessibilityIdentifier("account.email.submit")
                         Text("Use the same email and password in the app and website.").font(.caption)
                         if let message = account.notice { Text(message).font(.caption) }
                     }

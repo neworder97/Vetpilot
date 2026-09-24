@@ -9,3 +9,5 @@ Signup without a session displays a confirmation message; email confirmation is 
 Scribe notes sync on open, every 60 seconds while active, after transcription, and on return to foreground. Device background scheduling cannot guarantee minute-by-minute syncing. Audio, My Clinic and medication settings are still local; expanding cloud storage for these remains separate unfinished work. Account recovery UI remains to be implemented before general release.
 
 Website typecheck and mocked email endpoint tests passed. Live signup, confirmation delivery, cross-device sync and native compilation have not been verified for this change. Configure services and run two-user isolation and conflict tests before releasing a configured IPA.
+
+2026-09-24 activation: project spobzgaauyninaigvuox connected. Initial production schema applied; rollback-isolated two-user read/write/conflict/quota tests passed. Website runtime configured. Email auth and confirmation enabled. Production confirmation delivery, Site URL and custom SMTP need owner verification. Account-deletion deployment blocked by automatic approval review; no deletion endpoint deployed. AI credentials absent.

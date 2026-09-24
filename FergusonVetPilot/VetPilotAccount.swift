@@ -67,6 +67,9 @@ final class VetPilotAccount: NSObject, ObservableObject, ASWebAuthenticationPres
     var userID: UUID? { session?.user.id }
     var email: String { session?.user.email ?? "Signed-in account" }
     init(configuration: VetPilotCloudConfiguration? = .current) {
+        #if DEBUG
+        let configuration = ProcessInfo.processInfo.arguments.contains("ui-no-cloud") ? nil : configuration
+        #endif
         self.configuration = configuration
         super.init()
         if let configuration, let data = AccountKeychain.read(), let stored = try? JSONDecoder().decode(VetPilotSession.self, from: data), stored.origin == configuration.url { session = stored }

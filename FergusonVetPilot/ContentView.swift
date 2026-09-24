@@ -8,6 +8,13 @@ struct ContentView: View {
     @StateObject private var account = VetPilotAccount()
     @State private var settings = false
 
+    private var scribeAvailable: Bool {
+        #if DEBUG
+        // Offline UI regression harness only; absent from Release device builds.
+        if ProcessInfo.processInfo.arguments.contains("ui-scribe-local") { return true }
+        #endif
+        return account.userID != nil
+    }
     var body: some View {
         VStack(spacing: 0) {
             BrandHeader { settings = true }
@@ -43,7 +50,7 @@ struct ContentView: View {
                     .tabItem { Label("Labwork", systemImage: "testtube.2") }
 
                 Group {
-                    if account.userID != nil { ScribeView(store: scribe, account: account) }
+                    if scribeAvailable { ScribeView(store: scribe, account: account) }
                     else { VStack(spacing: 16) {
                         Image(systemName: "person.crop.circle.badge.checkmark").font(.largeTitle)
                         Text("Your clinical records, together").font(.title2)

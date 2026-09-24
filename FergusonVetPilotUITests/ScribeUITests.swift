@@ -3,7 +3,7 @@ import XCTest
 final class ScribeUITests: XCTestCase {
     var app: XCUIApplication!
     override func setUpWithError() throws {
-        continueAfterFailure = false; app = XCUIApplication(); app.launch()
+        continueAfterFailure = false; app = XCUIApplication(); app.launchArguments = ["ui-scribe-local", "ui-no-cloud"]; app.launch()
         XCTAssertTrue(app.staticTexts["Automatic dose calculator"].waitForExistence(timeout: 10))
     }
     override func tearDownWithError() throws {
@@ -64,6 +64,16 @@ final class ScribeUITests: XCTestCase {
     func testUnconfiguredAccountDoesNotPretendToSignIn() {
         app.buttons["app.settings"].tap()
         let status = app.staticTexts["account.notConfigured"]; XCTAssertTrue(status.waitForExistence(timeout: 5))
-        XCTAssertFalse(app.buttons["account.google"].isEnabled); XCTAssertFalse(app.buttons["account.apple"].isEnabled)
+        XCTAssertFalse(app.buttons["account.email.submit"].isEnabled)
     }
+    func testGuestScribeRequiresAccount() {
+        app.terminate(); app.launchArguments = ["ui-no-cloud"]; app.launch()
+        tab("Scribe")
+        XCTAssertTrue(app.buttons["Create account or sign in"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["scribe.new"].exists)
+        app.buttons["Create account or sign in"].tap()
+        XCTAssertTrue(app.textFields["Email"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.secureTextFields["Password"].exists)
+    }
+
 }
