@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @State private var tab = 0
     @StateObject private var clinicStore = ClinicStore()
     @StateObject private var scribe = ScribeStore()
@@ -41,7 +42,15 @@ struct ContentView: View {
                     .tag(4)
                     .tabItem { Label("Labwork", systemImage: "testtube.2") }
 
-                ScribeView(store: scribe, account: account)
+                Group {
+                    if account.userID != nil { ScribeView(store: scribe, account: account) }
+                    else { VStack(spacing: 16) {
+                        Image(systemName: "person.crop.circle.badge.checkmark").font(.largeTitle)
+                        Text("Your clinical records, together").font(.title2)
+                        Text("Create an account or sign in to save Scribe sessions and sync notes with the website every minute while open.").multilineTextAlignment(.center)
+                        Button("Create account or sign in") { settings = true }.buttonStyle(.borderedProminent)
+                    }.padding() }
+                }
                     .tag(5)
                     .tabItem { Label("Scribe", systemImage: "mic.fill") }
             }
@@ -53,8 +62,11 @@ struct ContentView: View {
         .task(id: account.userID) {
             while !Task.isCancelled {
                 await scribe.sync(account: account)
-                do { try await Task.sleep(nanoseconds: 30_000_000_000) } catch { break }
+                do { try await Task.sleep(nanoseconds: 60_000_000_000) } catch { break }
             }
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { Task { await scribe.sync(account: account) } }
         }
         .onChange(of: account.userID) { _, id in do { try scribe.switchAccount(id) } catch { scribe.error = error.localizedDescription } }
         .alert("Scribe", isPresented: Binding(get: { scribe.error != nil }, set: { if !$0 { scribe.error = nil } })) {

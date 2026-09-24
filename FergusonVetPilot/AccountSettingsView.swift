@@ -4,6 +4,9 @@ struct AccountSettingsView: View {
     @ObservedObject var account: VetPilotAccount
     @ObservedObject var scribe: ScribeStore
     @Environment(\.dismiss) private var dismiss
+    @State private var loginEmail = ""
+    @State private var password = ""
+    @State private var createAccount = false
     @State private var sharing = false
     @State private var deleteConfirmation = false
     @State private var deleteLocalConfirmation = false
@@ -18,20 +21,29 @@ struct AccountSettingsView: View {
                         Button("Sign out") { Task { await account.signOut() } }.disabled(account.busy || scribe.accountLocked)
                     } else {
                         Text("Create an account or sign in to use the same identity in the app and website.")
-                        Button { Task { await account.signIn(provider: "google") } } label: { Label("Continue with Google", systemImage: "person.crop.circle") }
-                            .disabled(!account.configured || account.busy || scribe.accountLocked).accessibilityIdentifier("account.google")
-                        Button { Task { await account.signIn(provider: "apple") } } label: { Label("Continue with Apple", systemImage: "apple.logo") }
-                            .disabled(!account.configured || account.busy || scribe.accountLocked).accessibilityIdentifier("account.apple")
-                        Text("Use the same sign-in method on every device. Apple Hide My Email and a Google address can create different accounts.").font(.caption)
+                        Picker("Account", selection: $createAccount) {
+                            Text("Sign in").tag(false)
+                            Text("Create account").tag(true)
+                        }.pickerStyle(.segmented)
+                        TextField("Email", text: $loginEmail).textContentType(.username).keyboardType(.emailAddress).textInputAutocapitalization(.never).autocorrectionDisabled()
+                        SecureField("Password", text: $password).textContentType(createAccount ? .newPassword : .password)
+                        if createAccount { Text("Use at least 12 characters.").font(.caption) }
+                        Button(createAccount ? "Create account" : "Sign in") {
+                            let submittedPassword = password
+                            password = ""
+                            Task { await account.authenticate(email: loginEmail, password: submittedPassword, create: createAccount) }
+                        }.disabled(!account.configured || account.busy || scribe.accountLocked)
+                        Text("Use the same email and password in the app and website.").font(.caption)
+                        if let message = account.notice { Text(message).font(.caption) }
                     }
-                    if !account.configured { Text("Account and cloud services are not connected in this build. Local recording, editing and PDFs remain available.").foregroundStyle(.secondary).accessibilityIdentifier("account.notConfigured") }
+                    if !account.configured { Text("Account and cloud services are not connected in this build. Guest reference tools remain available.").foregroundStyle(.secondary).accessibilityIdentifier("account.notConfigured") }
                     if account.busy { ProgressView("Connecting…") }
                 }
                 Section("Notes & syncing") {
                     Text(scribe.syncStatus).font(.caption)
                     Button("Sync now") { Task { await scribe.sync(account: account) } }.disabled(account.userID == nil || scribe.accountLocked)
                     Button("Download my cloud notes") { Task { await download() } }.disabled(account.userID == nil || !account.configured || account.busy || scribe.accountLocked)
-                    Text("Signed-in notes upload after transcription and sync automatically while the app is open. Failed uploads retry; conflicting edits are preserved as a separate copy. Audio stays on its original device. My Clinic and medication settings remain local in this version.").font(.caption)
+                    Text("Signed-in notes upload after transcription and sync every minute while the app is open. Failed uploads retry; conflicting edits are preserved as a separate copy. Audio stays on its original device. My Clinic and medication settings remain local in this version.").font(.caption)
                     if let notice { Text(notice).font(.caption) }
                 }
                 Section("Sharing") { Button("Email and text settings") { sharing = true } }

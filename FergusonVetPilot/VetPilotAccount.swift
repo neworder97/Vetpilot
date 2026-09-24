@@ -116,6 +116,23 @@ final class VetPilotAccount: NSObject, ObservableObject, ASWebAuthenticationPres
             try accept(JSONDecoder().decode(VetPilotSession.self, from: data))
         } catch { self.error = error.localizedDescription }
     }
+    @Published var notice: String?
+    func authenticate(email: String, password: String, create: Bool) async {
+        guard !busy else { return }
+        let email = email.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard email.contains("@"), email.count <= 254, !password.isEmpty,
+              password.utf8.count <= 1024, !create || password.count >= 12 else {
+            error = "Enter your email and password. New passwords need at least 12 characters."; return
+        }
+        busy = true; error = nil; notice = nil; defer { busy = false }
+        do {
+            let data = try await request(path: create ? "auth/v1/signup" : "auth/v1/token?grant_type=password",
+                                         method: "POST", body: ["email": email, "password": password], authenticated: false)
+            if let value = try? JSONDecoder().decode(VetPilotSession.self, from: data) { try accept(value) }
+            else if create { notice = "Check your email to confirm your account, then sign in here or on the website." }
+            else { throw ScribeError.invalid("Sign-in did not return a valid session.") }
+        } catch { self.error = error.localizedDescription }
+    }
     func token() async throws -> String {
         guard let session else { throw ScribeError.invalid("Sign in before using cloud services.") }
         if session.expiry.timeIntervalSinceNow > 60 { return session.access_token }
@@ -150,6 +167,7 @@ final class VetPilotAccount: NSObject, ObservableObject, ASWebAuthenticationPres
         guard let response = response as? HTTPURLResponse, (200..<300).contains(response.statusCode) else {
             let status = (response as? HTTPURLResponse)?.statusCode ?? 0
             if status == 409 { throw ScribeError.invalid("A newer cloud copy exists. Download it as a separate copy before syncing again.") }
+            if !authenticated && (status == 400 || status == 422) { throw ScribeError.invalid("Check your email, password and email confirmation, then try again.") }
             if status == 401 { throw ScribeError.invalid("Your sign-in has expired. Sign in again; local notes are preserved.") }
             if status == 429 { throw ScribeError.invalid("The service usage limit was reached. Try again later; the recording is preserved.") }
             throw ScribeError.invalid("The cloud service could not complete this request (\(status)). Your local data is preserved.")
