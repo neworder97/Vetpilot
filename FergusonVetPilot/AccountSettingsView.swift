@@ -30,8 +30,12 @@ struct AccountSettingsView: View {
                         if createAccount { Text("Use at least 12 characters.").font(.caption) }
                         Button(createAccount ? "Create account" : "Sign in") {
                             let submittedPassword = password
-                            password = ""
-                            Task { await account.authenticate(email: loginEmail, password: submittedPassword, create: createAccount) }
+                            let submittedEmail = loginEmail
+                            let creating = createAccount
+                            Task {
+                                await account.authenticate(email: submittedEmail, password: submittedPassword, create: creating)
+                                if account.userID != nil { password = "" }
+                            }
                         }.disabled(!account.configured || account.busy || scribe.accountLocked).accessibilityIdentifier("account.email.submit")
                         Text("Use the same email and password in the app and website.").font(.caption)
                         if let message = account.notice { Text(message).font(.caption) }
