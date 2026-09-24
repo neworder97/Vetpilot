@@ -121,7 +121,8 @@ public class MainActivity extends Activity {
    if(o.outWidth<1||o.outHeight<1||((long)o.outWidth)*o.outHeight>100000000)throw new IOException("Unsupported image dimensions");
    int sample=1;while(Math.max(o.outWidth,o.outHeight)/sample>2400)sample*=2;o.inJustDecodeBounds=false;o.inSampleSize=sample;Bitmap bitmap=BitmapFactory.decodeByteArray(b,0,b.length,o);if(bitmap==null)throw new IOException("Invalid image");
    float scale=Math.min(1f,1600f/Math.max(bitmap.getWidth(),bitmap.getHeight()));Bitmap resized=Bitmap.createScaledBitmap(bitmap,Math.max(1,Math.round(bitmap.getWidth()*scale)),Math.max(1,Math.round(bitmap.getHeight()*scale)),true);
-   int orientation=new ExifInterface(new ByteArrayInputStream(b)).getAttributeInt(ExifInterface.TAG_ORIENTATION,ExifInterface.ORIENTATION_NORMAL);
+   int orientation=ExifInterface.ORIENTATION_NORMAL;
+   try{orientation=new ExifInterface(new ByteArrayInputStream(b)).getAttributeInt(ExifInterface.TAG_ORIENTATION,ExifInterface.ORIENTATION_NORMAL);}catch(IOException ignored){ /* Valid decoded image without supported EXIF. */ }
    Matrix transform=new Matrix();switch(orientation){
     case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:transform.setScale(-1,1);break;
     case ExifInterface.ORIENTATION_ROTATE_180:transform.setRotate(180);break;
