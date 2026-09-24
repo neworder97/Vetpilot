@@ -48,9 +48,15 @@ jobs:
           CLOUD_KEY: ${{ vars.VETPILOT_SUPABASE_PUBLISHABLE_KEY }}
         run: |
           python3 - <<'PYTHON'
-          import json,os,pathlib
+          import json,os,pathlib,base64
           url=os.environ.get('CLOUD_URL','');key=os.environ.get('CLOUD_KEY','')
           if url and key:
+              assert not key.startswith('sb_secret_'), 'Use the public client key, never a secret key'
+              if key.count('.') == 2:
+                  role=json.loads(base64.urlsafe_b64decode(key.split('.')[1]+'===' )).get('role')
+                  assert role=='anon', 'Only anon-role client JWT keys may be bundled'
+              else:
+                  assert key.startswith('sb_publishable_'), 'Expected a publishable client key'
               pathlib.Path('FergusonVetPilot/VetPilotCloud.json').write_text(json.dumps({'url':url,'publishableKey':key}))
           PYTHON
       - run: brew install xcodegen

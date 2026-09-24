@@ -50,6 +50,14 @@ final class ScribeTests: XCTestCase {
         try item.assignUnresolved(to: item.patients[0].id)
         XCTAssertTrue(item.unassigned.isEmpty); XCTAssertNil(item.notes[0].finalizedAt); XCTAssertTrue(item.notes[0].subjective.contains("confirms"))
     }
+    func testReassigningStatementClearsBothReviews() throws {
+        var item = try make(); item.notes[0].subjective = "No vomiting. Appetite reduced."; item.notes[1].subjective = "Normal appetite."
+        try item.notes[0].finalize(reviewer: "Dr Test"); try item.notes[1].finalize(reviewer: "Dr Test")
+        try item.moveStatement("Appetite reduced.", from: item.patients[0].id, to: item.patients[1].id, field: \.subjective)
+        XCTAssertFalse(item.notes[0].subjective.contains("Appetite reduced.")); XCTAssertTrue(item.notes[1].subjective.contains("Appetite reduced."))
+        XCTAssertNil(item.notes[0].finalizedAt); XCTAssertNil(item.notes[1].finalizedAt)
+        XCTAssertThrowsError(try item.moveStatement("not in source", from: item.patients[0].id, to: item.patients[1].id, field: \.subjective))
+    }
     func testRejectsAudioTraversalAndMissingPatientNotes() throws {
         var item = try make(); item.recordingFiles = ["../secret.m4a"]
         XCTAssertThrowsError(try item.validated()); item.recordingFiles = []; item.notes.removeLast()

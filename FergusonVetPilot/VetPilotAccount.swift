@@ -10,9 +10,12 @@ struct VetPilotCloudConfiguration: Decodable {
     var publishableKey: String
     static let current: Self? = {
         guard let file = Bundle.main.url(forResource: "VetPilotCloud", withExtension: "json"),
-              let data = try? Data(contentsOf: file), let value = try? JSONDecoder().decode(Self.self, from: data),
-              let url = URL(string: value.url), url.scheme == "https", url.host != nil,
+              let data = try? Data(contentsOf: file), var value = try? JSONDecoder().decode(Self.self, from: data),
+              let url = URL(string: value.url), url.scheme == "https", url.host != nil, url.user == nil, url.password == nil,
+              url.query == nil, url.fragment == nil, ["", "/"].contains(url.path),
               !value.publishableKey.isEmpty else { return nil }
+        guard !value.publishableKey.hasPrefix("sb_secret_") else { return nil }
+        value.url = value.url.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         return value
     }()
 }
@@ -47,6 +50,7 @@ struct VetPilotSession: Codable {
     var expires_at: Double?
     var user: User
     var receivedAt: Date?
+    var origin: String?
     var expiry: Date { expires_at.map(Date.init(timeIntervalSince1970:)) ?? (receivedAt ?? .distantPast).addingTimeInterval(expires_in) }
 }
 
@@ -56,6 +60,7 @@ final class VetPilotAccount: NSObject, ObservableObject, ASWebAuthenticationPres
     @Published var busy = false
     @Published var error: String?
     private var authentication: ASWebAuthenticationSession?
+    private var authContinuation: CheckedContinuation<URL, Error>?
     private var refreshTask: Task<VetPilotSession, Error>?
     let configuration: VetPilotCloudConfiguration?
     var configured: Bool { configuration != nil }
@@ -64,10 +69,10 @@ final class VetPilotAccount: NSObject, ObservableObject, ASWebAuthenticationPres
     init(configuration: VetPilotCloudConfiguration? = .current) {
         self.configuration = configuration
         super.init()
-        if let data = AccountKeychain.read(), let stored = try? JSONDecoder().decode(VetPilotSession.self, from: data) { session = stored }
+        if let configuration, let data = AccountKeychain.read(), let stored = try? JSONDecoder().decode(VetPilotSession.self, from: data), stored.origin == configuration.url { session = stored }
     }
     private func accept(_ value: VetPilotSession) throws {
-        var value = value; value.receivedAt = Date()
+        var value = value; value.receivedAt = Date(); value.origin = configuration?.url
         try AccountKeychain.save(JSONEncoder().encode(value)); session = value
     }
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
@@ -79,6 +84,9 @@ final class VetPilotAccount: NSObject, ObservableObject, ASWebAuthenticationPres
         return Self.base64url(Data(bytes))
     }
     private static func base64url(_ data: Data) -> String { data.base64EncodedString().replacingOccurrences(of: "+", with: "-").replacingOccurrences(of: "/", with: "_").replacingOccurrences(of: "=", with: "") }
+    private func finishAuthentication(_ result: Result<URL, Error>) {
+        guard let continuation = authContinuation else { return }; authContinuation = nil; continuation.resume(with: result)
+    }
     func signIn(provider: String) async {
         guard !busy else { return }
         guard let configuration, ["google", "apple"].contains(provider) else { error = "Account service is not connected in this build."; return }
@@ -90,12 +98,15 @@ final class VetPilotAccount: NSObject, ObservableObject, ASWebAuthenticationPres
             components.queryItems = [.init(name: "provider", value: provider), .init(name: "redirect_to", value: "vetpilot://auth/callback"),
                                      .init(name: "code_challenge", value: challenge), .init(name: "code_challenge_method", value: "s256")]
             let callback: URL = try await withCheckedThrowingContinuation { continuation in
+                authContinuation = continuation
                 let flow = ASWebAuthenticationSession(url: components.url!, callbackURLScheme: "vetpilot") { url, error in
-                    if let url { continuation.resume(returning: url) }
-                    else { continuation.resume(throwing: error ?? ScribeError.invalid("Sign-in was cancelled.")) }
+                    Task { @MainActor in
+                        if let url { self.finishAuthentication(.success(url)) }
+                        else { self.finishAuthentication(.failure(error ?? ScribeError.invalid("Sign-in was cancelled."))) }
+                    }
                 }
                 authentication = flow; flow.presentationContextProvider = self; flow.prefersEphemeralWebBrowserSession = true
-                if !flow.start() { continuation.resume(throwing: ScribeError.invalid("Sign-in could not open. Try again.")) }
+                if !flow.start() { finishAuthentication(.failure(ScribeError.invalid("Sign-in could not open. Try again."))) }
             }
             guard callback.scheme == "vetpilot", callback.host == "auth", callback.path == "/callback",
                   let code = URLComponents(url: callback, resolvingAgainstBaseURL: false)?.queryItems?.first(where: { $0.name == "code" })?.value, !code.isEmpty else {

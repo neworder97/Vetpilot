@@ -128,6 +128,18 @@ struct ScribeEncounter: Codable, Identifiable, Equatable {
         notes[index].subjective += (notes[index].subjective.isEmpty ? "" : "\n") + unassigned
         notes[index].edited(); unassigned = ""; updatedAt = Date()
     }
+
+    mutating func moveStatement(_ text: String, from sourceID: UUID, to destinationID: UUID, field: WritableKeyPath<SOAPNote, String>) throws {
+        guard sourceID != destinationID, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              let source = notes.firstIndex(where: { $0.patientID == sourceID }),
+              let destination = notes.firstIndex(where: { $0.patientID == destinationID }),
+              let range = notes[source][keyPath: field].range(of: text) else {
+            throw ScribeError.invalid("Choose a different patient and paste the exact statement from the selected section.")
+        }
+        notes[source][keyPath: field].removeSubrange(range)
+        notes[destination][keyPath: field] += (notes[destination][keyPath: field].isEmpty ? "" : "\n") + text
+        notes[source].edited(); notes[destination].edited(); updatedAt = Date()
+    }
 }
 
 struct ScribeCloudDraft: Codable {

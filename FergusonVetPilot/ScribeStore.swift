@@ -101,7 +101,7 @@ final class ScribeStore: NSObject, ObservableObject, AVAudioRecorderDelegate {
         guard allowed else { error = "Microphone access is disabled. Enable it for VetPilot in iPhone Settings."; return }
         do {
             let session = AVAudioSession.sharedInstance()
-            try session.setCategory(.playAndRecord, mode: .spokenAudio, options: [.defaultToSpeaker, .allowBluetooth])
+            try session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetooth])
             try session.setActive(true)
             let filename = "\(id.uuidString)-\(UUID().uuidString).m4a"
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)

@@ -208,6 +208,8 @@ struct ScribeNoteEditor: View {
     @State private var share: ClinicShare?
     @State private var language = "Spanish"
     @State private var cloudTranslationConsent = false
+    @State private var statement = ""
+    @State private var statementSection = "History"
     private var encounter: ScribeEncounter? { store.encounter(encounterID) }
     private var note: SOAPNote? { encounter?.notes.first { $0.patientID == patientID } }
     private var patient: ScribePatient? { encounter?.patients.first { $0.id == patientID } }
@@ -229,6 +231,23 @@ struct ScribeNoteEditor: View {
             Section("Objective — clinician-supplied findings") { TextEditor(text: field(\.objective)).frame(minHeight: 100) }
             Section("Assessment — clinician-supplied") { TextEditor(text: field(\.assessment)).frame(minHeight: 100) }
             Section("Plan — clinician-supplied") { TextEditor(text: field(\.plan)).frame(minHeight: 100) }
+            if let encounter, encounter.patients.count > 1 {
+                Section("Correct patient attribution") {
+                    Picker("Source section", selection: $statementSection) { ForEach(["History", "Objective", "Assessment", "Plan"], id: \.self) { Text($0) } }
+                    TextField("Paste the exact statement to move", text: $statement, axis: .vertical)
+                    Menu("Move statement to another patient") {
+                        ForEach(encounter.patients.filter { $0.id != patientID }) { patient in Button(patient.name) {
+                            do {
+                                var updated = encounter
+                                let key: WritableKeyPath<SOAPNote, String> = statementSection == "Objective" ? \.objective : statementSection == "Assessment" ? \.assessment : statementSection == "Plan" ? \.plan : \.subjective
+                                try updated.moveStatement(statement, from: patientID, to: patient.id, field: key)
+                                try store.save(updated); statement = ""
+                            } catch { store.error = error.localizedDescription }
+                        } }
+                    }.disabled(statement.isEmpty)
+                    Text("Moving a statement clears the review status of both patient notes.").font(.caption)
+                }
+            }
             Section("Review & export") {
                 TextField("Reviewing clinician", text: $reviewer).accessibilityIdentifier("scribe.reviewer")
                 Button("Finalize reviewed note") {
@@ -242,8 +261,9 @@ struct ScribeNoteEditor: View {
                 Section("Translation") {
                     Picker("Language", selection: $language) { ForEach(Self.languages.map(\.0), id: \.self) { Text($0) } }
                     if #available(iOS 18.0, *) {
-                        ScribeDeviceTranslation(text: note.plainText, source: encounter?.locale ?? "en-US", target: Self.languages.first { $0.0 == language }?.1 ?? "es") { text in
-                            update { $0.translation = NoteTranslation(language: language, text: text, sourceText: note.plainText) }
+                        ScribeDeviceTranslation(text: note.plainText, target: Self.languages.first { $0.0 == language }?.1 ?? "es") { text, target, original in
+                            guard self.note?.plainText == original, self.note?.finalizedAt != nil else { return }
+                            update { $0.translation = NoteTranslation(language: Self.languages.first { $0.1 == target }?.0 ?? target, text: text, sourceText: original) }
                         }
                     } else { Text("On-device translation requires iOS 18 or later. Cloud translation is available when configured.").font(.caption) }
                     Toggle("Permit sending this note for cloud translation", isOn: $cloudTranslationConsent)
@@ -275,9 +295,8 @@ struct ScribeNoteEditor: View {
 @available(iOS 18.0, *)
 private struct ScribeDeviceTranslation: View {
     let text: String
-    let source: String
     let target: String
-    let completed: (String) -> Void
+    let completed: (String, String, String) -> Void
     @State private var configuration: TranslationSession.Configuration?
     @State private var busy = false
     @State private var error: String?
@@ -285,7 +304,7 @@ private struct ScribeDeviceTranslation: View {
         VStack(alignment: .leading) {
             Button(busy ? "Translating…" : "Translate on device") {
                 busy = true; error = nil
-                if configuration == nil { configuration = .init(source: Locale.Language(identifier: source), target: Locale.Language(identifier: target)) }
+                if configuration == nil { configuration = .init(source: nil, target: Locale.Language(identifier: target)) }
                 else { configuration?.invalidate() }
             }.disabled(busy)
             if let error { Text(error).font(.caption).foregroundStyle(.red) }
@@ -293,7 +312,8 @@ private struct ScribeDeviceTranslation: View {
         .onChange(of: target) { _, _ in configuration = nil }
         .onChange(of: text) { _, _ in configuration = nil }
         .translationTask(configuration) { session in
-            do { let response = try await session.translate(text); completed(response.targetText) }
+            let original = text; let requestedTarget = target
+            do { let response = try await session.translate(original); completed(response.targetText, requestedTarget, original) }
             catch { self.error = "Translation unavailable for this language or device. Download the requested language support or use configured cloud translation." }
             busy = false
         }
