@@ -29,7 +29,7 @@ shutil.copyfile(out/'resources.apk',out/'unsigned.apk')
 with zipfile.ZipFile(out/'unsigned.apk','a') as apk:
  with zipfile.ZipFile(out/'dex.zip') as dex:
   for name in dex.namelist():apk.writestr(name,dex.read(name),compress_type=zipfile.ZIP_DEFLATED)
- for f in (root/'app/src/main/jniLibs').rglob('*.so'):apk.write(f,'lib/'+str(f.relative_to(root/'app/src/main/jniLibs')),compress_type=zipfile.ZIP_STORED)
+ for f in (root/'app/src/main/jniLibs').rglob('*.so'):apk.write(f,'lib/'+str(f.relative_to(root/'app/src/main/jniLibs')),compress_type=zipfile.ZIP_DEFLATED)
 run(tools/'zipalign','-P','16','-f','4',out/'unsigned.apk',out/'aligned.apk')
 if debug:
  key=root/'app/build/debug.keystore'

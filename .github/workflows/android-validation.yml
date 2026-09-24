@@ -1,0 +1,76 @@
+name: Android validation and APK
+on:
+  workflow_dispatch:
+  push:
+    branches: [vetpilot-android]
+    paths: ['Android/**', 'FergusonVetPilot/**', '.github/workflows/android-validation.yml']
+permissions:
+  contents: read
+concurrency:
+  group: vetpilot-android-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  tablet:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Prepare disk and build dependencies
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android/sdk/ndk /opt/ghc /usr/local/share/boost
+          sudo apt-get update -qq
+          sudo apt-get install -y libncurses6 libxml2 libcurl4t64 libsqlite3-0 libpython3.12 libatomic1
+      - name: Install matching Swift host, Android SDK and NDK
+        run: |
+          curl --fail -L https://download.swift.org/swift-6.4.0-release/ubuntu2404/swift-6.4.0-RELEASE/swift-6.4.0-RELEASE-ubuntu24.04.tar.gz -o /tmp/swift.tar.gz
+          tar -xzf /tmp/swift.tar.gz -C /tmp
+          echo /tmp/swift-6.4.0-RELEASE-ubuntu24.04/usr/bin >> "$GITHUB_PATH"
+          curl --fail -L https://download.swift.org/swift-6.4.0-release/android-sdk/swift-6.4.0-RELEASE/swift-6.4.0-RELEASE_android.artifactbundle.tar.gz -o /tmp/swift-android.tar.gz
+          echo '21fb555122a3d801ad943d48df7ebffdd8824de61c25c180bb792d3edaee0b43  /tmp/swift-android.tar.gz' | sha256sum -c
+          /tmp/swift-6.4.0-RELEASE-ubuntu24.04/usr/bin/swift sdk install /tmp/swift-android.tar.gz
+          curl --fail -L https://dl.google.com/android/repository/android-ndk-r30-linux.zip -o /tmp/ndk.zip
+          echo '5107f898313790e449e87eee2183d9a20602dee9  /tmp/ndk.zip' | sha1sum -c
+          unzip -q /tmp/ndk.zip -d /tmp
+          echo ANDROID_NDK_HOME=/tmp/android-ndk-r30 >> "$GITHUB_ENV"
+          rm /tmp/swift.tar.gz /tmp/swift-android.tar.gz /tmp/ndk.zip
+          sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+      - name: Build shared engine and generate parity vectors
+        run: |
+          python3 Android/scripts/prepare_core.py
+          swift build --package-path Android/SwiftCore -c release --jobs 2
+          mkdir -p Android/validation
+          python3 Android/scripts/parity_vectors.py
+          swift build --package-path Android/SwiftCore -c release --jobs 2 --swift-sdk swift-6.4.0-RELEASE_android --triple aarch64-unknown-linux-android26 --product VetPilotCore
+          swift build --package-path Android/SwiftCore -c release --jobs 2 --swift-sdk swift-6.4.0-RELEASE_android --triple x86_64-unknown-linux-android26 --product VetPilotCore
+          python3 Android/scripts/package_native.py
+          python3 Android/scripts/build_apk.py --debug
+          python3 Android/scripts/build_apk.py
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Test on Android tablet emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_c
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none -memory 2048
+          script: bash Android/scripts/test_device.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: VetPilot-Android-validation
+          path: Android/validation
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: VetPilot-Android-unsigned-release
+          path: Android/app/build/manual/release/aligned.apk
