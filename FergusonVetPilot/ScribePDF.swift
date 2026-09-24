@@ -5,7 +5,7 @@ enum ScribePDF {
         guard let patient = encounter.patients.first(where: { $0.id == patientID }),
               let note = encounter.notes.first(where: { $0.patientID == patientID }) else { throw ScribeError.invalid("Patient note not found.") }
         if translated {
-            guard let translation = note.translation, translation.sourceText == note.plainText, translation.reviewed else {
+            guard note.finalizedAt != nil, let translation = note.translation, translation.sourceText == note.plainText, translation.reviewed else {
                 throw ScribeError.invalid("Review the current translation before exporting it.")
             }
         }

@@ -88,6 +88,8 @@ final class ScribeTests: XCTestCase {
         item.notes[0].translation = NoteTranslation(language: "Spanish", text: "Sin vómitos.", sourceText: item.notes[0].plainText)
         XCTAssertThrowsError(try ScribePDF.data(encounter: item, patientID: id, translated: true))
         item.notes[0].translation?.reviewed = true
+        XCTAssertThrowsError(try ScribePDF.data(encounter: item, patientID: id, translated: true))
+        try item.notes[0].finalize(reviewer: "Dr Test")
         XCTAssertNoThrow(try ScribePDF.data(encounter: item, patientID: id, translated: true))
         item.notes[0].subjective = "Changed"
         XCTAssertThrowsError(try ScribePDF.data(encounter: item, patientID: id, translated: true))

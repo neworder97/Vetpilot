@@ -45,9 +45,15 @@ final class ScribeUITests: XCTestCase {
         }
         defer { removeUIInterruptionMonitor(monitor) }
         create("ScribeRecording" + String(Int(Date().timeIntervalSince1970)))
-        let consent = app.switches["scribe.consent"]; reach(consent); consent.tap()
-        let record = app.buttons["scribe.record"]; reach(record); record.tap()
-        app.tap()
+        let consent = app.switches["scribe.consent"]; reach(consent)
+        consent.coordinate(withNormalizedOffset: CGVector(dx: 0.92, dy: 0.5)).tap()
+        XCTAssertEqual(consent.value as? String, "1")
+        let record = app.buttons["scribe.record"]; reach(record); XCTAssertTrue(record.isEnabled); record.tap()
+        let permission = XCUIApplication(bundleIdentifier: "com.apple.springboard").alerts.firstMatch
+        if permission.waitForExistence(timeout: 3) {
+            if permission.buttons["Allow"].exists { permission.buttons["Allow"].tap() }
+            else if permission.buttons["OK"].exists { permission.buttons["OK"].tap() }
+        }
         let stop = app.buttons["scribe.global.stop"]; XCTAssertTrue(stop.waitForExistence(timeout: 12))
         tab("Dose"); XCTAssertTrue(app.staticTexts["Automatic dose calculator"].waitForExistence(timeout: 5)); XCTAssertTrue(stop.exists)
         app.buttons["scribe.global.pause"].tap(); XCTAssertTrue(app.buttons["scribe.global.pause"].label.contains("Resume"))
