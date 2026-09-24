@@ -13,12 +13,12 @@ struct ContentView: View {
             if scribe.hasActiveRecording {
                 HStack(spacing: 12) {
                     Label(scribe.isRecording ? "Recording" : "Paused", systemImage: scribe.isRecording ? "record.circle.fill" : "pause.circle.fill")
+                        .accessibilityIdentifier("scribe.recording.banner")
                     Text(String(format: "%02d:%02d", Int(scribe.elapsed) / 60, Int(scribe.elapsed) % 60)).monospacedDigit()
                     Spacer()
                     Button(scribe.isRecording ? "Pause" : "Resume") { scribe.isRecording ? scribe.pause() : scribe.resume() }.accessibilityIdentifier("scribe.global.pause")
                     Button("Stop") { scribe.stop() }.accessibilityIdentifier("scribe.global.stop")
                 }.font(.caption.bold()).padding(10).foregroundStyle(.white).background(scribe.isRecording ? Color.red : Color.orange)
-                    .accessibilityIdentifier("scribe.recording.banner")
             }
             TabView(selection: $tab) {
                 DoseView()
