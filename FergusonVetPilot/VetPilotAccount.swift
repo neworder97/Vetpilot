@@ -169,6 +169,11 @@ final class VetPilotAccount: NSObject, ObservableObject, ASWebAuthenticationPres
         let (data, response) = try await URLSession.shared.data(for: request)
         guard let response = response as? HTTPURLResponse, (200..<300).contains(response.statusCode) else {
             let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+            if !authenticated,
+               let details = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               details["error_code"] as? String == "email_not_confirmed" {
+                throw ScribeError.invalid("Your account was created, but your email is not confirmed. Open the confirmation email, tap its link, then return here and sign in. Check your spam folder too.")
+            }
             if status == 409 { throw ScribeError.invalid("A newer cloud copy exists. Download it as a separate copy before syncing again.") }
             if !authenticated && (status == 400 || status == 422) { throw ScribeError.invalid("Check your email, password and email confirmation, then try again.") }
             if status == 401 { throw ScribeError.invalid("Your sign-in has expired. Sign in again; local notes are preserved.") }

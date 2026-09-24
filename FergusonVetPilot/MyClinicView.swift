@@ -26,7 +26,13 @@ struct MyClinicView: View {
             List {
                 Section {
                     Text("Procedures & Nursing").font(.headline).foregroundStyle(AppTheme.blue)
-                    Text("Create your clinic's protocols and reusable equipment lists. Stored on this device and available offline.").font(.footnote)
+                    Text("Create your clinic's protocols and reusable equipment lists. Available offline; signed-in collections sync with the website every minute. Guest items stay local—export them before signing in, then import into your account.").font(.footnote)
+                    if store.canCopyGuestItems {
+                        Button("Copy this device's guest protocols into my account") {
+                            do { try store.copyGuestItems() } catch { store.errorMessage = error.localizedDescription }
+                        }
+                    }
+                    Text(store.syncStatus).font(.caption).accessibilityIdentifier("clinic.sync.status")
                     Picker("Show", selection: $filter) {
                         ForEach(["All", "Favorites", "Recent"], id: \.self) { Text($0).tag($0) }
                     }.pickerStyle(.segmented)

@@ -30,8 +30,12 @@ struct AccountSettingsView: View {
                         if createAccount { Text("Use at least 12 characters.").font(.caption) }
                         Button(createAccount ? "Create account" : "Sign in") {
                             let submittedPassword = password
-                            password = ""
-                            Task { await account.authenticate(email: loginEmail, password: submittedPassword, create: createAccount) }
+                            let submittedEmail = loginEmail
+                            let creating = createAccount
+                            Task {
+                                await account.authenticate(email: submittedEmail, password: submittedPassword, create: creating)
+                                if account.userID != nil { password = "" }
+                            }
                         }.disabled(!account.configured || account.busy || scribe.accountLocked).accessibilityIdentifier("account.email.submit")
                         Text("Use the same email and password in the app and website.").font(.caption)
                         if let message = account.notice { Text(message).font(.caption) }
@@ -43,7 +47,7 @@ struct AccountSettingsView: View {
                     Text(scribe.syncStatus).font(.caption)
                     Button("Sync now") { Task { await scribe.sync(account: account) } }.disabled(account.userID == nil || scribe.accountLocked)
                     Button("Download my cloud notes") { Task { await download() } }.disabled(account.userID == nil || !account.configured || account.busy || scribe.accountLocked)
-                    Text("Signed-in notes upload after transcription and sync every minute while the app is open. Failed uploads retry; conflicting edits are preserved as a separate copy. Audio stays on its original device. My Clinic and medication settings remain local in this version.").font(.caption)
+                    Text("Signed-in notes upload after transcription and sync every minute while the app is open. Failed uploads retry; conflicting edits are preserved as a separate copy. Audio stays on its original device. My Clinic protocols, equipment and photos also sync every minute. Custom medication settings remain local.").font(.caption)
                     if let notice { Text(notice).font(.caption) }
                 }
                 Section("Sharing") { Button("Email and text settings") { sharing = true } }

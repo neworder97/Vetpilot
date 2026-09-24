@@ -33,7 +33,7 @@ struct ContentView: View {
                     .tag(0)
                     .tabItem { Label("Dose", systemImage: "cross.case.fill") }
 
-                MyClinicView(store: clinicStore)
+                MyClinicView(store: clinicStore).id(account.userID)
                     .tag(1)
                     .tabItem { Label("My Clinic", systemImage: "list.clipboard.fill") }
 
@@ -65,17 +65,19 @@ struct ContentView: View {
         .background(Color.white)
         .overlay { if scribe.isRecording { Rectangle().strokeBorder(.red, lineWidth: 4).ignoresSafeArea().allowsHitTesting(false).accessibilityHidden(true) } }
         .sheet(isPresented: $settings) { AccountSettingsView(account: account, scribe: scribe) }
-        .task { do { try scribe.switchAccount(account.userID) } catch { scribe.error = error.localizedDescription } }
+        .task { clinicStore.switchAccount(account.userID); do { try scribe.switchAccount(account.userID) } catch { scribe.error = error.localizedDescription } }
         .task(id: account.userID) {
             while !Task.isCancelled {
+                clinicStore.switchAccount(account.userID)
+                await clinicStore.sync(account: account)
                 await scribe.sync(account: account)
                 do { try await Task.sleep(nanoseconds: 60_000_000_000) } catch { break }
             }
         }
         .onChange(of: scenePhase) { _, phase in
-            if phase == .active { Task { await scribe.sync(account: account) } }
+            if phase == .active { Task { await clinicStore.sync(account: account); await scribe.sync(account: account) } }
         }
-        .onChange(of: account.userID) { _, id in do { try scribe.switchAccount(id) } catch { scribe.error = error.localizedDescription } }
+        .onChange(of: account.userID) { _, id in clinicStore.switchAccount(id); do { try scribe.switchAccount(id) } catch { scribe.error = error.localizedDescription } }
         .alert("Scribe", isPresented: Binding(get: { scribe.error != nil }, set: { if !$0 { scribe.error = nil } })) {
             Button("OK") { scribe.error = nil }
         } message: { Text(scribe.error ?? "") }

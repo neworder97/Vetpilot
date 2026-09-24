@@ -10,9 +10,11 @@ struct ClinicEditorView: View {
     @State private var error: String?
     @State private var discard = false
     private let initial: ClinicProtocol
+    private let syncBase: ClinicProtocol?
 
     init(store: ClinicStore, initial: ClinicProtocol) {
         self.store = store; self.initial = initial
+        self.syncBase = store.items.first { $0.id == initial.id }
         _draft = State(initialValue: initial)
     }
 
@@ -96,7 +98,7 @@ struct ClinicEditorView: View {
                 ToolbarItem(placement: .primaryAction) { EditButton() }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        do { try store.save(draft); dismiss() } catch { self.error = error.localizedDescription }
+                        do { try store.save(draft, basedOn: syncBase); dismiss() } catch { self.error = error.localizedDescription }
                     }.disabled(draft.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || loadingPhoto)
                         .accessibilityIdentifier("clinic.editor.save")
                 }
