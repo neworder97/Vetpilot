@@ -37,6 +37,10 @@ jobs:
           curl --fail -L https://download.swift.org/swift-6.4.0-release/android-sdk/swift-6.4.0-RELEASE/swift-6.4.0-RELEASE_android.artifactbundle.tar.gz -o /tmp/swift-android.tar.gz
           echo '21fb555122a3d801ad943d48df7ebffdd8824de61c25c180bb792d3edaee0b43  /tmp/swift-android.tar.gz' | sha256sum -c
           /tmp/swift-6.4.0-RELEASE-ubuntu24.04/usr/bin/swift sdk install /tmp/swift-android.tar.gz
+          mkdir -p /tmp/vetpilot-swift-runtime
+          tar -xzf /tmp/swift-android.tar.gz -C /tmp/vetpilot-swift-runtime
+          echo SWIFT_ANDROID_SDK=/tmp/vetpilot-swift-runtime/swift-6.4.0-RELEASE_android.artifactbundle/swift-android >> "$GITHUB_ENV"
+          test -d /tmp/vetpilot-swift-runtime/swift-6.4.0-RELEASE_android.artifactbundle/swift-android/swift-resources
           curl --fail -L https://dl.google.com/android/repository/android-ndk-r30-linux.zip -o /tmp/ndk.zip
           echo '5107f898313790e449e87eee2183d9a20602dee9  /tmp/ndk.zip' | sha1sum -c
           unzip -q /tmp/ndk.zip -d /tmp
