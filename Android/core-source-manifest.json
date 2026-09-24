@@ -1,0 +1,12 @@
+{
+  "ClinicalData.swift": "b733bacc180faf55aa681a25edf74463ae603d5970b74ff8563cda244002211a",
+  "AdministrationMath.swift": "4cadea5cd3c4f1723004a4035e82dfbd9135587d64b124ee15ca2e483fcde500",
+  "BuiltInProtocolCatalog.swift": "c37c5466e7b529c999245d351cb8ead3d46f2ccf0a435930d951a51160da19be",
+  "NutritionMath.swift": "4a274e93d85a35dcaab778d5b0da23a1110b2df1a96a82fd9448c2706c5d6b9c",
+  "MedicationSafety.swift": "dceb750d626d523d46840b92648ea4bb09a453c0782ca30fbc9fe7a51c2a875d",
+  "LabworkCatalog.swift": "ce3742323d5870d6e3a841c32837f1102c5ac58783673ae858625d4726f8d895",
+  "ClinicProtocol.swift": "f7202fca42d0f69ac1ac9046a42e5bb3bfeb0ca79c2871378841686855c829dc",
+  "DoseView.swift": "2494885ebed71481623bf5205453595c69a6d91fbb42b2eb0b762dbddf90d2bb",
+  "ProtocolMedicationStore.swift": "f4cd5f9bb0a8ab5fd9d9a1995e024fe1f2b5ffa71e625765f18e0f5b222062df",
+  "CustomMedicationStore.swift": "031d40777de528e01ba8f43895225df7be0d20bf59328b25a148d1e15138e5b5"
+}

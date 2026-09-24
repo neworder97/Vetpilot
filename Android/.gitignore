@@ -1,0 +1,11 @@
+.gradle/
+local.properties
+**/build/
+SwiftCore/.build/
+SwiftCore/.swiftpm/
+SwiftCore/Sources/VetPilotCore/Generated/
+app/src/main/jniLibs/
+*.jks
+*.keystore
+app/src/debug/assets/parity.jsonl
+validation/
