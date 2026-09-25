@@ -128,6 +128,7 @@ struct PrescribedBuprenorphineView: View {
     @State private var product = ""
     @State private var route = ""
     @State private var frequency = ""
+    @State private var courseDays = ""
     @State private var verified = false
     @Environment(\.dismiss) private var dismiss
     private var complete: Bool { verified && [product,route,frequency].allSatisfy { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty } }
@@ -142,7 +143,18 @@ struct PrescribedBuprenorphineView: View {
                     Picker("Prescribed dose basis", selection: $basis) { Text("mg/kg").tag("mg/kg"); Text("Total mg").tag("mg") }.pickerStyle(.segmented)
                     TextField("Prescribed dose", text: $dose).keyboardType(.decimalPad)
                     TextField("Prescribed route", text: $route)
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
+                        Button("Recommended") { frequency = "" }.buttonStyle(.bordered)
+                        ForEach([6,8,12,24], id: \.self) { hours in
+                            Button("Every \(hours) h") { frequency = "q\(hours)h" }.buttonStyle(.bordered).tint(frequency == "q\(hours)h" ? AppTheme.blue : .secondary)
+                        }
+                    }
+                    Text("No recommended interval is assigned to this concentration. Use the veterinarian's exact order.").font(.footnote)
                     TextField("Prescribed frequency / timing", text: $frequency)
+                    HStack { ForEach([7,14,30], id: \.self) { value in
+                        Button("\(value) days") { courseDays = String(value) }.buttonStyle(.bordered)
+                    } }
+                    TextField("Prescribed course length (days)", text: $courseDays).keyboardType(.numberPad)
                     LabeledContent("Verified concentration", value: "0.6 mg/mL")
                     Toggle("Product, release type and prescription verified", isOn: $verified)
                 }
@@ -151,6 +163,9 @@ struct PrescribedBuprenorphineView: View {
                         Text("\(MedicationSafety.display(c.ml)) mL").font(.title2.bold())
                         Text("\(MedicationSafety.display(c.mg)) mg ÷ 0.6 mg/mL = \(MedicationSafety.display(c.ml)) mL")
                         Text("Prescription: \(dose) \(basis) · \(route) · \(frequency)")
+                        if let hours = [6,8,12,24].first(where: { frequency == "q\($0)h" }), let course = ClinicDoseMath.course(quantity: c.ml, hours: hours, days: Int(courseDays) ?? 0) {
+                            Text("Course quantity: \(MedicationSafety.display(course.units)) mL · \(course.administrations) administrations. Exact arithmetic for the verified repeating prescription.")
+                        } else if !courseDays.isEmpty { Text("Course volume needs an explicit repeating schedule and a whole number of days (1–3650).") }
                     } else { Text("Complete and verify the product and prescription with positive weight and dose to calculate.") }
                 }
             }
@@ -161,6 +176,7 @@ struct PrescribedBuprenorphineView: View {
             .onChange(of: basis) { _, _ in verified = false }
             .onChange(of: route) { _, _ in verified = false }
             .onChange(of: frequency) { _, _ in verified = false }
+            .onChange(of: courseDays) { _, _ in verified = false }
         }
     }
 }
