@@ -62,11 +62,11 @@ struct ClinicGabapentinView: View {
                 }
                 Section("Automatic calculation") {
                     if let c = calculation {
-                        Text("\(MedicationSafety.input(c.mg)) mg").font(.title2.bold()).accessibilityIdentifier("gabapentin.amount")
-                        Text("\(MedicationSafety.input(c.kg)) kg × \(MedicationSafety.input(dose)) mg/kg = \(MedicationSafety.input(c.mg)) mg")
+                        Text("\(MedicationSafety.display(c.mg)) mg").font(.title2.bold()).accessibilityIdentifier("gabapentin.amount")
+                        Text("\(MedicationSafety.display(c.kg)) kg × \(MedicationSafety.display(dose)) mg/kg = \(MedicationSafety.display(c.mg)) mg")
                         if let quantity = c.quantity {
-                            Text("\(MedicationSafety.input(quantity)) \(formulation.lowercased())(s) at \(strength) mg each").accessibilityIdentifier("gabapentin.quantity")
-                            Text("Quantity = \(MedicationSafety.input(c.mg)) mg ÷ \(strength) mg. Exact mathematical quantity; confirm permitted tablet splitting. Do not interpret a fractional capsule as an instruction to divide its contents.").font(.footnote)
+                            Text("\(MedicationSafety.display(quantity)) \(formulation.lowercased())(s) at \(strength) mg each").accessibilityIdentifier("gabapentin.quantity")
+                            Text("Quantity = \(MedicationSafety.display(c.mg)) mg ÷ \(strength) mg. Exact mathematical quantity; confirm permitted tablet splitting. Do not interpret a fractional capsule as an instruction to divide its contents.").font(.footnote)
                         } else { Text("Enter verified strength to calculate tablets/capsules.") }
                     } else { Text(dose == 0 ? "Select the prescribed 25 or 30 mg/kg dose." : "Enter a positive weight and, if supplied, a positive strength.") }
                 }
@@ -110,8 +110,8 @@ struct PrescribedBuprenorphineView: View {
                 }
                 Section("Automatic conversion") {
                     if complete, let c = ClinicDoseMath.buprenorphine(weight: Double(weight) ?? 0, pounds: unit == "lb", dose: Double(dose) ?? 0, perKg: basis == "mg/kg") {
-                        Text("\(MedicationSafety.input(c.ml)) mL").font(.title2.bold())
-                        Text("\(MedicationSafety.input(c.mg)) mg ÷ 0.6 mg/mL = \(MedicationSafety.input(c.ml)) mL")
+                        Text("\(MedicationSafety.display(c.ml)) mL").font(.title2.bold())
+                        Text("\(MedicationSafety.display(c.mg)) mg ÷ 0.6 mg/mL = \(MedicationSafety.display(c.ml)) mL")
                         Text("Prescription: \(dose) \(basis) · \(route) · \(frequency)")
                     } else { Text("Complete and verify the product and prescription with positive weight and dose to calculate.") }
                 }
