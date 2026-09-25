@@ -11,6 +11,12 @@ enum ClinicDoseMath {
         if let quantity, (!quantity.isFinite || quantity <= 0) { return nil }
         return (kg, mg, quantity)
     }
+    static func course(quantity: Double, hours: Int, days: Int) -> (administrations: Int, units: Double)? {
+        guard quantity.isFinite, quantity > 0, [6,8,12,24].contains(hours), (1...3650).contains(days) else { return nil }
+        let administrations = days * (24 / hours), units = quantity * Double(administrations)
+        guard units.isFinite, units > 0 else { return nil }
+        return (administrations, units)
+    }
     static func buprenorphine(weight: Double, pounds: Bool, dose: Double, perKg: Bool) -> (mg: Double, ml: Double)? {
         guard weight.isFinite, weight > 0, dose.isFinite, dose > 0 else { return nil }
         let kg = weight * (pounds ? 0.45359237 : 1)
@@ -28,6 +34,9 @@ struct ClinicGabapentinView: View {
     @State private var sedation = 0.0
     @State private var strength = ""
     @State private var formulation = "Capsule"
+    @State private var interval = 0
+    @State private var days = ""
+    private var listedStrengths: [Int] { formulation == "Capsule" ? [100,300,400] : [600,800] }
     @Environment(\.dismiss) private var dismiss
     private var dose: Double { purpose == "Pain" ? 15 : purpose == "Fractious" ? 50 : sedation }
     private var calculation: (kg: Double, mg: Double, quantity: Double?)? {
@@ -57,8 +66,31 @@ struct ClinicGabapentinView: View {
                     TextField("Patient weight", text: $weight).keyboardType(.decimalPad).accessibilityIdentifier("dose.sheet.weight")
                     Picker("Weight unit", selection: $unit) { Text("lb").tag("lb"); Text("kg").tag("kg") }.pickerStyle(.segmented)
                     Picker("Formulation", selection: $formulation) { Text("Capsule").tag("Capsule"); Text("Tablet").tag("Tablet") }.pickerStyle(.segmented)
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 90))]) {
+                        ForEach(listedStrengths, id: \.self) { mg in
+                            Button("\(mg) mg") { strength = String(mg) }
+                                .buttonStyle(.bordered).tint(strength == String(mg) ? AppTheme.blue : .secondary)
+                                .accessibilityIdentifier("gabapentin.strength.\(mg)")
+                        }
+                    }
                     TextField("Verified strength (mg per unit)", text: $strength).keyboardType(.decimalPad).accessibilityIdentifier("gabapentin.strength")
-                    Text("Oral (PO) · Frequency / timing: As prescribed")
+                    Text("Oral (PO)")
+                }
+                Section("Frequency") {
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
+                        Button("Recommended") { interval = 0 }.buttonStyle(.bordered).tint(interval == 0 ? AppTheme.blue : .secondary)
+                        ForEach([6,8,12,24], id: \.self) { hours in
+                            Button("Every \(hours) h") { interval = hours }.buttonStyle(.bordered).tint(interval == hours ? AppTheme.blue : .secondary)
+                                .accessibilityIdentifier("gabapentin.frequency.q\(hours)h")
+                        }
+                    }
+                    Text(interval == 0 ? "As prescribed — no administration interval was supplied for this clinic protocol. Select the veterinarian's schedule to calculate a course quantity." : "Prescriber-selected schedule: every \(interval) hours. Confirm the schedule and duration for this patient; sedation and pre-visit dosing are not automatically repeating regimens.").font(.footnote)
+                }
+                Section("Quantity / treatment duration") {
+                    HStack { ForEach([7,14,30], id: \.self) { value in
+                        Button("\(value) days") { days = String(value) }.buttonStyle(.bordered).tint(days == String(value) ? AppTheme.blue : .secondary)
+                    } }
+                    TextField("Prescribed course length (days)", text: $days).keyboardType(.numberPad).accessibilityIdentifier("gabapentin.days")
                 }
                 Section("Automatic calculation") {
                     if let c = calculation {
@@ -67,11 +99,17 @@ struct ClinicGabapentinView: View {
                         if let quantity = c.quantity {
                             Text("\(MedicationSafety.display(quantity)) \(formulation.lowercased())(s) at \(strength) mg each").accessibilityIdentifier("gabapentin.quantity")
                             Text("Quantity = \(MedicationSafety.display(c.mg)) mg ÷ \(strength) mg. Exact mathematical quantity; confirm permitted tablet splitting. Do not interpret a fractional capsule as an instruction to divide its contents.").font(.footnote)
+                            if let course = ClinicDoseMath.course(quantity: quantity, hours: interval, days: Int(days) ?? 0) {
+                                Text("Course: \(course.administrations) administrations · \(MedicationSafety.display(course.units)) \(formulation.lowercased()) equivalents in total").accessibilityIdentifier("gabapentin.course")
+                                Text("Exact course arithmetic before dispensing rounding. Verify the actual administered units and prescribed duration.").font(.footnote)
+                            } else if !days.isEmpty { Text("Select the prescribed frequency and a whole number of days (1–3650) to calculate course quantity.").font(.footnote) }
                         } else { Text("Enter verified strength to calculate tablets/capsules.") }
                     } else { Text(dose == 0 ? "Select the prescribed 25 or 30 mg/kg dose." : "Enter a positive weight and, if supplied, a positive strength.") }
                 }
                 Section("Source") { Text("User-reported treating veterinarian clinic protocol for dogs and cats, oral capsules/tablets. No administration interval supplied.").font(.footnote) }
             }
+            .onChange(of: formulation) { _, _ in strength = "" }
+            .onChange(of: purpose) { _, _ in interval = 0; days = "" }
             .navigationTitle("Gabapentin")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() }.accessibilityIdentifier("dose.done") }

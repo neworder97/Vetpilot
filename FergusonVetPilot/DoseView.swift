@@ -201,6 +201,7 @@ private struct MedicationRow: View {
 private struct DoseCalculatorSheet: View {
     private enum FrequencyChoice: String, CaseIterable, Identifiable {
         case recommended = "Recommended"
+        case q6h = "q6h"
         case q8h = "q8h"
         case q12h = "q12h"
         case q24h = "q24h"
@@ -209,6 +210,7 @@ private struct DoseCalculatorSheet: View {
         var dosesPerDay: Double? {
             switch self {
             case .recommended: return nil
+            case .q6h: return 4
             case .q8h: return 3
             case .q12h: return 2
             case .q24h: return 1
@@ -648,7 +650,7 @@ private struct DoseCalculatorSheet: View {
                                 .accessibilityIdentifier("dose.rounding")
                     }
                 }
-                    if (medication.kind != .protocolOnly || protocolDefinition != nil), medication.form != .injection {
+                    if (medication.kind != .protocolOnly || protocolDefinition != nil), protocolDefinition?.doseBasis.isRate != true {
                         Section("Optional veterinarian frequency") {
                             Text("Use the source-backed recommended frequency unless the prescribing veterinarian directs a different schedule. Choosing an override does not validate the new schedule. For total-daily-dose entries, the selected daily amount is divided by administrations/day before formulation rounding.")
                                 .font(.footnote)
@@ -656,6 +658,7 @@ private struct DoseCalculatorSheet: View {
 
                             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
                                 frequencyButton(.recommended, title: "Recommended")
+                                frequencyButton(.q6h, title: "Every 6 h")
                                 frequencyButton(.q8h, title: "Every 8 h")
                                 frequencyButton(.q12h, title: "Every 12 h")
                                 frequencyButton(.q24h, title: "Every 24 h")

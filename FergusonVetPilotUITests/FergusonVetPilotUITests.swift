@@ -246,6 +246,20 @@ final class FergusonVetPilotUITests: XCTestCase {
             keyboardDone.tap()
         }
 
+        let strengthButton = app.buttons["gabapentin.strength.100"]
+        for _ in 0..<8 where !strengthButton.isHittable { app.swipeUp() }
+        strengthButton.tap()
+        let scheduleButton = app.buttons["gabapentin.frequency.q6h"]
+        for _ in 0..<8 where !scheduleButton.isHittable { app.swipeUp() }
+        scheduleButton.tap()
+        let week = app.buttons["7 days"]
+        for _ in 0..<8 where !week.isHittable { app.swipeUp() }
+        week.tap()
+        let course = app.staticTexts["gabapentin.course"]
+        for _ in 0..<8 where !course.isHittable { app.swipeUp() }
+        XCTAssertTrue(course.waitForExistence(timeout: 3))
+        XCTAssertTrue(course.label.contains("28 administrations"))
+        XCTAssertTrue(course.label.contains("42"))
         let amount = app.staticTexts["gabapentin.amount"]
         for _ in 0..<8 where !amount.isHittable { app.swipeUp() }
         XCTAssertTrue(amount.waitForExistence(timeout: 3))

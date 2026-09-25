@@ -13,6 +13,16 @@ final class ClinicDoseMathTests: XCTestCase {
         XCTAssertNil(ClinicDoseMath.gabapentin(weight: 0, pounds: false, dose: 15, strength: 100))
         XCTAssertNil(ClinicDoseMath.gabapentin(weight: 10, pounds: false, dose: 15, strength: 0))
     }
+    func testCourseQuantityUsesSelectedFrequencyAndDuration() throws {
+        for hours in [6,8,12,24] {
+            let c = try XCTUnwrap(ClinicDoseMath.course(quantity: 2, hours: hours, days: 7))
+            XCTAssertEqual(c.administrations, 7 * 24 / hours)
+            XCTAssertEqual(c.units, Double(c.administrations * 2))
+        }
+        XCTAssertNil(ClinicDoseMath.course(quantity: 2, hours: 0, days: 7))
+        XCTAssertNil(ClinicDoseMath.course(quantity: 2, hours: 8, days: 0))
+        XCTAssertNil(ClinicDoseMath.course(quantity: .infinity, hours: 8, days: 7))
+    }
     func testPrescribedVolumeArithmetic() throws {
         let c = try XCTUnwrap(ClinicDoseMath.buprenorphine(weight: 5, pounds: false, dose: 0.012, perKg: true))
         XCTAssertEqual(c.mg, 0.06, accuracy: 1e-10)
