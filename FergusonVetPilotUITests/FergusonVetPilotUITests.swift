@@ -134,7 +134,7 @@ final class FergusonVetPilotUITests: XCTestCase {
         XCTAssertTrue(calculate.waitForExistence(timeout: 3))
         XCTAssertTrue(calculate.isEnabled)
         for _ in 0..<12 where !calculate.isHittable { app.swipeUp() }
-        calculate.tap()
+        app.buttons["dose.recommended"].tap()
 
         let doseResult = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "44 mg")).firstMatch
         XCTAssertTrue(doseResult.waitForExistence(timeout: 3))

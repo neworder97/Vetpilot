@@ -247,6 +247,38 @@ private struct DoseCalculatorSheet: View {
         _patientWeightUnit = State(initialValue: weightUnit)
     }
 
+    private func calculateCandidate() {
+                        if let error = prescribedRateInputError {
+                            result = DoseResult(available: false, headline: "Prescribed rate required", math: "", formulation: "", warning: error)
+                            return
+                        }
+                        if let error = weightInputError {
+                            result = DoseResult(available: false, headline: "Invalid weight", math: "", formulation: "", warning: error)
+                            return
+                        }
+                        if let error = concentrationInputError {
+                            result = DoseResult(available: false, headline: "Invalid concentration", math: "", formulation: "", warning: error)
+                            return
+                        }
+                        if let protocolDefinition {
+                            result = ProtocolDoseCalculator.calculate(
+                                definition: protocolDefinition,
+                                kg: kg,
+                                strength: selectedStrength,
+                                concentration: activeConcentration,
+                                builtInPreset: usingBuiltInPreset ? selectedBuiltInPreset : nil,
+                                prescribedRate: MedicationSafety.parsePositive(prescribedPotassiumRate)
+                            )
+                        } else {
+                            result = ClinicalData.calculate(
+                                medication: medication,
+                                kg: kg,
+                                strength: selectedStrength,
+                                concentration: activeConcentration
+                            )
+                        }
+    }
+
     private var numericWeight: Double {
         MedicationSafety.parsePositive(patientWeight) ?? 0
     }
@@ -421,16 +453,6 @@ private struct DoseCalculatorSheet: View {
                 if medication.generic == "Buprenorphine" {
                     Section("Additional concentration") {
                         Button("0.6 mg/mL · prescribed-dose conversion") { prescribedBuprenorphine = true }
-                    }
-                }
-                Section("Recommended dose") {
-                    Button("Recommended Dose") {
-                        if let selection = doseSelection, !selection.hasRange {
-                            selectedDoseLevel = .low
-                        } else { recommendationHelp = true }
-                    }.accessibilityIdentifier("dose.recommended")
-                    if let selection = doseSelection, !selection.hasRange {
-                        Text("The selected source supplies a fixed dose; low and high give the same amount.").font(.caption)
                     }
                 }
                 if medication.kind == .protocolOnly {
@@ -684,35 +706,7 @@ private struct DoseCalculatorSheet: View {
                     }
                 Section {
                     Button {
-                        if let error = prescribedRateInputError {
-                            result = DoseResult(available: false, headline: "Prescribed rate required", math: "", formulation: "", warning: error)
-                            return
-                        }
-                        if let error = weightInputError {
-                            result = DoseResult(available: false, headline: "Invalid weight", math: "", formulation: "", warning: error)
-                            return
-                        }
-                        if let error = concentrationInputError {
-                            result = DoseResult(available: false, headline: "Invalid concentration", math: "", formulation: "", warning: error)
-                            return
-                        }
-                        if let protocolDefinition {
-                            result = ProtocolDoseCalculator.calculate(
-                                definition: protocolDefinition,
-                                kg: kg,
-                                strength: selectedStrength,
-                                concentration: activeConcentration,
-                                builtInPreset: usingBuiltInPreset ? selectedBuiltInPreset : nil,
-                                prescribedRate: MedicationSafety.parsePositive(prescribedPotassiumRate)
-                            )
-                        } else {
-                            result = ClinicalData.calculate(
-                                medication: medication,
-                                kg: kg,
-                                strength: selectedStrength,
-                                concentration: activeConcentration
-                            )
-                        }
+                        calculateCandidate()
                         weightFieldFocused = false
                         DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } }
                     } label: {
@@ -904,6 +898,15 @@ private struct DoseCalculatorSheet: View {
             .navigationTitle("Dose")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Recommended Dose") {
+                        if let selection = doseSelection, !selection.hasRange {
+                            calculateCandidate()
+                            weightFieldFocused = false
+                            DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } }
+                        } else { recommendationHelp = true }
+                    }.accessibilityIdentifier("dose.recommended")
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") { dismiss() }
                         .accessibilityIdentifier("dose.done")
