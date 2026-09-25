@@ -10,11 +10,11 @@ STAGING=$(mktemp -d)
 trap 'rm -rf "$STAGING"' EXIT
 mkdir "$STAGING/Payload"
 ditto "$APP" "$STAGING/Payload/$(basename "$APP")"
-ditto -c -k --keepParent "$STAGING/Payload" ReleaseArtifacts/VetPilot-0.8.1-Signulous.ipa
+ditto -c -k --keepParent "$STAGING/Payload" ReleaseArtifacts/VetPilot-0.8.2-Signulous.ipa
 python3 - <<'PYTHON'
 from pathlib import Path
 import hashlib,json,os,plistlib,zipfile
-r=Path('ReleaseArtifacts');ipa=r/'VetPilot-0.8.1-Signulous.ipa'
+r=Path('ReleaseArtifacts');ipa=r/'VetPilot-0.8.2-Signulous.ipa'
 with zipfile.ZipFile(ipa) as z:
     assert z.testzip() is None
     infofiles=[n for n in z.namelist() if n.startswith('Payload/') and n.count('/')==2 and n.endswith('.app/Info.plist')]
@@ -23,9 +23,11 @@ with zipfile.ZipFile(ipa) as z:
     assert info['CFBundleIdentifier']=='com.ferguson.vetpilot'
     assert info['CFBundleDisplayName']=='VetPilot'
     assert info['CFBundleName']=='VetPilot'
-    assert info['CFBundleShortVersionString']=='0.8.1', ('version',info['CFBundleShortVersionString'])
-    assert info['CFBundleVersion']=='14', ('build',info['CFBundleVersion'])
+    assert info['CFBundleShortVersionString']=='0.8.2', ('version',info['CFBundleShortVersionString'])
+    assert info['CFBundleVersion']=='15', ('build',info['CFBundleVersion'])
     assert 'iPhoneOS' in info['CFBundleSupportedPlatforms']
+    assert 'fetch' in info.get('UIBackgroundModes', [])
+    assert 'com.ferguson.vetpilot.collection-refresh' in info.get('BGTaskSchedulerPermittedIdentifiers', [])
     assert z.getinfo(infofiles[0].rsplit('/',1)[0]+'/'+info['CFBundleExecutable']).file_size>0
 numeric=json.loads(Path('ValidationArithmetic/candidate-independent-numeric-audit.json').read_text())
 rendered=json.loads(Path('ValidationArithmetic/candidate-rendered-oracle.json').read_text())

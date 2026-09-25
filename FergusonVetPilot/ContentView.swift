@@ -3,9 +3,10 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var tab = 0
-    @StateObject private var clinicStore = ClinicStore()
-    @StateObject private var cytology = ClinicStore(collection: "cytology")
-    @StateObject private var account = VetPilotAccount()
+    @EnvironmentObject private var sync: VetPilotSyncController
+    @EnvironmentObject private var account: VetPilotAccount
+    private var clinicStore: ClinicStore { sync.clinic }
+    private var cytology: ClinicStore { sync.cytology }
     @State private var settings = false
 
     var body: some View {
@@ -16,7 +17,7 @@ struct ContentView: View {
                     .tag(0)
                     .tabItem { Label("Dose", systemImage: "cross.case.fill") }
 
-                MyClinicView(store: clinicStore).id(account.userID)
+                MyClinicView(store: clinicStore, onSync: { Task { await clinicStore.sync(account: account) } }, onAccount: { settings = true }).id(account.userID)
                     .tag(1)
                     .tabItem { Label("My Clinic", systemImage: "list.clipboard.fill") }
 
@@ -32,24 +33,25 @@ struct ContentView: View {
                     .tag(4)
                     .tabItem { Label("Labwork", systemImage: "testtube.2") }
 
-                CytologyLibraryView(store: cytology).id(account.userID)
+                CytologyLibraryView(store: cytology, onSync: { Task { await cytology.sync(account: account) } }, onAccount: { settings = true }).id(account.userID)
                     .tag(5)
                     .tabItem { Label("Cytology", systemImage: "photo.on.rectangle.angled") }
             }
         }
         .background(Color.white)
-        .sheet(isPresented: $settings) { AccountSettingsView(account: account) }
+        .sheet(isPresented: $settings) { AccountSettingsView(account: account, backgroundStatus: sync.backgroundStatus, onSync: { Task { await clinicStore.sync(account: account); await cytology.sync(account: account) } }) }
         .task(id: account.userID) {
             clinicStore.switchAccount(account.userID); cytology.switchAccount(account.userID)
+            sync.scheduleBackgroundRefresh()
             while !Task.isCancelled {
-                await clinicStore.sync(account: account); await cytology.sync(account: account)
-                do { try await Task.sleep(nanoseconds: 60_000_000_000) } catch { break }
+                if scenePhase == .active { await sync.syncAll() }
+                do { try await Task.sleep(nanoseconds: 30_000_000_000) } catch { break }
             }
         }
         .onChange(of: scenePhase) { _, phase in
-            if phase == .active { Task { await clinicStore.sync(account: account); await cytology.sync(account: account) } }
+            if phase == .active { sync.scheduleBackgroundRefresh(); Task { await sync.syncAll() } }
+            if phase == .background { sync.syncWhenLeavingApp() }
         }
-        .onChange(of: account.userID) { _, id in clinicStore.switchAccount(id); cytology.switchAccount(id) }
         .onOpenURL { url in
             guard url.isFileURL || url.scheme != "vetpilot" else { return }
             tab = 1

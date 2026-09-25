@@ -2,6 +2,8 @@ import SwiftUI
 
 struct AccountSettingsView: View {
     @ObservedObject var account: VetPilotAccount
+    var backgroundStatus: String = "Background sync runs when iOS allows."
+    var onSync: (() -> Void)? = nil
     @Environment(\.dismiss) private var dismiss
     @State private var loginEmail = ""
     @State private var password = ""
@@ -42,8 +44,14 @@ struct AccountSettingsView: View {
                     if !account.configured { Text("Account and cloud services are not connected in this build. Guest reference tools remain available.").foregroundStyle(.secondary).accessibilityIdentifier("account.notConfigured") }
                     if account.busy { ProgressView("Connecting…") }
                 }
-                Section("Syncing") {
-                    Text("My Clinic and Cytology images, labels and notes sync every minute while open and online, and when you return to the app. Guest collections stay on this device.")
+                Section("Automatic sync") {
+                    Text(account.userID == nil ? "Sign in to enable auto-sync" : "Auto-sync on · every 30 seconds").accessibilityIdentifier("account.sync.status")
+                    Button("Sync now") { onSync?() }.disabled(account.userID == nil || onSync == nil).accessibilityIdentifier("account.sync.now")
+                    Text("My Clinic and Cytology images, labels and notes sync every 30 seconds while open and online, and when you return to the app. Guest collections stay on this device.")
+                }
+                Section("Background sync") {
+                    Text(backgroundStatus).accessibilityIdentifier("account.sync.background")
+                    Text("VetPilot requests a sync when you leave the app and periodic background refreshes. iOS controls timing; background sync is not every 30 seconds. Force-quitting the app can prevent background refresh until you open it again.").font(.caption)
                 }
                 Section("Remove old Scribe data") {
                     Text("Scribe has been replaced. Delete its old notes and recordings from this device and its cloud notes from your signed-in account.")

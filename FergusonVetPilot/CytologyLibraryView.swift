@@ -3,6 +3,8 @@ import PhotosUI
 
 struct CytologyLibraryView: View {
     @ObservedObject var store: ClinicStore
+    var onSync: (() -> Void)? = nil
+    var onAccount: (() -> Void)? = nil
     @State private var query = ""
     @State private var category = "All"
     @State private var favorites = false
@@ -19,6 +21,12 @@ struct CytologyLibraryView: View {
                     Text("Your microscopy learning collection").font(.headline)
                     Text("Save images, label what you see, and build a personal reference. Labels are your observations, not an automated diagnosis.").font(.subheadline).foregroundStyle(.secondary)
                     Text(store.syncStatus).font(.caption).accessibilityIdentifier("cytology.sync.status")
+                    Text(store.signedInForSync ? "Auto-sync on · every 30 seconds while open and online" : "Auto-sync requires sign-in with the same account as the website").font(.caption).accessibilityIdentifier("cytology.sync.enabled")
+                    if store.signedInForSync {
+                        Button(store.syncing ? "Syncing…" : "Sync now") { onSync?() }.disabled(store.syncing || onSync == nil).accessibilityIdentifier("cytology.sync.now")
+                    } else {
+                        Button("Sign in for sync") { onAccount?() }.disabled(onAccount == nil).accessibilityIdentifier("cytology.sync.signin")
+                    }
                     Text("Sync capacity: 15 MB per collection. Images are optimized for storage; keep original microscope files separately.").font(.caption).foregroundStyle(.secondary)
                     Picker("Sample type", selection: $category) { Text("All").tag("All"); ForEach(Self.categories, id: \.self) { Text($0).tag($0) } }
                     Toggle("Favorites only", isOn: $favorites)
@@ -53,6 +61,8 @@ struct CytologyLibraryView: View {
 }
 private struct CytologyDetail: View {
     @ObservedObject var store: ClinicStore
+    var onSync: (() -> Void)? = nil
+    var onAccount: (() -> Void)? = nil
     let itemID: UUID
     @Environment(\.dismiss) private var dismiss
     @State private var editing: ClinicProtocol?
@@ -98,6 +108,8 @@ private struct CytologyZoom: UIViewRepresentable {
 }
 private struct CytologyEditor: View {
     @ObservedObject var store: ClinicStore
+    var onSync: (() -> Void)? = nil
+    var onAccount: (() -> Void)? = nil
     let initial: ClinicProtocol
     let base: ClinicProtocol?
     @Environment(\.dismiss) private var dismiss

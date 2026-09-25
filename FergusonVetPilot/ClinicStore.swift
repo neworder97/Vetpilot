@@ -12,6 +12,7 @@ final class ClinicStore: ObservableObject {
     private var owner: UUID?
     private var generation = 0
     private var state = ClinicSyncState()
+    var signedInForSync: Bool { owner != nil }
     @Published private(set) var syncing = false
     @Published private(set) var syncStatus = "Guest collection — stored on this device"
     private var usesEnvelope = false

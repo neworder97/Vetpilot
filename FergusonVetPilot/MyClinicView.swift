@@ -3,6 +3,8 @@ import UniformTypeIdentifiers
 
 struct MyClinicView: View {
     @ObservedObject var store: ClinicStore
+    var onSync: (() -> Void)? = nil
+    var onAccount: (() -> Void)? = nil
     @State private var search = ""
     @State private var filter = "All"
     @State private var category = "All categories"
@@ -26,13 +28,19 @@ struct MyClinicView: View {
             List {
                 Section {
                     Text("Procedures & Nursing").font(.headline).foregroundStyle(AppTheme.blue)
-                    Text("Create your clinic's protocols and reusable equipment lists. Available offline; signed-in collections sync with the website every minute. Guest items stay local—export them before signing in, then import into your account.").font(.footnote)
+                    Text("Create your clinic's protocols and reusable equipment lists. Available offline; signed-in collections sync with the website every 30 seconds. Guest items stay local—export them before signing in, then import into your account.").font(.footnote)
                     if store.canCopyGuestItems {
                         Button("Copy this device's guest protocols into my account") {
                             do { try store.copyGuestItems() } catch { store.errorMessage = error.localizedDescription }
                         }
                     }
                     Text(store.syncStatus).font(.caption).accessibilityIdentifier("clinic.sync.status")
+                    Text(store.signedInForSync ? "Auto-sync on · every 30 seconds while open and online" : "Auto-sync requires sign-in with the same account as the website").font(.caption).accessibilityIdentifier("clinic.sync.enabled")
+                    if store.signedInForSync {
+                        Button(store.syncing ? "Syncing…" : "Sync now") { onSync?() }.disabled(store.syncing || onSync == nil).accessibilityIdentifier("clinic.sync.now")
+                    } else {
+                        Button("Sign in for sync") { onAccount?() }.disabled(onAccount == nil).accessibilityIdentifier("clinic.sync.signin")
+                    }
                     Picker("Show", selection: $filter) {
                         ForEach(["All", "Favorites", "Recent"], id: \.self) { Text($0).tag($0) }
                     }.pickerStyle(.segmented)
@@ -78,7 +86,7 @@ struct MyClinicView: View {
                         ClinicTextButton(items: store.items, pdf: false)
                     }
                     Text(ClinicProtocol.reviewNotice).font(.caption).foregroundStyle(.secondary)
-                    Text("Share copies with your team using PDF or an editable .vetpilot file. Changes do not sync between devices.").font(.caption).foregroundStyle(.secondary)
+                    Text("Share copies with your team using PDF or an editable .vetpilot file. Shared files are copies; your signed-in collection syncs automatically between your devices.").font(.caption).foregroundStyle(.secondary)
                 }
             }
             .navigationTitle("My Clinic")
@@ -124,6 +132,8 @@ struct MyClinicView: View {
 
 struct ClinicImportPreview: View {
     @ObservedObject var store: ClinicStore
+    var onSync: (() -> Void)? = nil
+    var onAccount: (() -> Void)? = nil
     let package: ClinicPackage
     @Environment(\.dismiss) private var dismiss
     @State private var error: String?

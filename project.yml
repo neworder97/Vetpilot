@@ -7,8 +7,8 @@ options:
 settings:
   base:
     SWIFT_VERSION: 5.0
-    MARKETING_VERSION: 0.8.1
-    CURRENT_PROJECT_VERSION: 14
+    MARKETING_VERSION: 0.8.2
+    CURRENT_PROJECT_VERSION: 15
 
 targets:
   FergusonVetPilot:
@@ -29,6 +29,8 @@ targets:
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         CFBundleIconName: AppIcon
         UIUserInterfaceStyle: Light
+        UIBackgroundModes: [fetch]
+        BGTaskSchedulerPermittedIdentifiers: [com.ferguson.vetpilot.collection-refresh]
         UILaunchScreen: {}
         NSCameraUsageDescription: VetPilot uses the camera for clinic reference photos.
         NSPhotoLibraryUsageDescription: VetPilot imports reference photos for your clinic protocols.
