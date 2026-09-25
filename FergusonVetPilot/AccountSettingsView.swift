@@ -2,7 +2,6 @@ import SwiftUI
 
 struct AccountSettingsView: View {
     @ObservedObject var account: VetPilotAccount
-    @ObservedObject var scribe: ScribeStore
     @Environment(\.dismiss) private var dismiss
     @State private var loginEmail = ""
     @State private var password = ""
@@ -17,8 +16,8 @@ struct AccountSettingsView: View {
                 Section("VetPilot account") {
                     if account.userID != nil {
                         Label(account.email, systemImage: "person.crop.circle.fill")
-                        Text("Notes are stored separately for each signed-in account. Signing out switches to this device's guest notes.").font(.caption)
-                        Button("Sign out") { Task { await account.signOut() } }.disabled(account.busy || scribe.accountLocked)
+                        Text("Your My Clinic and Cytology collections stay separate for each account.").font(.caption)
+                        Button("Sign out") { Task { await account.signOut() } }.disabled(account.busy)
                     } else {
                         Text("Create an account or sign in to use the same identity in the app and website.")
                         Picker("Account", selection: $createAccount) {
@@ -36,62 +35,36 @@ struct AccountSettingsView: View {
                                 await account.authenticate(email: submittedEmail, password: submittedPassword, create: creating)
                                 if account.userID != nil { password = "" }
                             }
-                        }.disabled(!account.configured || account.busy || scribe.accountLocked).accessibilityIdentifier("account.email.submit")
+                        }.disabled(!account.configured || account.busy).accessibilityIdentifier("account.email.submit")
                         Text("Use the same email and password in the app and website.").font(.caption)
                         if let message = account.notice { Text(message).font(.caption) }
                     }
                     if !account.configured { Text("Account and cloud services are not connected in this build. Guest reference tools remain available.").foregroundStyle(.secondary).accessibilityIdentifier("account.notConfigured") }
                     if account.busy { ProgressView("Connecting…") }
                 }
-                Section("Notes & syncing") {
-                    Text(scribe.syncStatus).font(.caption)
-                    Button("Sync now") { Task { await scribe.sync(account: account) } }.disabled(account.userID == nil || scribe.accountLocked)
-                    Button("Download my cloud notes") { Task { await download() } }.disabled(account.userID == nil || !account.configured || account.busy || scribe.accountLocked)
-                    Text("Signed-in notes upload after transcription and sync every minute while the app is open. Failed uploads retry; conflicting edits are preserved as a separate copy. Audio stays on its original device. My Clinic protocols, equipment and photos also sync every minute. Custom medication settings remain local.").font(.caption)
-                    if let notice { Text(notice).font(.caption) }
+                Section("Syncing") {
+                    Text("My Clinic and Cytology images, labels and notes sync every minute while open and online, and when you return to the app. Guest collections stay on this device.")
                 }
-                Section("Sharing") { Button("Email and text settings") { sharing = true } }
-                Section("Privacy & control") {
-                    Text("Recording requires everyone's consent. On-device transcription does not send audio to a server. Cloud AI sends only the selected recording or note to your configured service and its AI processor after your confirmation.").font(.caption)
-                    Text("Notes and audio are protected on this device and excluded from device backup. Keep PDF exports or explicit cloud copies of records you need. Signing out does not erase local notes.").font(.caption)
-                    Button("Erase notes for this local account", role: .destructive) { deleteLocalConfirmation = true }.disabled(scribe.accountLocked)
-                    if account.userID != nil { Button("Delete my cloud account", role: .destructive) { deleteConfirmation = true }.disabled(scribe.accountLocked || account.busy) }
+                Section("Remove old Scribe data") {
+                    Text("Scribe has been replaced. Delete its old notes and recordings from this device and its cloud notes from your signed-in account.")
+                    Button("Delete old Scribe records", role: .destructive) { deleteLocalConfirmation = true }
+                    if let notice { Text(notice) }
                 }
             }.navigationTitle("Settings")
                 .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
-                .sheet(isPresented: $sharing) { ClinicEmailSettings() }
-                .confirmationDialog("Erase this account's local notes and recordings?", isPresented: $deleteLocalConfirmation) {
-                    Button("Erase local notes", role: .destructive) { do { try scribe.clearLocalAccount(); notice = "Local notes erased." } catch { scribe.error = error.localizedDescription } }
-                } message: { Text("This cannot be undone. Cloud copies are not affected.") }
-                .confirmationDialog("Delete your cloud account and all synced notes?", isPresented: $deleteConfirmation) {
-                    Button("Delete account permanently", role: .destructive) { Task {
-                        do { try await account.deleteAccount(); notice = "Cloud account deleted. Local copies remain on this device." }
-                        catch { account.error = error.localizedDescription }
+                .confirmationDialog("Delete old Scribe notes and recordings?", isPresented: $deleteLocalConfirmation) {
+                    Button("Delete Scribe records", role: .destructive) { Task {
+                        do {
+                            if let id = account.userID { _ = try await account.request(path: "rest/v1/scribe_encounters?user_id=eq." + id.uuidString.lowercased(), method: "DELETE") }
+                            let root = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("VetPilot/Scribe")
+                            if FileManager.default.fileExists(atPath: root.path) { try FileManager.default.removeItem(at: root) }
+                            notice = "Scribe records deleted. My Clinic and Cytology were not changed."
+                        } catch { account.error = error.localizedDescription }
                     } }
-                } message: { Text("This cannot be undone. Export records you need before continuing.") }
+                } message: { Text("This cannot be undone. My Clinic and Cytology are not affected.") }
                 .alert("Account", isPresented: Binding(get: { account.error != nil }, set: { if !$0 { account.error = nil } })) {
                     Button("OK") { account.error = nil }
                 } message: { Text(account.error ?? "") }
         }
-    }
-    private func download() async {
-        scribe.busy = true; defer { scribe.busy = false }
-        do {
-            let rows = try await ScribeCloud.download(account: account)
-            var conflicts = 0
-            for row in rows {
-                var remote = try row.payload.validated(); remote.recordingFiles = []
-                guard row.id == remote.id else { throw ScribeError.invalid("Cloud encounter identity mismatch.") }
-                if let local = scribe.encounter(row.id) {
-                    if row.version <= local.syncVersion { continue }
-                    if local.syncedAt == nil || local.updatedAt > local.syncedAt! {
-                        var preserved = local; preserved.id = UUID(); preserved.title += " (local copy)"; preserved.syncVersion = 0; preserved.syncedAt = nil
-                        try scribe.save(preserved); conflicts += 1
-                    } else { remote.recordingFiles = local.recordingFiles }
-                }
-                remote.syncVersion = row.version; remote.syncedAt = Date(); try scribe.save(remote)
-            }
-            notice = "Downloaded \(rows.count) cloud records. Preserved \(conflicts) conflicting local copies."
-        } catch { account.error = error.localizedDescription }
     }
 }

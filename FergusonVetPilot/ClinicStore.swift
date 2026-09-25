@@ -8,6 +8,7 @@ final class ClinicStore: ObservableObject {
     @Published var errorMessage: String?
     private var fileURL: URL
     private let guestURL: URL
+    private let collection: String
     private var owner: UUID?
     private var generation = 0
     private var state = ClinicSyncState()
@@ -16,9 +17,10 @@ final class ClinicStore: ObservableObject {
     private var usesEnvelope = false
     private var loadFailed = false
 
-    init(fileURL: URL? = nil) {
+    init(fileURL: URL? = nil, collection: String = "clinic") {
+        self.collection = collection
         let resolved = fileURL ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("VetPilot/MyClinic.json")
+            .appendingPathComponent(collection == "clinic" ? "VetPilot/MyClinic.json" : "VetPilot/Cytology/Library.json")
         self.fileURL = resolved; self.guestURL = resolved
         load()
     }
@@ -37,7 +39,7 @@ final class ClinicStore: ObservableObject {
             }
         } catch {
             items = []; loadFailed = true
-            errorMessage = "My Clinic could not read its saved data. The original file has been preserved; saving is disabled to avoid overwriting it. \(error.localizedDescription)"
+            errorMessage = "\(collection == "clinic" ? "My Clinic" : "Cytology") could not read its saved data. The original file has been preserved; saving is disabled to avoid overwriting it. \(error.localizedDescription)"
         }
     }
 
@@ -74,11 +76,11 @@ final class ClinicStore: ObservableObject {
         guard !syncing, !loadFailed, let owner, account.userID == owner else { return }
         syncing = true; let epoch = generation
         defer { if epoch == generation { syncing = false } }
-        syncStatus = "Syncing My Clinic…"
+        syncStatus = "Syncing \(collection == "clinic" ? "My Clinic" : "Cytology")…"
         do {
             struct Row: Decodable { var version: Int; var items: [ClinicProtocol] }
             let decoder = JSONDecoder(); decoder.dateDecodingStrategy = .iso8601
-            let data = try await account.request(path: "rest/v1/clinic_collections?select=version,items")
+            let data = try await account.request(path: "rest/v1/\(collection)_collections?select=version,items")
             let rows = try decoder.decode([Row].self, from: data)
             guard epoch == generation, account.userID == owner else { return }
             let remote = rows.first?.items ?? []; let version = rows.first?.version ?? 0
@@ -92,15 +94,15 @@ final class ClinicStore: ObservableObject {
                 let candidate = items
                 let encoder = JSONEncoder(); encoder.dateEncodingStrategy = .iso8601
                 let bytes = try encoder.encode(candidate)
-                guard bytes.count <= 15_000_000 else { throw ClinicFileError.invalid("My Clinic exceeds the 15 MB sync limit. Reduce photos and retry.") }
-                let result = try await account.request(path: "rest/v1/rpc/save_clinic_collection", method: "POST", body: ["expected_version": version, "collection_items": try JSONSerialization.jsonObject(with: bytes)])
+                guard bytes.count <= 15_000_000 else { throw ClinicFileError.invalid("\(collection == "clinic" ? "My Clinic" : "Cytology") exceeds the 15 MB sync limit. Reduce photos and retry.") }
+                let result = try await account.request(path: "rest/v1/rpc/save_\(collection)_collection", method: "POST", body: ["expected_version": version, "collection_items": try JSONSerialization.jsonObject(with: bytes)])
                 guard epoch == generation, account.userID == owner else { return }
                 let before = state; state.version = try JSONDecoder().decode(Int.self, from: result); state.baseline = candidate
                 // Keep edits made during upload queued against the acknowledged baseline.
                 do { try commit(items) } catch { state = before; throw error }
             }
-            syncStatus = "My Clinic synced " + Date().formatted(date: .omitted, time: .shortened)
-        } catch { if epoch == generation { syncStatus = "My Clinic sync pending — " + error.localizedDescription } }
+            syncStatus = "\(collection == "clinic" ? "My Clinic" : "Cytology") synced " + Date().formatted(date: .omitted, time: .shortened)
+        } catch { if epoch == generation { syncStatus = "\(collection == "clinic" ? "My Clinic" : "Cytology") sync pending — " + error.localizedDescription } }
     }
 
     func save(_ item: ClinicProtocol, basedOn original: ClinicProtocol? = nil) throws {

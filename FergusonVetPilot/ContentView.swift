@@ -4,30 +4,13 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var tab = 0
     @StateObject private var clinicStore = ClinicStore()
-    @StateObject private var scribe = ScribeStore()
+    @StateObject private var cytology = ClinicStore(collection: "cytology")
     @StateObject private var account = VetPilotAccount()
     @State private var settings = false
 
-    private var scribeAvailable: Bool {
-        #if DEBUG
-        // Offline UI regression harness only; absent from Release device builds.
-        if ProcessInfo.processInfo.arguments.contains("ui-scribe-local") { return true }
-        #endif
-        return account.userID != nil
-    }
     var body: some View {
         VStack(spacing: 0) {
             BrandHeader { settings = true }
-            if scribe.hasActiveRecording {
-                HStack(spacing: 12) {
-                    Label(scribe.isRecording ? "Recording" : "Paused", systemImage: scribe.isRecording ? "record.circle.fill" : "pause.circle.fill")
-                        .accessibilityIdentifier("scribe.recording.banner")
-                    Text(String(format: "%02d:%02d", Int(scribe.elapsed) / 60, Int(scribe.elapsed) % 60)).monospacedDigit()
-                    Spacer()
-                    Button(scribe.isRecording ? "Pause" : "Resume") { scribe.isRecording ? scribe.pause() : scribe.resume() }.accessibilityIdentifier("scribe.global.pause")
-                    Button("Stop") { scribe.stop() }.accessibilityIdentifier("scribe.global.stop")
-                }.font(.caption.bold()).padding(10).foregroundStyle(.white).background(scribe.isRecording ? Color.red : Color.orange)
-            }
             TabView(selection: $tab) {
                 DoseView()
                     .tag(0)
@@ -49,38 +32,24 @@ struct ContentView: View {
                     .tag(4)
                     .tabItem { Label("Labwork", systemImage: "testtube.2") }
 
-                Group {
-                    if scribeAvailable { ScribeView(store: scribe, account: account) }
-                    else { VStack(spacing: 16) {
-                        Image(systemName: "person.crop.circle.badge.checkmark").font(.largeTitle)
-                        Text("Your clinical records, together").font(.title2)
-                        Text("Create an account or sign in to save Scribe sessions and sync notes with the website every minute while open.").multilineTextAlignment(.center)
-                        Button("Create account or sign in") { settings = true }.buttonStyle(.borderedProminent)
-                    }.padding() }
-                }
+                CytologyLibraryView(store: cytology).id(account.userID)
                     .tag(5)
-                    .tabItem { Label("Scribe", systemImage: "mic.fill") }
+                    .tabItem { Label("Cytology", systemImage: "photo.on.rectangle.angled") }
             }
         }
         .background(Color.white)
-        .overlay { if scribe.isRecording { Rectangle().strokeBorder(.red, lineWidth: 4).ignoresSafeArea().allowsHitTesting(false).accessibilityHidden(true) } }
-        .sheet(isPresented: $settings) { AccountSettingsView(account: account, scribe: scribe) }
-        .task { clinicStore.switchAccount(account.userID); do { try scribe.switchAccount(account.userID) } catch { scribe.error = error.localizedDescription } }
+        .sheet(isPresented: $settings) { AccountSettingsView(account: account) }
         .task(id: account.userID) {
+            clinicStore.switchAccount(account.userID); cytology.switchAccount(account.userID)
             while !Task.isCancelled {
-                clinicStore.switchAccount(account.userID)
-                await clinicStore.sync(account: account)
-                await scribe.sync(account: account)
+                await clinicStore.sync(account: account); await cytology.sync(account: account)
                 do { try await Task.sleep(nanoseconds: 60_000_000_000) } catch { break }
             }
         }
         .onChange(of: scenePhase) { _, phase in
-            if phase == .active { Task { await clinicStore.sync(account: account); await scribe.sync(account: account) } }
+            if phase == .active { Task { await clinicStore.sync(account: account); await cytology.sync(account: account) } }
         }
-        .onChange(of: account.userID) { _, id in clinicStore.switchAccount(id); do { try scribe.switchAccount(id) } catch { scribe.error = error.localizedDescription } }
-        .alert("Scribe", isPresented: Binding(get: { scribe.error != nil }, set: { if !$0 { scribe.error = nil } })) {
-            Button("OK") { scribe.error = nil }
-        } message: { Text(scribe.error ?? "") }
+        .onChange(of: account.userID) { _, id in clinicStore.switchAccount(id); cytology.switchAccount(id) }
         .onOpenURL { url in
             guard url.isFileURL || url.scheme != "vetpilot" else { return }
             tab = 1

@@ -7,8 +7,8 @@ options:
 settings:
   base:
     SWIFT_VERSION: 5.0
-    MARKETING_VERSION: 0.7.2
-    CURRENT_PROJECT_VERSION: 12
+    MARKETING_VERSION: 0.8.0
+    CURRENT_PROJECT_VERSION: 13
 
 targets:
   FergusonVetPilot:
@@ -32,9 +32,6 @@ targets:
         UILaunchScreen: {}
         NSCameraUsageDescription: VetPilot uses the camera for clinic reference photos.
         NSPhotoLibraryUsageDescription: VetPilot imports reference photos for your clinic protocols.
-        NSMicrophoneUsageDescription: VetPilot records consultations with consent to prepare editable patient notes.
-        NSSpeechRecognitionUsageDescription: VetPilot transcribes saved consultations into editable draft notes for clinician review.
-        UIBackgroundModes: [audio]
         CFBundleURLTypes:
           - CFBundleURLName: com.ferguson.vetpilot.auth
             CFBundleURLSchemes: [vetpilot]

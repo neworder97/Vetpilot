@@ -49,4 +49,17 @@ import XCTest
         XCTAssertTrue(store.items.contains { $0.notes == "Local" && $0.id != base.id })
     }
 
+    func testCytologyAndClinicStorageAreIndependent() throws {
+        let folder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let clinic = ClinicStore(fileURL: folder.appendingPathComponent("Clinic/items.json"))
+        let cytology = ClinicStore(fileURL: folder.appendingPathComponent("Cytology/items.json"), collection: "cytology")
+        let owner = UUID(); clinic.switchAccount(owner); cytology.switchAccount(owner)
+        try clinic.save(sample("Protocol")); try cytology.save(sample("Ear sample"))
+        XCTAssertEqual(clinic.items.map(\.title), ["Protocol"])
+        XCTAssertEqual(cytology.items.map(\.title), ["Ear sample"])
+        cytology.switchAccount(nil); XCTAssertTrue(cytology.items.isEmpty)
+        cytology.switchAccount(owner); XCTAssertEqual(cytology.items.map(\.title), ["Ear sample"])
+    }
+
 }
