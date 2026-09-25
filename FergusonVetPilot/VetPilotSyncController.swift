@@ -9,6 +9,7 @@ final class VetPilotSyncController: ObservableObject {
     static let refreshIdentifier = "com.ferguson.vetpilot.collection-refresh"
     let account = VetPilotAccount()
     let clinic = ClinicStore()
+    let medications = CustomMedicationStore()
     let cytology = ClinicStore(collection: "cytology")
     @Published private(set) var backgroundStatus = "Background sync runs when iOS allows."
     private var departureToken: UUID?
@@ -18,10 +19,13 @@ final class VetPilotSyncController: ObservableObject {
     func syncAll() async {
         clinic.switchAccount(account.userID)
         cytology.switchAccount(account.userID)
+        medications.switchAccount(account.userID)
         guard account.userID != nil, !Task.isCancelled else { return }
         await clinic.sync(account: account)
         guard !Task.isCancelled else { return }
         await cytology.sync(account: account)
+        guard !Task.isCancelled else { return }
+        await medications.sync(account: account)
     }
 
     func scheduleBackgroundRefresh() {

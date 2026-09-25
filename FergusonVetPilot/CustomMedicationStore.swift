@@ -41,7 +41,7 @@ struct CustomMedicationDefinition: Identifiable, Codable, Equatable {
     var hasValidDefinition: Bool {
         Species(rawValue: speciesRaw) != nil && MedicationForm(rawValue: formRaw) != nil &&
         CustomDoseBasis(rawValue: doseBasisRaw) != nil &&
-        MedicationSafety.validRange(low: minDose, high: maxDose) && MedicationSafety.optionalPositive(concentration)
+        MedicationSafety.validRange(low: minDose, high: maxDose) && maxDose >= minDose && form != .any && MedicationSafety.optionalPositive(concentration)
     }
 
     var asMedication: Medication {
@@ -76,43 +76,124 @@ struct CustomMedicationDefinition: Identifiable, Codable, Equatable {
     }
 }
 
+struct CustomMedicationSyncState: Codable {
+    var items: [CustomMedicationDefinition] = []
+    var baseline: [CustomMedicationDefinition] = []
+    var version = 0
+}
+
+enum CustomMedicationMerge {
+    static func merge(local: [CustomMedicationDefinition], base: [CustomMedicationDefinition], remote: [CustomMedicationDefinition]) -> [CustomMedicationDefinition] {
+        let l = Dictionary(uniqueKeysWithValues: local.map { ($0.id, $0) })
+        let b = Dictionary(uniqueKeysWithValues: base.map { ($0.id, $0) })
+        let r = Dictionary(uniqueKeysWithValues: remote.map { ($0.id, $0) })
+        var result: [CustomMedicationDefinition] = []
+        for id in Set(l.keys).union(b.keys).union(r.keys).sorted(by: { $0.uuidString < $1.uuidString }) {
+            if l[id] == b[id] { if let value = r[id] { result.append(value) } }
+            else if r[id] == b[id] || l[id] == r[id] { if let value = l[id] { result.append(value) } }
+            else {
+                if let value = r[id] { result.append(value) }
+                if var copy = l[id] { copy.id = UUID(); copy.generic += " (conflict copy)"; result.append(copy) }
+            }
+        }
+        return result
+    }
+}
+
 @MainActor
 final class CustomMedicationStore: ObservableObject {
     @Published private(set) var definitions: [CustomMedicationDefinition] = []
-
-    private let key = "ferguson.vetpilot.custom-medications.v1"
-
-    init() {
+    @Published private(set) var syncStatus = "Guest medications — stored on this device"
+    @Published private(set) var syncing = false
+    @Published private(set) var ready = true
+    private let legacyKey = "ferguson.vetpilot.custom-medications.v1"
+    private var key: String { owner.map { "ferguson.vetpilot.custom-medications.account." + $0.uuidString.lowercased() } ?? legacyKey }
+    private var owner: UUID?
+    private var generation = 0
+    private var state = CustomMedicationSyncState()
+    var signedIn: Bool { owner != nil }
+    var canCopyGuest: Bool { owner != nil && UserDefaults.standard.data(forKey: legacyKey) != nil }
+    init() { load() }
+    private func validate(_ values: [CustomMedicationDefinition]) throws {
+        guard values.count <= 500, Set(values.map(\.id)).count == values.count,
+              values.allSatisfy({ $0.hasValidDefinition && !$0.generic.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && [$0.generic,$0.brand,$0.drugClass,$0.indication,$0.frequency,$0.route,$0.sourceReference,$0.notes].allSatisfy { $0.count <= 20000 } }) else { throw ClinicFileError.invalid("Invalid custom medication collection; original data was preserved.") }
+    }
+    private func load() {
+        state = CustomMedicationSyncState(); definitions = []; ready = false
+        do {
+            if let data = UserDefaults.standard.data(forKey: key) {
+                if owner == nil { state.items = try JSONDecoder().decode([CustomMedicationDefinition].self, from: data) }
+                else { state = try JSONDecoder().decode(CustomMedicationSyncState.self, from: data) }
+            }
+            try validate(state.items); try validate(state.baseline)
+            guard state.version >= 0 else { throw ClinicFileError.invalid("Invalid sync revision") }
+            definitions = state.items; ready = true
+        } catch { syncStatus = "Saved medications need recovery. Original data was preserved." }
+    }
+    private func commit(_ next: CustomMedicationSyncState) throws {
+        guard ready else { throw ClinicFileError.invalid("Saved medications need recovery") }
+        try validate(next.items)
+        let encoder = JSONEncoder()
+        let data = owner == nil ? try encoder.encode(next.items) : try encoder.encode(next)
+        UserDefaults.standard.set(data, forKey: key)
+        state = next; definitions = next.items
+    }
+    func switchAccount(_ id: UUID?) {
+        guard id != owner else { return }
+        generation += 1; owner = id; syncing = false
+        syncStatus = id == nil ? "Guest medications — stored on this device" : "Medication sync pending"
         load()
     }
-
     func add(_ definition: CustomMedicationDefinition) {
-        definitions.append(definition)
-        save()
+        var next = state; next.items.append(definition)
+        do { try commit(next); syncStatus = "Saved locally — sync pending" } catch { syncStatus = error.localizedDescription }
     }
-
     func remove(at offsets: IndexSet) {
-        definitions.remove(atOffsets: offsets)
-        save()
+        var next = state; next.items.remove(atOffsets: offsets)
+        do { try commit(next); syncStatus = "Saved locally — sync pending" } catch { syncStatus = error.localizedDescription }
     }
-
-    private func load() {
-        guard let data = UserDefaults.standard.data(forKey: key),
-              let decoded = try? JSONDecoder().decode([CustomMedicationDefinition].self, from: data) else {
-            definitions = []
-            return
-        }
-        definitions = decoded
+    func copyGuest() {
+        guard canCopyGuest, let data = UserDefaults.standard.data(forKey: legacyKey) else { return }
+        do {
+            let guest = try JSONDecoder().decode([CustomMedicationDefinition].self, from: data); try validate(guest)
+            var next = state
+            let existing = Set(next.items.map(\.id))
+            next.items += guest.filter { !existing.contains($0.id) }
+            try commit(next); syncStatus = "Device medications copied — sync pending"
+        } catch { syncStatus = error.localizedDescription }
     }
-
-    private func save() {
-        guard let data = try? JSONEncoder().encode(definitions) else { return }
-        UserDefaults.standard.set(data, forKey: key)
+    func sync(account: VetPilotAccount) async {
+        guard ready, !syncing, let owner, account.userID == owner else { return }
+        syncing = true; let epoch = generation
+        defer { if epoch == generation { syncing = false } }
+        syncStatus = "Syncing custom medications…"
+        do {
+            struct Row: Decodable { var version: Int; var items: [CustomMedicationDefinition] }
+            let data = try await account.request(path: "rest/v1/medication_collections?select=version,items")
+            let rows = try JSONDecoder().decode([Row].self, from: data)
+            guard epoch == generation, account.userID == owner else { return }
+            let remote = rows.first?.items ?? []; let version = rows.first?.version ?? 0
+            guard rows.count <= 1, version >= 0 else { throw ClinicFileError.invalid("Invalid medication revision") }
+            try validate(remote)
+            let merged = CustomMedicationMerge.merge(local: definitions, base: state.baseline, remote: remote)
+            try commit(CustomMedicationSyncState(items: merged, baseline: remote, version: version))
+            if merged != remote {
+                let bytes = try JSONEncoder().encode(merged)
+                guard bytes.count <= 2_000_000 else { throw ClinicFileError.invalid("Custom medications exceed the 2 MB sync limit") }
+                let result = try await account.request(path: "rest/v1/rpc/save_medication_collection", method: "POST", body: ["expected_version": version, "collection_items": try JSONSerialization.jsonObject(with: bytes)])
+                guard epoch == generation, account.userID == owner else { return }
+                let ack = try JSONDecoder().decode(Int.self, from: result)
+                guard ack == version + 1 else { throw ClinicFileError.invalid("Invalid sync acknowledgement") }
+                try commit(CustomMedicationSyncState(items: definitions, baseline: merged, version: ack))
+            }
+            syncStatus = "Medications synced " + Date().formatted(date: .omitted, time: .shortened)
+        } catch { if epoch == generation { syncStatus = "Medication sync pending — " + error.localizedDescription } }
     }
 }
 
 struct CustomMedicationManagerView: View {
     @ObservedObject var store: CustomMedicationStore
+    @EnvironmentObject private var account: VetPilotAccount
     @Environment(\.dismiss) private var dismiss
     @State private var showEditor = false
 
@@ -124,6 +205,13 @@ struct CustomMedicationManagerView: View {
                         .font(.footnote)
                 }
 
+                Section("Account sync") {
+                    Text(store.syncStatus).font(.footnote)
+                    Text("Signed-in custom medications sync with the website every 30 seconds while the app is active. Background sync runs when iOS allows.").font(.caption)
+                    Button("Sync medications now") { Task { await store.sync(account: account) } }
+                        .disabled(!store.signedIn || store.syncing || !store.ready)
+                    if store.canCopyGuest { Button("Copy existing device medications to this account") { store.copyGuest() } }
+                }
                 Section("Saved custom medications") {
                     if store.definitions.isEmpty {
                         Text("No custom medications yet.")
@@ -154,7 +242,7 @@ struct CustomMedicationManagerView: View {
                     Button {
                         showEditor = true
                     } label: {
-                        Label("Add", systemImage: "plus")
+                        Label("Add medication", systemImage: "plus")
                     }
                 }
             }
@@ -264,7 +352,7 @@ private struct CustomMedicationEditorView: View {
                         ))
                         dismiss()
                     }
-                    .disabled(!valid)
+                    .disabled(!valid || !store.ready)
                 }
             }
         }

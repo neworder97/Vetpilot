@@ -10,7 +10,7 @@ struct DoseView: View {
     @State private var search = ""
     @State private var selectedMedication: Medication?
     @State private var showCustomMedications = false
-    @StateObject private var customStore = CustomMedicationStore()
+    @ObservedObject var customStore: CustomMedicationStore
     @StateObject private var protocolStore = ProtocolMedicationStore()
     @FocusState private var focusedField: DoseField?
 
@@ -93,7 +93,7 @@ struct DoseView: View {
                             focusedField = nil
                             showCustomMedications = true
                         } label: {
-                            Label("Custom", systemImage: "plus.circle.fill")
+                            Label("Add medication", systemImage: "plus.circle.fill")
                                 .font(.caption.weight(.semibold))
                         }
                         .buttonStyle(.bordered)
@@ -436,7 +436,7 @@ private struct DoseCalculatorSheet: View {
     }
 
     var body: some View {
-        if medication.generic == "Gabapentin" {
+        if medication.generic == "Gabapentin" && !medication.source.hasPrefix("USER-SOURCE-BACKED") && !medication.source.hasPrefix("CUSTOM-UNVERIFIED") {
             ClinicGabapentinView(species: species, weight: patientWeight, unit: patientWeightUnit)
         } else { referenceBody }
     }

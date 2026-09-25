@@ -13,7 +13,7 @@ struct ContentView: View {
         VStack(spacing: 0) {
             BrandHeader { settings = true }
             TabView(selection: $tab) {
-                DoseView()
+                DoseView(customStore: sync.medications).id(account.userID)
                     .tag(0)
                     .tabItem { Label("Dose", systemImage: "cross.case.fill") }
 
@@ -39,9 +39,9 @@ struct ContentView: View {
             }
         }
         .background(Color.white)
-        .sheet(isPresented: $settings) { AccountSettingsView(account: account, backgroundStatus: sync.backgroundStatus, onSync: { Task { await clinicStore.sync(account: account); await cytology.sync(account: account) } }) }
+        .sheet(isPresented: $settings) { AccountSettingsView(account: account, backgroundStatus: sync.backgroundStatus, onSync: { Task { await sync.syncAll() } }) }
         .task(id: account.userID) {
-            clinicStore.switchAccount(account.userID); cytology.switchAccount(account.userID)
+            clinicStore.switchAccount(account.userID); cytology.switchAccount(account.userID); sync.medications.switchAccount(account.userID)
             sync.scheduleBackgroundRefresh()
             while !Task.isCancelled {
                 if scenePhase == .active { await sync.syncAll() }
