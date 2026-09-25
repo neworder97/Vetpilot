@@ -210,8 +210,8 @@ final class FergusonVetPilotUITests: XCTestCase {
         }
 
         let calculate = app.buttons["dose.calculate"]
-        XCTAssertTrue(calculate.waitForExistence(timeout: 3))
         for _ in 0..<12 where !calculate.isHittable { app.swipeUp() }
+        XCTAssertTrue(calculate.waitForExistence(timeout: 3))
         calculate.tap()
 
         let injectableNotice = app.staticTexts["dose.injectable.single"]
@@ -464,7 +464,11 @@ final class FergusonVetPilotUITests: XCTestCase {
         let error = app.staticTexts["dose.concentration.error"]
         XCTAssertTrue(error.waitForExistence(timeout: 3))
         XCTAssertTrue(error.label.contains("requires U-100"))
-        XCTAssertFalse(app.buttons["dose.calculate"].isEnabled)
+        if app.buttons["dose.keyboard.done"].exists { app.buttons["dose.keyboard.done"].tap() }
+        let calculate = app.buttons["dose.calculate"]
+        for _ in 0..<12 where !calculate.exists { app.swipeUp() }
+        XCTAssertTrue(calculate.waitForExistence(timeout: 3))
+        XCTAssertFalse(calculate.isEnabled)
     }
 
     func testInvalidConcentrationCannotCalculate() throws {
