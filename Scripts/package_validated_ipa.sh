@@ -10,11 +10,11 @@ STAGING=$(mktemp -d)
 trap 'rm -rf "$STAGING"' EXIT
 mkdir "$STAGING/Payload"
 ditto "$APP" "$STAGING/Payload/$(basename "$APP")"
-ditto -c -k --keepParent "$STAGING/Payload" ReleaseArtifacts/VetPilot-0.8.0-Signulous.ipa
+ditto -c -k --keepParent "$STAGING/Payload" ReleaseArtifacts/VetPilot-0.8.1-Signulous.ipa
 python3 - <<'PYTHON'
 from pathlib import Path
 import hashlib,json,os,plistlib,zipfile
-r=Path('ReleaseArtifacts');ipa=r/'VetPilot-0.8.0-Signulous.ipa'
+r=Path('ReleaseArtifacts');ipa=r/'VetPilot-0.8.1-Signulous.ipa'
 with zipfile.ZipFile(ipa) as z:
     assert z.testzip() is None
     infofiles=[n for n in z.namelist() if n.startswith('Payload/') and n.count('/')==2 and n.endswith('.app/Info.plist')]
@@ -23,8 +23,8 @@ with zipfile.ZipFile(ipa) as z:
     assert info['CFBundleIdentifier']=='com.ferguson.vetpilot'
     assert info['CFBundleDisplayName']=='VetPilot'
     assert info['CFBundleName']=='VetPilot'
-    assert info['CFBundleShortVersionString']=='0.8.0', ('version',info['CFBundleShortVersionString'])
-    assert info['CFBundleVersion']=='13', ('build',info['CFBundleVersion'])
+    assert info['CFBundleShortVersionString']=='0.8.1', ('version',info['CFBundleShortVersionString'])
+    assert info['CFBundleVersion']=='14', ('build',info['CFBundleVersion'])
     assert 'iPhoneOS' in info['CFBundleSupportedPlatforms']
     assert z.getinfo(infofiles[0].rsplit('/',1)[0]+'/'+info['CFBundleExecutable']).file_size>0
 numeric=json.loads(Path('ValidationArithmetic/candidate-independent-numeric-audit.json').read_text())

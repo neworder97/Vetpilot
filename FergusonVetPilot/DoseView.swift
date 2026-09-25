@@ -231,7 +231,9 @@ private struct DoseCalculatorSheet: View {
     @State private var priorCourseDoses = 0
     @State private var priorCourseHistoryConfirmed = false
     @State private var selectedFrequency: FrequencyChoice = .recommended
-    @State private var selectedDoseLevel: DoseSelectionLevel = .middle
+    @State private var selectedDoseLevel: DoseSelectionLevel = .low
+    @State private var recommendationHelp = false
+    @State private var prescribedBuprenorphine = false
     @State private var solidRounding: SolidDoseRounding = .nearest
     @State private var selectedPresetIndex = 0
     @State private var showProtocolEditor = false
@@ -400,6 +402,12 @@ private struct DoseCalculatorSheet: View {
     }
 
     var body: some View {
+        if medication.generic == "Gabapentin" {
+            ClinicGabapentinView(species: species, weight: patientWeight, unit: patientWeightUnit)
+        } else { referenceBody }
+    }
+
+    private var referenceBody: some View {
         NavigationStack {
             ScrollViewReader { scrollProxy in
             Form {
@@ -410,6 +418,21 @@ private struct DoseCalculatorSheet: View {
                     Text(medication.indication)
                 }
 
+                if medication.generic == "Buprenorphine" {
+                    Section("Additional concentration") {
+                        Button("0.6 mg/mL · prescribed-dose conversion") { prescribedBuprenorphine = true }
+                    }
+                }
+                Section("Recommended dose") {
+                    Button("Recommended Dose") {
+                        if let selection = doseSelection, !selection.hasRange {
+                            selectedDoseLevel = .low
+                        } else { recommendationHelp = true }
+                    }.accessibilityIdentifier("dose.recommended")
+                    if let selection = doseSelection, !selection.hasRange {
+                        Text("The selected source supplies a fixed dose; low and high give the same amount.").font(.caption)
+                    }
+                }
                 if medication.kind == .protocolOnly {
                     Section("Medication protocol") {
                         if let clinicOverride {
@@ -585,7 +608,7 @@ private struct DoseCalculatorSheet: View {
                 if let selection = doseSelection, selection.hasRange {
                     Section("Dose level") {
                                 Picker("Dose level", selection: $selectedDoseLevel) {
-                                    ForEach(DoseSelectionLevel.allCases) { level in
+                                    ForEach([DoseSelectionLevel.low, DoseSelectionLevel.high]) { level in
                                         Text(level.rawValue).tag(level)
                                     }
                                 }
@@ -917,6 +940,12 @@ private struct DoseCalculatorSheet: View {
             }
             .onChange(of: infusionConcentrationConfirmed) { _, _ in
                 result = nil
+            }
+            .sheet(isPresented: $prescribedBuprenorphine) { PrescribedBuprenorphineView(species: species) }
+            .alert("Recommended Dose", isPresented: $recommendationHelp) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text("This selection has no single source-supported default. Choose the appropriate species, indication, route and product protocol. For a dose range, the treating veterinarian selects the dose; its midpoint is not automatically recommended.")
             }
             .sheet(isPresented: $showProtocolEditor) {
                 ProtocolMedicationEditorView(

@@ -246,11 +246,14 @@ final class FergusonVetPilotUITests: XCTestCase {
             keyboardDone.tap()
         }
 
-        for _ in 0..<12 where !app.buttons["dose.calculate"].isHittable { app.swipeUp() }
-        app.buttons["dose.calculate"].tap()
-        let referenceRange = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "100–150 mg")).firstMatch
-        for _ in 0..<8 where !referenceRange.exists { app.swipeUp() }
-        XCTAssertTrue(referenceRange.waitForExistence(timeout: 3))
+        let amount = app.staticTexts["gabapentin.amount"]
+        for _ in 0..<8 where !amount.isHittable { app.swipeUp() }
+        XCTAssertTrue(amount.waitForExistence(timeout: 3))
+        XCTAssertTrue(amount.label.contains("150"))
+        for _ in 0..<8 where !app.segmentedControls["gabapentin.purpose"].isHittable { app.swipeDown() }
+        app.segmentedControls["gabapentin.purpose"].buttons["Fractious"].tap()
+        for _ in 0..<8 where !amount.isHittable { app.swipeUp() }
+        XCTAssertTrue(amount.label.contains("500"))
         sleep(2)
 
         app.buttons["dose.done"].tap()
