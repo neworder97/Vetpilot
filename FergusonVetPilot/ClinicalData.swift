@@ -484,6 +484,7 @@ struct MedicationFormulation: Codable, Hashable {
     var concentrations: [Double]? = nil
     var productSource: String? = nil
     var bonqat: Bool? = nil
+    var customConcentration: Bool? = nil
 }
 
 enum MedicationFormulations {
@@ -794,9 +795,11 @@ enum MedicationFormulations {
         "pregabalin-cat-1": "PO",
         "pregabalin-cat-2": "PO"
       },
-      "concentrations": [],
-      "productSource": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d4734e7d-5079-455e-8ff5-8f4539c998a9",
-      "brand": "Compounded"
+      "concentrations": [
+        50
+      ],
+      "brand": "Compounded",
+      "customConcentration": true
     },
     {
       "form": "Liquid",
@@ -895,7 +898,7 @@ enum MedicationFormulations {
                 maxDose: original.maxDose, frequency: original.frequency, route: original.route,
                 notes: original.notes, source: original.source,
                 strengths: variant.strengths ?? (form == original.form ? original.strengths : []),
-                concentration: variant.concentrations?.first ?? (form == original.form ? original.concentration : nil),
+                concentration: variant.customConcentration == true ? nil : variant.concentrations?.first ?? (form == original.form ? original.concentration : nil),
                 controlled: original.controlled)
             medication.formulation = variant
             return medication
@@ -911,7 +914,7 @@ enum MedicationFormulations {
             result.concentration = nil
         } else {
             result.strengths = []
-            result.concentration = variant.concentrations?.first ?? (medication.generic == "Pregabalin" ? nil : result.concentration)
+            result.concentration = variant.customConcentration == true ? nil : variant.concentrations?.first ?? (medication.generic == "Pregabalin" ? nil : result.concentration)
         }
         return result
     }

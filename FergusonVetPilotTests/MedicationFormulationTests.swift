@@ -38,6 +38,8 @@ final class MedicationFormulationTests: XCTestCase {
         let suspension = try XCTUnwrap(entries.first { $0.formulation?.label == "Compounded oral suspension" })
         XCTAssertEqual(solution.concentration, 20)
         XCTAssertNil(suspension.concentration)
+        XCTAssertEqual(suspension.formulation?.concentrations, [50])
+        XCTAssertEqual(suspension.formulation?.customConcentration, true)
         let bonqat = try XCTUnwrap(entries.first { $0.formulation?.bonqat == true })
         XCTAssertEqual(bonqat.species, [.cat])
         let labeled = try XCTUnwrap(BuiltInProtocolCatalog.presets(for: bonqat, species: .cat).first)
