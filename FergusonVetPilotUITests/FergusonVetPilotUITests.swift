@@ -141,7 +141,19 @@ final class FergusonVetPilotUITests: XCTestCase {
         let quantity = app.staticTexts["dose.result.quantity"]
         for _ in 0..<4 where !quantity.exists { app.swipeUp() }
         XCTAssertTrue(quantity.exists)
-        XCTAssertTrue(quantity.label.contains("tablet(s) equivalent"))
+        XCTAssertTrue(quantity.label.contains("2 whole tablet(s)"))
+        // Regression: taps must update the displayed administration immediately,
+        // without clearing the result or requiring another Calculate tap.
+        for (mode, expected) in [("Round down", "1 whole tablet(s)"), ("Round up", "2 whole tablet(s)"), ("Nearest whole", "2 whole tablet(s)")] {
+            let rounding = app.segmentedControls["dose.rounding"]
+            for _ in 0..<16 where !rounding.isHittable { app.swipeDown() }
+            XCTAssertTrue(rounding.isHittable)
+            rounding.buttons[mode].tap()
+            for _ in 0..<16 where !quantity.isHittable { app.swipeUp() }
+            XCTAssertTrue(quantity.exists, "Rounding must retain the calculation")
+            XCTAssertTrue(quantity.label.contains(expected), quantity.label)
+            XCTAssertTrue(quantity.label.contains(mode), quantity.label)
+        }
 
 
         for _ in 0..<20 where !sheetWeight.isHittable { app.swipeDown() }
@@ -171,7 +183,14 @@ final class FergusonVetPilotUITests: XCTestCase {
         let blocked = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "outside the selected dose range")).firstMatch
         for _ in 0..<6 where !blocked.isHittable { app.swipeDown() }
         XCTAssertTrue(blocked.exists)
-        XCTAssertFalse(app.buttons["dose.supply.7"].exists)
+        let duration = app.buttons["dose.supply.7"]
+        for _ in 0..<16 where !duration.isHittable { app.swipeDown() }
+        XCTAssertTrue(duration.isHittable, "Rounding must not remove duration controls")
+        duration.tap()
+        let supply = app.staticTexts["dose.supply.summary"]
+        for _ in 0..<16 where !supply.isHittable { app.swipeUp() }
+        XCTAssertTrue(supply.label.contains("Candidate quantity: 14 whole tablet(s)"), supply.label)
+        XCTAssertTrue(supply.label.contains("Not an approved dispensing instruction"), supply.label)
 
         app.buttons["dose.done"].tap()
 
@@ -220,7 +239,14 @@ final class FergusonVetPilotUITests: XCTestCase {
             app.swipeUp()
         }
         XCTAssertTrue(injectableNotice.waitForExistence(timeout: 3))
-        XCTAssertFalse(app.buttons["dose.supply.7"].exists)
+        let duration = app.buttons["dose.supply.7"]
+        for _ in 0..<16 where !duration.isHittable { app.swipeDown() }
+        XCTAssertTrue(duration.isHittable, "Rounding must not remove duration controls")
+        duration.tap()
+        let supply = app.staticTexts["dose.supply.summary"]
+        for _ in 0..<16 where !supply.isHittable { app.swipeUp() }
+        XCTAssertTrue(supply.label.contains("Candidate quantity: 14 whole tablet(s)"), supply.label)
+        XCTAssertTrue(supply.label.contains("Not an approved dispensing instruction"), supply.label)
         XCTAssertFalse(app.buttons["dose.supply.14"].exists)
         XCTAssertFalse(app.buttons["dose.supply.30"].exists)
     }

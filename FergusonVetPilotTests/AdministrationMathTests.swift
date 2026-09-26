@@ -56,4 +56,51 @@ final class AdministrationMathTests: XCTestCase {
         XCTAssertEqual(AdministrationMath.administrations(days: 7, dosesPerDay: 0.5), 4)
         XCTAssertEqual(AdministrationMath.administrations(days: 14, dosesPerDay: 2), 28)
     }
+    func testEverySolidStrengthRoundingAndCourseQuantity() throws {
+        var cases = 0
+        // Fractional, half-boundary, zero-down and exact-whole inputs across every
+        // catalog strength. Expected values are independent of production rounding.
+        for medication in MedicationFormulations.organized where [.tablet, .capsule].contains(medication.form) {
+            for strength in medication.strengths {
+                for (raw, down, nearest, up) in [(0.2,0.0,0.0,1.0),(0.5,0.0,1.0,1.0),(1.24,1.0,1.0,2.0),(1.5,1.0,2.0,2.0),(1.76,1.0,2.0,2.0),(2.0,2.0,2.0,2.0)] {
+                    for (mode, expected) in [(SolidDoseRounding.down,down),(.nearest,nearest),(.up,up)] {
+                        let plan = try XCTUnwrap(AdministrationMath.solidPlan(targetMg: raw * strength, strengthMg: strength, rounding: mode))
+                        XCTAssertEqual(plan.rawUnits,raw,accuracy:1e-10,medication.displayName)
+                        XCTAssertEqual(plan.roundedUnits,expected,medication.displayName)
+                        XCTAssertEqual(plan.deliveredMg,expected * strength,accuracy:1e-10)
+                        for perDay in [1.0,2.0,3.0,4.0] {
+                            let count = AdministrationMath.administrations(days:14,dosesPerDay:perDay)
+                            XCTAssertEqual(plan.roundedUnits * Double(count),expected * 14 * perDay)
+                        }
+                        cases += 1
+                    }
+                }
+            }
+        }
+        XCTAssertGreaterThan(cases,1000)
+        print("SOLID_ROUNDING_AUDIT: \(cases) strength/rounding cases; four frequencies each")
+    }
+
+    func testCarprofenRoundsAfterDailyDoseDivision() throws {
+        let medication = try XCTUnwrap(ClinicalData.medications.first { $0.generic == "Carprofen" })
+        let total = try XCTUnwrap(AdministrationMath.selection(for:medication,kg:10,level:.low))
+        XCTAssertEqual(total.selected,44,accuracy:1e-12)
+        for perDay in [1.0,2.0,3.0,4.0] {
+            let perDose = try XCTUnwrap(MedicationSafety.perAdministration(total,frequency:medication.frequency,dosesPerDay:perDay))
+            XCTAssertEqual(perDose.selected,44 / perDay,accuracy:1e-12)
+            for strength in medication.strengths {
+                for mode in SolidDoseRounding.allCases {
+                    let plan = try XCTUnwrap(AdministrationMath.solidPlan(targetMg:perDose.selected,strengthMg:strength,rounding:mode))
+                    let raw = 44 / perDay / strength
+                    let expected = mode == .down ? floor(raw) : mode == .up ? ceil(raw) : raw.rounded()
+                    XCTAssertEqual(plan.roundedUnits,expected)
+                    XCTAssertEqual(plan.deliveredMg,expected * strength)
+                    // A mathematical rounding result must not silently be approved
+                    // when it no longer matches this fixed source-backed target.
+                    XCTAssertEqual(MedicationSafety.withinRange(plan.deliveredMg,perDose),abs(plan.deliveredMg-perDose.selected)<1e-10)
+                }
+            }
+        }
+    }
+
 }

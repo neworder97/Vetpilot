@@ -744,7 +744,7 @@ private struct DoseCalculatorSheet: View {
                             }
                         }
                     }
-                    if canPlanSupply {
+                    if canChooseSupply {
                         Section("Quantity / treatment duration") {
                             if medication.kind == .robenacoxibCatBand {
                                 Toggle("Prior oral/injectable doses in this course reviewed", isOn: $priorCourseHistoryConfirmed)
@@ -1023,9 +1023,8 @@ private struct DoseCalculatorSheet: View {
             .onChange(of: selectedDoseLevel) { _, _ in
                 result = nil
             }
-            .onChange(of: solidRounding) { _, _ in
-                result = nil
-            }
+            // Rounding changes only the administration presentation. Keep the
+            // verified target/result visible and derive the candidate immediately.
             .onChange(of: selectedFrequency) { _, _ in result = nil }
             .onChange(of: priorCourseDoses) { _, _ in result = nil }
             .onChange(of: priorCourseHistoryConfirmed) { _, _ in result = nil }
@@ -1059,13 +1058,18 @@ private struct DoseCalculatorSheet: View {
         }
     }
 
-    private var canPlanSupply: Bool {
+    private var canChooseSupply: Bool {
         guard dosesPerDay != nil, administrationReviewReason == nil,
               administrationSelection != nil, concentrationInputError == nil,
               (medication.kind != .protocolOnly || protocolDefinition != nil),
               selectedBuiltInPreset?.highRisk != true,
               medication.form != .injection, protocolDefinition?.doseBasis.isRate != true else { return false }
         if usesGalliprantChart { return galliprantPlan != nil }
+        return true
+    }
+
+    private var canPlanSupply: Bool {
+        guard canChooseSupply else { return false }
         if let solid = selectedSolidPlan, let selection = administrationSelection {
             return MedicationSafety.withinRange(solid.deliveredMg, selection)
         }
@@ -1160,7 +1164,7 @@ private struct DoseCalculatorSheet: View {
         }
         if usesGalliprantChart { return nil }
         if let solid = selectedSolidPlan, let strength = selectedStrength {
-            return "\(ClinicalData.format(solid.rawUnits)) \(solidUnitName) equivalent per administration • \(activeFrequencyLabel)\n\(ClinicalData.format(dose.selected)) mg ÷ \(ClinicalData.format(strength)) mg per unit = \(ClinicalData.format(solid.rawUnits)) \(solidUnitName)"
+            return "\(solidRounding.rawValue): \(ClinicalData.format(solid.roundedUnits)) whole \(solidUnitName) per administration • \(activeFrequencyLabel)\nExact mathematical quantity: \(ClinicalData.format(dose.selected)) mg ÷ \(ClinicalData.format(strength)) mg per unit = \(ClinicalData.format(solid.rawUnits)) \(solidUnitName) equivalent. Delivered candidate: \(ClinicalData.format(solid.deliveredMg)) mg\(kg > 0 ? " (" + ClinicalData.format(solid.deliveredMg / kg) + " mg/kg)" : "")."
         }
         if let volume = selectedAdministrationVolume, volume.unit == "mL" || volume.unit == "mL/hr" {
             let schedule = volume.unit == "mL/hr" ? "continuous infusion" : "per administration • \(activeFrequencyLabel)"
@@ -1177,7 +1181,11 @@ private struct DoseCalculatorSheet: View {
         if let reason = administrationReviewReason {
             return "Calculation only — administration plan requires review. " + reason
         }
-        if let solid = selectedSolidPlan {
+        if let solid = selectedSolidPlan, let selection = administrationSelection {
+            if solid.roundedUnits == 0 { return "Zero whole units is not an administration plan. Verify a different strength or formulation." }
+            if !MedicationSafety.withinRange(solid.deliveredMg, selection) {
+                return "Rounded candidate is outside the selected dose range — not an approved dispensing instruction. Verify a different strength, permitted tablet fraction or veterinarian-reviewed protocol."
+            }
             let whole = MedicationSafety.snapIntegerBoundary(solid.rawUnits)
             if whole != whole.rounded() {
                 return medication.form == .capsule
@@ -1223,10 +1231,12 @@ private struct DoseCalculatorSheet: View {
     }
 
     private func administrationInstruction(for solid: SolidAdministrationPlan) -> String {
-        if let reason = administrationReviewReason { return "Plan blocked: " + reason }
+        let candidate = "\(solidRounding.rawValue): \(ClinicalData.format(solid.roundedUnits)) whole \(solidUnitName); \(ClinicalData.format(solid.deliveredMg)) mg delivered. "
+        if solid.roundedUnits == 0 { return candidate + "Zero whole units is not an administration plan." }
+        if let reason = administrationReviewReason { return candidate + "Plan blocked: " + reason }
         guard let selection = administrationSelection,
               MedicationSafety.withinRange(solid.deliveredMg, selection) else {
-            return "Rounded amount is outside the selected dose range. Verify a different strength, permitted tablet fraction or explicitly reviewed protocol."
+            return candidate + "Rounded amount is outside the selected dose range. Verify a different strength, permitted tablet fraction or explicitly reviewed protocol."
         }
         let qty = ClinicalData.format(solid.roundedUnits)
         return "Calculated candidate: \(qty) \(solidUnitName) per administration, \(activeFrequencyLabel). Veterinarian confirmation required."
@@ -1248,7 +1258,7 @@ private struct DoseCalculatorSheet: View {
     }
 
     private func supplySummary(days: Int) -> String {
-        guard days > 0, canPlanSupply, let dosesPerDay else {
+        guard days > 0, canChooseSupply, let dosesPerDay else {
             return "Dispense calculation blocked: verify inputs, dosage form, selected rounding and an unambiguous schedule."
         }
         if let ceiling = MedicationSafety.documentedDaysCeiling(recommendedFrequency), days > ceiling {
@@ -1268,6 +1278,12 @@ private struct DoseCalculatorSheet: View {
         }
         let administrations = AdministrationMath.administrations(days: days, dosesPerDay: dosesPerDay)
         guard administrations > 0 else { return "Dispense calculation outside numeric limits." }
+        if !canPlanSupply, let solid = selectedSolidPlan {
+            guard solid.roundedUnits > 0 else { return "Zero whole units is not an administration or dispensing plan." }
+            let total = solid.roundedUnits * Double(administrations)
+            guard total.isFinite else { return "Dispense calculation outside numeric limits." }
+            return "Candidate quantity: \(ClinicalData.format(total)) whole \(solidUnitName) for \(administrations) administrations. Not an approved dispensing instruction: rounded amount is outside the selected dose range. Verify the strength and prescribed plan."
+        }
         let schedule = activeFrequencyLabel
         if protocolDefinition?.doseBasis == .ribbonInch, let selection = administrationSelection {
             return "\(days) days • \(schedule) • \(administrations) applications of \(ClinicalData.format(selection.selected))-inch ointment strip to each affected eye. Verify the prescribed eye(s); do not convert strip length to drops, mL or tube quantity."
