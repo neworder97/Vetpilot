@@ -421,7 +421,7 @@ private struct DoseCalculatorSheet: View {
     }
 
     private var administrationReviewReason: String? {
-        if medication.formulation?.bonqat == true && (selectedFrequency != .recommended || supplyDays != nil) {
+        if medication.formulation?.bonqat == true && selectedFrequency != .recommended {
             return "Bonqat uses a single pre-visit dose and may be given on two consecutive days. Repeating course schedules require a separately reviewed protocol."
         }
         if let error = prescribedRateInputError { return error }
