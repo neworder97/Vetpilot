@@ -1,5 +1,6 @@
 import SwiftUI
 import PhotosUI
+import UniformTypeIdentifiers
 
 struct CytologyLibraryView: View {
     @ObservedObject var store: ClinicStore
@@ -9,6 +10,9 @@ struct CytologyLibraryView: View {
     @State private var category = "All"
     @State private var favorites = false
     @State private var editing: ClinicProtocol?
+    @State private var selectingExport = false
+    @State private var importing = false
+    @State private var sharing: ClinicShare?
     static let categories = ["Ear cytology", "Lymph node", "Neoplasia / cancer", "Skin / mass", "Blood", "Urine", "Body fluid", "Normal cells", "Other"]
     var filtered: [ClinicProtocol] {
         store.items.filter { $0.matches(query) && (category == "All" || $0.category == category) && (!favorites || $0.favorite) }
@@ -28,6 +32,14 @@ struct CytologyLibraryView: View {
                         Button("Sign in for sync") { onAccount?() }.disabled(onAccount == nil).accessibilityIdentifier("cytology.sync.signin")
                     }
                     Text("Sync capacity: 15 MB per collection. Images are optimized for storage; keep original microscope files separately.").font(.caption).foregroundStyle(.secondary)
+                    HStack {
+                        Button("Import") { importing = true }.accessibilityIdentifier("cytology.import")
+                        Button("Export") { selectingExport = true }.disabled(store.items.isEmpty).accessibilityIdentifier("cytology.export.select")
+                        Menu("Export All") {
+                            Button("PDF") { exportAll(pdf: true) }
+                            Button("Editable file with photos") { exportAll(pdf: false) }
+                        }.disabled(store.items.isEmpty).accessibilityIdentifier("cytology.export.all")
+                    }.buttonStyle(.bordered)
                     Picker("Sample type", selection: $category) { Text("All").tag("All"); ForEach(Self.categories, id: \.self) { Text($0).tag($0) } }
                     Toggle("Favorites only", isOn: $favorites)
                     if store.items.isEmpty {
@@ -54,9 +66,22 @@ struct CytologyLibraryView: View {
             .toolbar { ToolbarItem(placement: .topBarTrailing) {
                 Button { var item = ClinicProtocol(); item.category = "Ear cytology"; editing = item } label: { Label("Add images", systemImage: "plus") }.accessibilityIdentifier("cytology.new")
             } }
+            .sheet(isPresented: $selectingExport) { CollectionExportView(store: store, title: "Cytology") }
+            .sheet(item: $sharing) { ClinicShareSheet(urls: $0.urls) }
+            .fileImporter(isPresented: $importing, allowedContentTypes: [.vetPilotProtocol, .json]) { result in
+                switch result {
+                case .success(let url): store.prepareImport(url)
+                case .failure(let error): store.errorMessage = error.localizedDescription
+                }
+            }
+            .sheet(item: $store.importPreview) { ClinicImportPreview(store: store, package: $0) }
             .sheet(item: $editing) { CytologyEditor(store: store, initial: $0) }
             .alert("Cytology", isPresented: Binding(get: { store.errorMessage != nil }, set: { if !$0 { store.errorMessage = nil } })) { Button("OK") { store.errorMessage = nil } } message: { Text(store.errorMessage ?? "") }
         }
+    }
+    private func exportAll(pdf: Bool) {
+        do { sharing = ClinicShare(urls: [try ClinicTransfer.export(store.items, pdf: pdf)]) }
+        catch { store.errorMessage = error.localizedDescription }
     }
 }
 private struct CytologyDetail: View {

@@ -12,6 +12,7 @@ struct MyClinicView: View {
     @State private var importing = false
     @State private var emailSettings = false
     @State private var sharing: ClinicShare?
+    @State private var selectingExport = false
 
     private var filtered: [ClinicProtocol] {
         store.items.filter {
@@ -77,6 +78,7 @@ struct MyClinicView: View {
                     }
                 }
                 Section("Sharing") {
+                    Button("Export — select items") { selectingExport = true }.disabled(store.items.isEmpty).accessibilityIdentifier("clinic.export.select")
                     Button("Email, text & export settings") { emailSettings = true }
                         .accessibilityIdentifier("clinic.email.settings")
                     if !store.items.isEmpty {
@@ -102,13 +104,14 @@ struct MyClinicView: View {
                     Menu {
                         Button("Export all as PDF") { export(pdf: true) }
                         Button("Export all as editable file") { export(pdf: false) }
-                    } label: { Label("Export", systemImage: "square.and.arrow.up") }
+                    } label: { Label("Export All", systemImage: "square.and.arrow.up") }
                     .disabled(store.items.isEmpty)
                     .accessibilityIdentifier("clinic.export.all")
                     Button { editor = ClinicProtocol() } label: { Label("New item", systemImage: "plus") }
                         .accessibilityIdentifier("clinic.new")
                 }
             }
+            .sheet(isPresented: $selectingExport) { CollectionExportView(store: store, title: "My Clinic") }
             .sheet(isPresented: $emailSettings) { ClinicEmailSettings() }
             .sheet(item: $editor) { item in ClinicEditorView(store: store, initial: item) }
             .sheet(item: $sharing) { ClinicShareSheet(urls: $0.urls) }

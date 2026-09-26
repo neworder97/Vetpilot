@@ -36,6 +36,13 @@ struct ContentView: View {
                 CytologyLibraryView(store: cytology, onSync: { Task { await cytology.sync(account: account) } }, onAccount: { settings = true }).id(account.userID)
                     .tag(5)
                     .tabItem { Label("Cytology", systemImage: "photo.on.rectangle.angled") }
+
+                NavigationStack { RatingsReviewsView(account: account, onAccount: { settings = true }) }.id(account.userID)
+                    .tag(6).tabItem { Label("Reviews", systemImage: "star.bubble") }
+                NavigationStack { VetPilotAboutView() }
+                    .tag(7).tabItem { Label("About", systemImage: "info.circle") }
+                NavigationStack { VetPilotSourcesView() }
+                    .tag(8).tabItem { Label("Sources", systemImage: "books.vertical") }
             }
         }
         .background(Color.white)

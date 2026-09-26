@@ -44,6 +44,16 @@ struct AccountSettingsView: View {
                     if !account.configured { Text("Account and cloud services are not connected in this build. Guest reference tools remain available.").foregroundStyle(.secondary).accessibilityIdentifier("account.notConfigured") }
                     if account.busy { ProgressView("Connecting…") }
                 }
+                Section("Contact") {
+                    Link("Email VetPilot", destination: URL(string: "mailto:vetpilotinfo@gmail.com")!)
+                    Text("vetpilotinfo@gmail.com").textSelection(.enabled)
+                    Link("Visit vetpilotapp.org", destination: URL(string: "https://vetpilotapp.org")!)
+                }
+                Section("About & feedback") {
+                    NavigationLink("Ratings & Reviews") { RatingsReviewsView(account: account) }
+                    NavigationLink("About VetPilot") { VetPilotAboutView() }
+                    NavigationLink("Sources & Calculations") { VetPilotSourcesView() }
+                }
                 Section("Automatic sync") {
                     Text(account.userID == nil ? "Sign in to enable auto-sync" : "Auto-sync on · every 30 seconds").accessibilityIdentifier("account.sync.status")
                     Button("Sync now") { onSync?() }.disabled(account.userID == nil || onSync == nil).accessibilityIdentifier("account.sync.now")

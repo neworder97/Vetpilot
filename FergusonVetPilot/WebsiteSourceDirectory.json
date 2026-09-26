@@ -1,0 +1,2293 @@
+[
+  {
+    "title": "Carprofen \u00b7 Rimadyl",
+    "detail": "Tablet",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-053/141-199"
+    ]
+  },
+  {
+    "title": "Amoxicillin + clavulanate \u00b7 Clavamox",
+    "detail": "Tablet",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 55-099"
+    ]
+  },
+  {
+    "title": "Cefpodoxime proxetil \u00b7 Simplicef",
+    "detail": "Tablet",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-232"
+    ]
+  },
+  {
+    "title": "Meloxicam \u00b7 Metacam maintenance",
+    "detail": "Liquid",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-213"
+    ]
+  },
+  {
+    "title": "Meloxicam \u00b7 Metacam day 1",
+    "detail": "Liquid",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-213"
+    ]
+  },
+  {
+    "title": "Maropitant citrate \u00b7 Cerenia acute oral",
+    "detail": "Tablet",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-263"
+    ]
+  },
+  {
+    "title": "Maropitant citrate \u00b7 Cerenia motion sickness",
+    "detail": "Tablet",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-263"
+    ]
+  },
+  {
+    "title": "Maropitant citrate \u00b7 Cerenia Injectable",
+    "detail": "Injection",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-263"
+    ]
+  },
+  {
+    "title": "Mirtazapine transdermal \u00b7 Mirataz",
+    "detail": "Transdermal",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-481"
+    ]
+  },
+  {
+    "title": "Deracoxib \u00b7 Deramaxx",
+    "detail": "Tablet",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-203"
+    ]
+  },
+  {
+    "title": "Firocoxib \u00b7 Previcox",
+    "detail": "Tablet",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-230"
+    ]
+  },
+  {
+    "title": "Grapiprant \u00b7 Galliprant",
+    "detail": "Tablet",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-455"
+    ]
+  },
+  {
+    "title": "Robenacoxib \u00b7 Onsior",
+    "detail": "Tablet",
+    "references": [
+      "FDA Animal Drugs @ FDA current cat tablet label"
+    ]
+  },
+  {
+    "title": "Cefovecin sodium \u00b7 Convenia",
+    "detail": "Injection",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-285"
+    ]
+  },
+  {
+    "title": "Pradofloxacin \u00b7 Veraflox",
+    "detail": "Liquid",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-344"
+    ]
+  },
+  {
+    "title": "Oclacitinib \u00b7 Apoquel initial",
+    "detail": "Tablet",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-345"
+    ]
+  },
+  {
+    "title": "Oclacitinib \u00b7 Apoquel maintenance",
+    "detail": "Tablet",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-345 / 141-555"
+    ]
+  },
+  {
+    "title": "Pimobendan \u00b7 Vetmedin",
+    "detail": "Tablet",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-273"
+    ]
+  },
+  {
+    "title": "Cyclosporine \u00b7 Atopica induction",
+    "detail": "Capsule",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-218"
+    ]
+  },
+  {
+    "title": "Capromorelin \u00b7 Entyce",
+    "detail": "Liquid",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-457"
+    ]
+  },
+  {
+    "title": "Capromorelin \u00b7 Elura",
+    "detail": "Liquid",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-536"
+    ]
+  },
+  {
+    "title": "Methimazole \u00b7 Felimazole initial",
+    "detail": "Tablet",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-292"
+    ]
+  },
+  {
+    "title": "Fluoxetine \u00b7 Reconcile",
+    "detail": "Tablet",
+    "references": [
+      "FDA Animal Drugs @ FDA NADA 141-272"
+    ]
+  },
+  {
+    "title": "Gabapentin \u00b7 Neurontin",
+    "detail": "Capsule",
+    "references": [
+      "MSD Veterinary Manual \u2014 Selected Analgesics for Use in Dogs (10\u201315 mg/kg PO q8h; accessed 2026-09-20)"
+    ]
+  },
+  {
+    "title": "Gabapentin \u00b7 Neurontin",
+    "detail": "Capsule",
+    "references": [
+      "MSD Veterinary Manual \u2014 Behavior Problems of Cats (100\u2013200 mg/cat once 90\u2013120 min before stress; accessed 2026-09-20)"
+    ]
+  },
+  {
+    "title": "Trazodone \u00b7 Desyrel",
+    "detail": "Tablet",
+    "references": [
+      "MSD Veterinary Manual \u2014 Motion Sickness in Animals (5\u20137.5 mg/kg PO ~90 min before event; accessed 2026-09-20)"
+    ]
+  },
+  {
+    "title": "Trazodone \u00b7 Desyrel",
+    "detail": "Tablet",
+    "references": [
+      "MSD Veterinary Manual \u2014 Behavior Problems of Cats (50\u2013100 mg/cat once ~90 min before stress; accessed 2026-09-20)"
+    ]
+  },
+  {
+    "title": "Metronidazole \u00b7 Flagyl",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD Veterinary Manual GI/antimicrobial guidance.",
+      "MSD Veterinary Manual giardiasis guidance.",
+      "MSD Veterinary Manual hepatic encephalopathy guidance."
+    ]
+  },
+  {
+    "title": "Doxycycline \u00b7 Vibramycin",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://doi.org/10.1111/jvim.14627",
+      "https://www.msdvetmanual.com/circulatory-system/heartworm-disease/heartworm-disease-in-dogs-cats-and-ferrets"
+    ]
+  },
+  {
+    "title": "Prednisone/prednisolone",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD corticosteroid/immune protocols."
+    ]
+  },
+  {
+    "title": "Levetiracetam \u00b7 Keppra",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD Veterinary Manual epilepsy guidance.",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC5980453/"
+    ]
+  },
+  {
+    "title": "Omeprazole \u00b7 Prilosec",
+    "detail": "Capsule",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD GI pharmacology.",
+      "https://journals.sagepub.com/doi/10.1177/1098612x16631234"
+    ]
+  },
+  {
+    "title": "Famotidine \u00b7 Pepcid",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD GI pharmacology; prolonged continuous use can develop tachyphylaxis."
+    ]
+  },
+  {
+    "title": "Ondansetron \u00b7 Zofran",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs"
+    ]
+  },
+  {
+    "title": "Diphenhydramine \u00b7 Benadryl",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD antihistamine table."
+    ]
+  },
+  {
+    "title": "Cetirizine \u00b7 Zyrtec",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD: dogs 1 mg/kg or 10\u201320 mg, cats 1 mg/kg or 5 mg."
+    ]
+  },
+  {
+    "title": "Furosemide \u00b7 Lasix/Salix",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
+    ]
+  },
+  {
+    "title": "Spironolactone \u00b7 Aldactone",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-cardiovascular-system/diuretics-for-use-in-animals"
+    ]
+  },
+  {
+    "title": "Benazepril \u00b7 Lotensin",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD cardiovascular guidance.",
+      "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
+    ]
+  },
+  {
+    "title": "Enalapril \u00b7 Enacard",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD cardiovascular guidance."
+    ]
+  },
+  {
+    "title": "Methimazole transdermal \u00b7 compounded",
+    "detail": "Transdermal",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.msdvetmanual.com/endocrine-system/the-thyroid-gland/hyperthyroidism-in-animals"
+    ]
+  },
+  {
+    "title": "Insulin glargine \u00b7 Lantus",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.aaha.org/resources/2026-aaha-diabetes-management-guidelines-for-dogs/section-4-insulin-treatment/",
+      "https://www.aaha.org/resources/2026-aaha-diabetes-management-guidelines-for-cats/section-7-insulin-treatment-and-monitoring/"
+    ]
+  },
+  {
+    "title": "Insulin PZI \u00b7 ProZinc",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8dbc0e47-8df9-4484-903b-70fdd26f7998",
+      "https://www.aaha.org/resources/2026-aaha-diabetes-management-guidelines-for-dogs/section-4-insulin-treatment/",
+      "https://www.aaha.org/resources/2026-aaha-diabetes-management-guidelines-for-cats/section-7-insulin-treatment-and-monitoring/"
+    ]
+  },
+  {
+    "title": "Phenobarbital",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD epilepsy guidance; serum monitoring required."
+    ]
+  },
+  {
+    "title": "Tramadol \u00b7 Ultram",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD analgesic guidance; analgesic efficacy in dogs is variable."
+    ]
+  },
+  {
+    "title": "Buprenorphine \u00b7 Buprenex/Simbadol",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD Veterinary Manual Selected Analgesics for Use in Dogs.",
+      "MSD Veterinary Manual Selected Analgesics for Use in Cats."
+    ]
+  },
+  {
+    "title": "Butorphanol \u00b7 Torbugesic",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD Veterinary Manual selected analgesics guidance.",
+      "MSD Veterinary Manual Selected Analgesics for Use in Dogs.",
+      "MSD Veterinary Manual Selected Analgesics for Use in Cats."
+    ]
+  },
+  {
+    "title": "Hydromorphone \u00b7 Dilaudid",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD Veterinary Manual analgesic guidance.",
+      "MSD Veterinary Manual selected analgesics for dogs.",
+      "MSD Veterinary Manual selected analgesics for cats."
+    ]
+  },
+  {
+    "title": "Fentanyl",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD Veterinary Manual selected analgesics for dogs.",
+      "MSD Veterinary Manual selected analgesics for cats."
+    ]
+  },
+  {
+    "title": "Ketamine \u00b7 Ketaset",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-dogs",
+      "MSD Veterinary Manual Selected Analgesics for Use in Dogs.",
+      "MSD Veterinary Manual selected analgesics guidance.",
+      "https://www.msdvetmanual.com/multimedia/table/selected-analgesics-for-use-in-cats",
+      "MSD Veterinary Manual Selected Analgesics for Use in Cats."
+    ]
+  },
+  {
+    "title": "Midazolam \u00b7 Versed",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_premedicationandsedation.pdf",
+      "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients"
+    ]
+  },
+  {
+    "title": "Diazepam \u00b7 Valium",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.msdvetmanual.com/emergency-medicine-and-critical-care/evaluation-and-initial-treatment-of-small-animal-emergency-patients/initial-triage-and-resuscitation-of-small-animal-emergency-patients"
+    ]
+  },
+  {
+    "title": "Alprazolam \u00b7 Xanax",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD Veterinary Manual behavior guidance."
+    ]
+  },
+  {
+    "title": "Dexmedetomidine \u00b7 Dexdomitor",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9afc5d50-8df7-46e9-b5a0-5573627fc1bc"
+    ]
+  },
+  {
+    "title": "Propofol \u00b7 PropoFlo",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_induction_iv.pdf",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC10816483/"
+    ]
+  },
+  {
+    "title": "Alfaxalone \u00b7 Alfaxan",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.aaha.org/wp-content/uploads/globalassets/02-guidelines/2020-anesthesia/aahaanesthesiaguidelines_induction_iv.pdf"
+    ]
+  },
+  {
+    "title": "Amoxicillin",
+    "detail": "Capsule",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD Veterinary Manual penicillin dosage table."
+    ]
+  },
+  {
+    "title": "Ampicillin",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.msdvetmanual.com/multimedia/table/dosages-of-penicillins"
+    ]
+  },
+  {
+    "title": "Ampicillin + sulbactam \u00b7 Unasyn",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC7167523/ \u2014 Ford and Mazzaferro, Charts and Tables; 20\u201350 mg/kg total combined ampicillin + sulbactam q8h.",
+      "https://www.msdvetmanual.com/multimedia/table/dosages-of-penicillins"
+    ]
+  },
+  {
+    "title": "Cephalexin \u00b7 Keflex",
+    "detail": "Capsule",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD cephalosporin/antistaphylococcal tables."
+    ]
+  },
+  {
+    "title": "Cefazolin \u00b7 Ancef",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.merckvetmanual.com/multimedia/table/dosages-of-cephalosporins"
+    ]
+  },
+  {
+    "title": "Clindamycin \u00b7 Antirobe",
+    "detail": "Capsule",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD antimicrobial table."
+    ]
+  },
+  {
+    "title": "Enrofloxacin \u00b7 Baytril",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.msdvetmanual.com/multimedia/table/dosages-of-quinolones"
+    ]
+  },
+  {
+    "title": "Marbofloxacin \u00b7 Zeniquin",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD Veterinary Manual fluoroquinolone guidance.",
+      "MSD Veterinary Manual antistaphylococcal antimicrobial table."
+    ]
+  },
+  {
+    "title": "Orbifloxacin \u00b7 Orbax",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD Veterinary Manual fluoroquinolone guidance."
+    ]
+  },
+  {
+    "title": "Azithromycin \u00b7 Zithromax",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD antimicrobial table."
+    ]
+  },
+  {
+    "title": "Minocycline \u00b7 Minocin",
+    "detail": "Capsule",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD Veterinary Manual tetracycline guidance.",
+      "MSD tetracycline guidance."
+    ]
+  },
+  {
+    "title": "Trimethoprim-sulfamethoxazole \u00b7 TMS/SMZ-TMP",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD antimicrobial table.",
+      "MSD Veterinary Manual Dosages of Potentiated Sulfonamides.",
+      "MSD Veterinary Manual antistaphylococcal antimicrobial table."
+    ]
+  },
+  {
+    "title": "Chloramphenicol",
+    "detail": "Capsule",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD species-specific table."
+    ]
+  },
+  {
+    "title": "Sucralfate \u00b7 Carafate",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.msdvetmanual.com/multimedia/table/antiulcerative-drugs"
+    ]
+  },
+  {
+    "title": "Pantoprazole \u00b7 Protonix",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD GI pharmacology."
+    ]
+  },
+  {
+    "title": "Metoclopramide \u00b7 Reglan",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.merckvetmanual.com/multimedia/table/antiemetic-drugs"
+    ]
+  },
+  {
+    "title": "Cisapride \u00b7 compounded",
+    "detail": "Capsule",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "Veterinary prokinetic reference; compounded product."
+    ]
+  },
+  {
+    "title": "Lactulose \u00b7 Enulose",
+    "detail": "Liquid",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD laxative guidance."
+    ]
+  },
+  {
+    "title": "Ursodiol \u00b7 Actigall",
+    "detail": "Capsule",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD hepatobiliary pharmacology."
+    ]
+  },
+  {
+    "title": "Mirtazapine oral \u00b7 Remeron",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "Veterinary GI/appetite-stimulation literature."
+    ]
+  },
+  {
+    "title": "Dexamethasone",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.cliniciansbrief.com/article/which-drugs-are-most-effective-managing-atopic-dermatitis-part-1",
+      "https://www.msdvetmanual.com/circulatory-system/anemia/regenerative-anemias-in-animals"
+    ]
+  },
+  {
+    "title": "Methylprednisolone",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "Secondary veterinary literature; Moderate confidence",
+      "https://journals.sagepub.com/doi/10.1016/j.jfms.2003.09.004",
+      "https://doi.org/10.3390/vetsci9040149"
+    ]
+  },
+  {
+    "title": "Triamcinolone",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.cliniciansbrief.com/article/which-drugs-are-most-effective-managing-atopic-dermatitis-part-1"
+    ]
+  },
+  {
+    "title": "Amlodipine \u00b7 Norvasc",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
+    ]
+  },
+  {
+    "title": "Atenolol \u00b7 Tenormin",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD cardiovascular guidance."
+    ]
+  },
+  {
+    "title": "Diltiazem \u00b7 Cardizem",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD cardiac guidance."
+    ]
+  },
+  {
+    "title": "Clopidogrel \u00b7 Plavix",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD cardiac guidance."
+    ]
+  },
+  {
+    "title": "Digoxin \u00b7 Lanoxin",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD Veterinary Manual Cardiac Medications of Dogs and Cats.",
+      "MSD Veterinary Manual systemic cardiovascular pharmacotherapy table."
+    ]
+  },
+  {
+    "title": "Sildenafil \u00b7 Viagra",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD cardiac guidance."
+    ]
+  },
+  {
+    "title": "Hydralazine",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats",
+      "MSD cardiac guidance."
+    ]
+  },
+  {
+    "title": "Telmisartan \u00b7 Semintra",
+    "detail": "Liquid",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD cardiac/RAAS guidance.",
+      "MSD Veterinary Manual Angiotensin II Receptor Antagonists for Use in Animals."
+    ]
+  },
+  {
+    "title": "Torsemide \u00b7 Demadex",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD cardiac guidance.",
+      "https://www.msdvetmanual.com/multimedia/table/cardiac-medications-of-dogs-and-cats"
+    ]
+  },
+  {
+    "title": "Levothyroxine \u00b7 Soloxine",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "Veterinary endocrine guidance; T4 monitoring determines final maintenance dose."
+    ]
+  },
+  {
+    "title": "Trilostane \u00b7 Vetoryl",
+    "detail": "Capsule",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "Current VETORYL manufacturer information."
+    ]
+  },
+  {
+    "title": "Desmopressin \u00b7 DDAVP",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD CDI and hemostatic guidance.",
+      "MSD Veterinary Manual Diabetes Insipidus in Animals."
+    ]
+  },
+  {
+    "title": "Fludrocortisone \u00b7 Florinef",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD hypoadrenocorticism guidance."
+    ]
+  },
+  {
+    "title": "Desoxycorticosterone pivalate \u00b7 Percorten-V/Zycortal",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "Current ZYCORTAL manufacturer source."
+    ]
+  },
+  {
+    "title": "Mitotane \u00b7 Lysodren",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.msdvetmanual.com/endocrine-system/the-pituitary-gland/cushing-disease-pituitary-dependent-hyperadrenocorticism-in-animals",
+      "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-integumentary-system/hormonal-treatment-for-integumentary-disease-in-animals"
+    ]
+  },
+  {
+    "title": "Zonisamide \u00b7 Zonegran",
+    "detail": "Capsule",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD epilepsy guidance."
+    ]
+  },
+  {
+    "title": "Potassium bromide \u00b7 KBr",
+    "detail": "Liquid",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD epilepsy guidance; not recommended in cats because of severe respiratory adverse effects."
+    ]
+  },
+  {
+    "title": "Pregabalin \u00b7 Lyrica",
+    "detail": "Capsule",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD feline behavior guidance."
+    ]
+  },
+  {
+    "title": "Methocarbamol \u00b7 Robaxin",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD muscle-relaxant table."
+    ]
+  },
+  {
+    "title": "Clomipramine \u00b7 Clomicalm",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD canine behavior guidance; FDA-approved indication is canine separation anxiety."
+    ]
+  },
+  {
+    "title": "Sertraline \u00b7 Zoloft",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD dog behavior guidance; feline use extra-label.",
+      "https://journals.sagepub.com/doi/10.1177/1098612X241263465"
+    ]
+  },
+  {
+    "title": "Paroxetine \u00b7 Paxil",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD dog/cat behavior sources.",
+      "https://journals.sagepub.com/doi/10.1177/1098612X241263465"
+    ]
+  },
+  {
+    "title": "Buspirone \u00b7 Buspar",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD canine/feline behavior sources.",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC11148882/"
+    ]
+  },
+  {
+    "title": "Clonidine \u00b7 Catapres",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD canine behavior guidance."
+    ]
+  },
+  {
+    "title": "Selegiline \u00b7 Anipryl",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "Current ANIPRYL manufacturer information."
+    ]
+  },
+  {
+    "title": "Hydroxyzine \u00b7 Atarax",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD antihistamine table."
+    ]
+  },
+  {
+    "title": "Chlorpheniramine",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.aaha.org/resources/2023-aaha-management-of-allergic-skin-diseases-in-dogs-and-cats-guidelines/table-3-oral-antihistamine-doses-for-dogs/",
+      "MSD antihistamine table."
+    ]
+  },
+  {
+    "title": "Lokivetmab \u00b7 Cytopoint",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.zoetisus.com/products/dogs/cytopoint-lasting-relief/"
+    ]
+  },
+  {
+    "title": "Cyclosporine ophthalmic \u00b7 Optimmune/compounded",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8ee9c677-d86c-4f2f-9eec-6998f4394ae1",
+      "https://onlinelibrary.wiley.com/doi/10.1111/j.1463-5224.2008.00679.x"
+    ]
+  },
+  {
+    "title": "Tacrolimus ophthalmic \u00b7 compounded",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC3103853/",
+      "https://www.merckvetmanual.com/eye-diseases-and-disorders/ophthalmology/nasolacrimal-and-lacrimal-apparatus-in-animals"
+    ]
+  },
+  {
+    "title": "Latanoprost \u00b7 Xalatan",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-eye/treatment-of-glaucoma-in-animals"
+    ]
+  },
+  {
+    "title": "Dorzolamide \u00b7 Trusopt",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-eye/treatment-of-glaucoma-in-animals"
+    ]
+  },
+  {
+    "title": "Timolol ophthalmic \u00b7 Timoptic",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.msdvetmanual.com/pharmacology/systemic-pharmacotherapeutics-of-the-eye/treatment-of-glaucoma-in-animals"
+    ]
+  },
+  {
+    "title": "Atropine ophthalmic",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://todaysveterinarypractice.com/ophthalmology/ocular-proptosis/",
+      "https://todaysveterinarypractice.com/ophthalmology/feline-corneal-ulcers-diagnosis-and-management/"
+    ]
+  },
+  {
+    "title": "Ofloxacin ophthalmic \u00b7 Ocuflox",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.ivis.org/library/evc/evc-voorjaarsdagen-hague-2017/diagnosis-and-treatment-of-corneal-diseases",
+      "https://todaysveterinarypractice.com/ophthalmology/feline-corneal-ulcers-diagnosis-and-management/"
+    ]
+  },
+  {
+    "title": "Ciprofloxacin ophthalmic \u00b7 Ciloxan",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.ivis.org/library/evc/evc-voorjaarsdagen-hague-2017/diagnosis-and-treatment-of-corneal-diseases",
+      "https://todaysveterinarypractice.com/ophthalmology/feline-corneal-ulcers-diagnosis-and-management/"
+    ]
+  },
+  {
+    "title": "Epinephrine \u00b7 Adrenalin",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "2024 RECOVER consensus for CPR."
+    ]
+  },
+  {
+    "title": "Atropine injection",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD Veterinary Manual Cardiac Medications of Dogs and Cats.",
+      "2024 RECOVER CPR Guidelines."
+    ]
+  },
+  {
+    "title": "Glycopyrrolate \u00b7 Robinul-V",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD cardiovascular/anesthetic pharmacology."
+    ]
+  },
+  {
+    "title": "Lidocaine",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD Veterinary Manual Cardiac Medications of Dogs and Cats."
+    ]
+  },
+  {
+    "title": "Naloxone \u00b7 Narcan",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "2024 RECOVER consensus."
+    ]
+  },
+  {
+    "title": "Mannitol",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD Veterinary Manual \u2014 small-animal cerebral edema guidance.",
+      "MSD Veterinary Manual \u2014 Treatment of Glaucoma in Animals."
+    ]
+  },
+  {
+    "title": "Calcium gluconate",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD Veterinary Manual \u2014 Urethral Obstruction/Obstructive Uropathy in Dogs and Cats."
+    ]
+  },
+  {
+    "title": "Dextrose",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD Veterinary Manual \u2014 emergency treatment of hypoglycemic crisis.",
+      "MSD Veterinary Manual \u2014 Urethral Obstruction in Small Animals."
+    ]
+  },
+  {
+    "title": "Potassium chloride",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.aaha.org/resources/2024-aaha-fluid-therapy-guidelines-for-dogs-and-cats/section-5-fluid-therapy-in-ill-patients/ \u2014 Table 11, 2024 AAHA Fluid Therapy Guidelines."
+    ]
+  },
+  {
+    "title": "Fenbendazole \u00b7 Panacur",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk",
+      "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk"
+    ]
+  },
+  {
+    "title": "Pyrantel pamoate",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d2d6dcd1-7835-4c7b-bbae-d14752d9983b",
+      "https://www.msdvetmanual.com/multimedia/table/core-feline-vaccination-and-antiparasitic-administration-in-shelter-medicine"
+    ]
+  },
+  {
+    "title": "Praziquantel \u00b7 Droncit",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk",
+      "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk"
+    ]
+  },
+  {
+    "title": "Ivermectin",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.msdvetmanual.com/ear-disorders/diseases-of-the-pinna/mite-infestations-affecting-the-pinna-in-animals",
+      "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk"
+    ]
+  },
+  {
+    "title": "Milbemycin oxime \u00b7 Interceptor",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk"
+    ]
+  },
+  {
+    "title": "Selamectin \u00b7 Revolution",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk",
+      "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk"
+    ]
+  },
+  {
+    "title": "Moxidectin",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-dogs-approved-in-the-us-and-uk",
+      "https://www.merckvetmanual.com/multimedia/table/drugs-for-intestinal-helminths-of-cats-approved-in-the-us-and-uk"
+    ]
+  },
+  {
+    "title": "Afoxolaner \u00b7 NexGard",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e10f7434-d00c-44de-af79-7b0886b2e948"
+    ]
+  },
+  {
+    "title": "Fluralaner \u00b7 Bravecto",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1fcbf232-cfd4-481e-ba9b-6251b7b468d7",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=fed84d87-049a-4e22-8091-451cde091815"
+    ]
+  },
+  {
+    "title": "Sarolaner \u00b7 Simparica",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=91fc9ba1-35e6-4e37-8c37-c5e40699bd5b"
+    ]
+  },
+  {
+    "title": "Lotilaner \u00b7 Credelio",
+    "detail": "Reference",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=427f2ebc-ce24-452b-bbb3-43d4ef8b63b0",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=365b701f-e9a8-458f-90ff-33ca1fb947ca"
+    ]
+  },
+  {
+    "title": "Toceranib phosphate \u00b7 Palladia",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ae09ae83-0812-4ddc-92e3-730f7a1ae449"
+    ]
+  },
+  {
+    "title": "Chlorambucil \u00b7 Leukeran",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD Veterinary Manual \u2014 Drugs Used for Inflammatory Bowel Disease.",
+      "https://www.msdvetmanual.com/digestive-system/diseases-of-the-large-intestine-in-small-animals/colitis-in-small-animals"
+    ]
+  },
+  {
+    "title": "Cyclophosphamide \u00b7 Cytoxan",
+    "detail": "Tablet",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC12784993/",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC5157738/",
+      "https://www.msdvetmanual.com/digestive-system/neoplasia-of-the-gastrointestinal-tract-in-small-animals/gastrointestinal-neoplasia-in-dogs-and-cats",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC11164162/"
+    ]
+  },
+  {
+    "title": "Vincristine",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "MSD Veterinary Manual \u2014 Canine Transmissible Venereal Tumor.",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC11129245/"
+    ]
+  },
+  {
+    "title": "Doxorubicin \u00b7 Adriamycin",
+    "detail": "Injection",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://www.msdvetmanual.com/reproductive-system/canine-transmissible-venereal-tumor/canine-transmissible-venereal-tumor",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC10816589/"
+    ]
+  },
+  {
+    "title": "Lomustine \u00b7 CCNU",
+    "detail": "Capsule",
+    "references": [
+      "clinic formulary / authoritative veterinary reference required",
+      "https://pubmed.ncbi.nlm.nih.gov/17186855/",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC10816491/"
+    ]
+  },
+  {
+    "title": "Levetiracetam",
+    "detail": "Oral solution",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3ca9df05-a506-4ec8-a4fe-320f1219ab21",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9dca1330-52ca-47a4-a134-ec55c9d5786d"
+    ]
+  },
+  {
+    "title": "Levetiracetam",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0a688786-879b-4e27-a46a-5c86bbfa1292",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3ca9df05-a506-4ec8-a4fe-320f1219ab21"
+    ]
+  },
+  {
+    "title": "Levetiracetam",
+    "detail": "Tablet \u00b7 extended release",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=7cb669d7-d1aa-43b3-a322-0a2eaa13c656",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c508a392-0603-477d-8a45-3ec550371111",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=cac83d47-88a2-4447-a0c0-90b44ffda0ac"
+    ]
+  },
+  {
+    "title": "Famotidine",
+    "detail": "Oral suspension (after reconstitution)",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a88e7069-230c-4105-ade0-a98968e18671",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b2228be0-472b-4e47-9910-af0bf12fde77"
+    ]
+  },
+  {
+    "title": "Famotidine",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=273deac8-c2b0-423f-8662-4f16d91df216",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=58b653eb-6539-4b79-9d22-df6eaf35307f",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=67a6e7f3-04d6-426c-b952-7677a84ace4d",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6daf1ebe-b0a2-4413-bf25-3de6eb64b0c6",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b1edf3c5-e42c-471b-8771-6c93094822de",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ca039876-f7e5-3e60-da5a-a1f40637a417"
+    ]
+  },
+  {
+    "title": "Famotidine",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5995d726-f3f8-4c2d-af19-1b12e3f769c6",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9710995d-b518-40ce-bc2b-8b5dcf002c31",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=97c33213-f415-4718-8466-9aa50371af70",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b6214fc9-a274-ef45-e053-2a95a90ae43a"
+    ]
+  },
+  {
+    "title": "Ondansetron",
+    "detail": "Oral solution",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=68a4d845-0c1c-4867-bfca-c0fb11dc93cd"
+    ]
+  },
+  {
+    "title": "Ondansetron",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2b9ea1fc-59a4-8189-e063-6394a90a9ae6",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=476e704c-95ae-4591-94f7-ee4ab827ff13",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=57578387-1918-4e56-a564-f14fb22340bf",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=eee5217a-eba8-463a-812d-bf3c66f0934f"
+    ]
+  },
+  {
+    "title": "Ondansetron",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=35e0d160-813f-41d7-a382-d2cab6485d9c",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6a11f61b-2318-4382-2b91-4366e4bb53fa",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8cea2f3a-cfa5-4a68-9ff4-b5a5a2085d08",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d89017aa-b8c3-4fd2-8e68-44e2cfd6f290"
+    ]
+  },
+  {
+    "title": "Cetirizine",
+    "detail": "Capsule",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=59cef432-41ac-768c-e063-6294a90a38fa"
+    ]
+  },
+  {
+    "title": "Cetirizine",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3cf969e6-6bc9-4dae-ab6a-b24c0fc46b25",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=487ae0f0-320c-4534-b9e2-0e215f167cea",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=737492bf-96bd-4f7c-aa42-4910746f44bb"
+    ]
+  },
+  {
+    "title": "Furosemide",
+    "detail": "Oral solution",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4a746634-379b-4847-a965-7607d2a71bed",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9e493331-dddd-496e-abf8-61747fb67aba"
+    ]
+  },
+  {
+    "title": "Furosemide",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9e493331-dddd-496e-abf8-61747fb67aba"
+    ]
+  },
+  {
+    "title": "Furosemide",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1b9117d5-0dd9-4577-a1fd-bb0aaf7e68ec",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2f547f7c-0322-465c-9764-43f955d98ab2",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=421aa6d5-623b-4dc2-abd5-bb9e7765bf37",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d63c1277-dd7e-4d21-9e80-68143f55e2dc",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ddfc41a9-37d4-49c1-bbf3-969a98cd649c",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e5880bf4-5037-4813-b7cc-656a6832ecb5"
+    ]
+  },
+  {
+    "title": "Amoxicillin",
+    "detail": "Capsule",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b07b5ac4-253e-4c83-91c3-3fdc46e91a0f"
+    ]
+  },
+  {
+    "title": "Amoxicillin",
+    "detail": "Oral suspension (after reconstitution)",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b07b5ac4-253e-4c83-91c3-3fdc46e91a0f"
+    ]
+  },
+  {
+    "title": "Amoxicillin",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4eee2b38-ca84-421d-87e1-031bc5a3f3a7",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b07b5ac4-253e-4c83-91c3-3fdc46e91a0f"
+    ]
+  },
+  {
+    "title": "Metoclopramide",
+    "detail": "Oral solution",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0034a97a-fb05-418a-a234-de278907cd2a"
+    ]
+  },
+  {
+    "title": "Metoclopramide",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=447dbb34-7903-4e6a-be31-48a0b0e0d2f5"
+    ]
+  },
+  {
+    "title": "Metoclopramide",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=cc739885-e10e-4bcb-a781-c726c518f3d1",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=dc4a13f8-1e9b-4c75-82c0-bcd11f0a9a66",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f50c8fb4-23c4-4762-95bb-e4ca7b289a4d"
+    ]
+  },
+  {
+    "title": "Dexamethasone",
+    "detail": "Oral elixir",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=7cf5c17c-a80b-4547-83b2-0d53e2b933f7"
+    ]
+  },
+  {
+    "title": "Dexamethasone",
+    "detail": "Oral solution",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b15200fb-1826-472b-a907-e677a272513b"
+    ]
+  },
+  {
+    "title": "Dexamethasone",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=05c77a4c-c508-babd-e063-6294a90a450a",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6b9cf32c-6d60-4853-bbfd-2304ffc2c129",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a41e6e26-9ebb-4b06-866e-a24af21c644c",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b15200fb-1826-472b-a907-e677a272513b"
+    ]
+  },
+  {
+    "title": "Dexamethasone",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0277cc0a-2fd4-4605-a310-b613be84ee26",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3c05089c-5a25-40c3-9abc-b2e40696bcdc",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4680d517-ed5a-4137-819c-122ee962a464",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=836f8017-d023-410b-8515-ec776e73ca59",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c9d9ab76-6bc6-433d-aad7-8d49064ed745",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=df77fab1-f58c-46db-e053-2a95a90a5416"
+    ]
+  },
+  {
+    "title": "Methylprednisolone",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=bdd048bb-7e6c-45c7-b51a-075e83ca9f5b"
+    ]
+  },
+  {
+    "title": "Hydralazine",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0c7f9bd0-6c0a-4521-b77a-3582faa96874",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f9f56326-6d72-47d3-89ac-3625b8a6d713"
+    ]
+  },
+  {
+    "title": "Pregabalin",
+    "detail": "Capsule",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d4734e7d-5079-455e-8ff5-8f4539c998a9"
+    ]
+  },
+  {
+    "title": "Pregabalin",
+    "detail": "Oral solution \u00b7 20 mg/mL",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d4734e7d-5079-455e-8ff5-8f4539c998a9"
+    ]
+  },
+  {
+    "title": "Pregabalin",
+    "detail": "Oral solution \u00b7 Bonqat 50 mg/mL",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4f7f35b4-59ec-4a3c-8c71-d28cf0c4f0eb"
+    ]
+  },
+  {
+    "title": "Methocarbamol",
+    "detail": "Oral suspension",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=62de7345-613b-4838-96e5-aceca3cea6b2"
+    ]
+  },
+  {
+    "title": "Methocarbamol",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1dd56e3d-7ca7-1443-e063-6294a90a13c5",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2df34fa7-9cdc-4be4-ac6f-577122462606",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=70c5342c-9597-4fe6-863c-f8ae4adc063a",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d8f10211-f96e-4cf3-9b49-986eb51b703d"
+    ]
+  },
+  {
+    "title": "Methocarbamol",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b60000fc-e99b-4994-9d36-3907e0da9e06",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=bc16295e-f3aa-4ed5-9fd6-ac4c750e0bba",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c88898af-5cd8-7bed-a03e-2ab4488e2040",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d48d76af-b55a-4908-95ff-e7de615c0513",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d9e4748f-11c5-4d87-b260-1be94febe806"
+    ]
+  },
+  {
+    "title": "Hydroxyzine",
+    "detail": "Capsule",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=06068fff-2e79-4721-bcc7-b0938aa20e7a"
+    ]
+  },
+  {
+    "title": "Hydroxyzine",
+    "detail": "Oral solution",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4590101d-7fb2-478b-acc5-bc9bdbb38ca9",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=87d4bbff-0498-4c26-86cb-7ce173afa0b6"
+    ]
+  },
+  {
+    "title": "Hydroxyzine",
+    "detail": "Oral syrup",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=53b2d731-f38a-47c0-9e5c-abd3b45e2fe1"
+    ]
+  },
+  {
+    "title": "Hydroxyzine",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2fc9b08a-e675-dbc5-e063-6294a90ad054",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=47bda4fe-ddb7-4140-900a-970373cc7acc",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5dea636d-dee6-47d4-b83c-b9f0c0b1b6ca",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=7534a3bb-b4cd-415f-8612-53b37dc6d55f",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=7f76580c-96a0-4b56-8986-ff5488bb9869",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=93d117dd-e2bf-4daa-abe3-d4fefed3313c"
+    ]
+  },
+  {
+    "title": "Cyclophosphamide",
+    "detail": "Capsule",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8135b917-882f-4b4c-99b7-fa8ea54af4bf"
+    ]
+  },
+  {
+    "title": "Cyclophosphamide",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=769ded74-6186-40a8-8e44-ceff67287451"
+    ]
+  },
+  {
+    "title": "Gabapentin",
+    "detail": "Capsule",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4cc6615b-5447-9c0e-e063-6394a90a2883"
+    ]
+  },
+  {
+    "title": "Alprazolam",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d9b0e228-17cf-40d7-b62e-5050311c571c"
+    ]
+  },
+  {
+    "title": "Amlodipine",
+    "detail": "Oral suspension",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=df673a4d-acb8-444c-a472-c87ab8cbd366"
+    ]
+  },
+  {
+    "title": "Amlodipine",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5a0b3dd4-91f5-4173-a992-e91b1cac6a18"
+    ]
+  },
+  {
+    "title": "Atenolol",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8dd93a47-d14c-49be-9c22-97c0cdbec75a"
+    ]
+  },
+  {
+    "title": "Azithromycin",
+    "detail": "Oral suspension",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2c9de2e9-c20c-4660-a272-a22019f9fb02"
+    ]
+  },
+  {
+    "title": "Azithromycin",
+    "detail": "Oral suspension (after reconstitution)",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2b821631-0df2-0fb2-e054-00144ff8d46c",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=db52b91e-79f7-4cc1-9564-f2eee8e31c45",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f97d2e7e-ccfd-4f04-85ba-549b37f6aa7b"
+    ]
+  },
+  {
+    "title": "Azithromycin",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0d5129e4-8b94-4a4d-baa9-be0d6b32d714",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=16da30a2-d11c-7e8c-e063-6294a90a62e3",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1cec44fa-9597-3e58-e063-6394a90ae326",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=20ae108a-00c5-a984-e063-6394a90aaaae",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2cc93e72-95ce-965b-e063-6394a90a8917",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9c44af6d-8a9a-cb4c-e053-2a95a90afdac",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=db52b91e-79f7-4cc1-9564-f2eee8e31c45"
+    ]
+  },
+  {
+    "title": "Benazepril",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=67c64de1-5579-46e4-82ee-c9bbee708e02",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=910dac3a-728c-4f94-a514-e2b8f4680d39",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=bb91223e-ffa5-4a3a-b191-fe121250c20c"
+    ]
+  },
+  {
+    "title": "Buspirone",
+    "detail": "Capsule",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f101c5f3-d533-474d-a8bf-90d054933d16"
+    ]
+  },
+  {
+    "title": "Buspirone",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2c516eec-65d9-4481-8823-ae6b6da84062",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b9aa144c-cb36-4069-9eaa-7c150298cdd7"
+    ]
+  },
+  {
+    "title": "Cephalexin",
+    "detail": "Capsule",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4fec8daf-6e09-4153-926f-64709dbdd26c"
+    ]
+  },
+  {
+    "title": "Cephalexin",
+    "detail": "Oral suspension (after reconstitution)",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8a09bccd-1864-4dc3-9c31-6187d8e0fc99",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=bb28751c-bd1b-4e7f-8271-a14c1b4314e3"
+    ]
+  },
+  {
+    "title": "Cephalexin",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=36882c6d-7b6f-41e3-8c54-e3b0073b8c07",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e46059e1-3ce9-4a3c-80ce-464b140600ce"
+    ]
+  },
+  {
+    "title": "Chlorambucil",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=58a3c995-5ad6-465d-8437-5970c9088213"
+    ]
+  },
+  {
+    "title": "Clindamycin",
+    "detail": "Capsule",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=39c00714-331d-49b1-a675-653b82b10c98",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e8167412-882e-4143-93c6-49e68adbcf16"
+    ]
+  },
+  {
+    "title": "Clindamycin",
+    "detail": "Oral liquid",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a2224602-6f04-4b83-968a-8c193230998f"
+    ]
+  },
+  {
+    "title": "Clindamycin",
+    "detail": "Oral solution",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b35e3714-44d1-4e6a-a124-555ad259fec1"
+    ]
+  },
+  {
+    "title": "Clomipramine",
+    "detail": "Capsule",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ebad19b5-e5dd-4f77-ab97-d20ce0f24cb9"
+    ]
+  },
+  {
+    "title": "Clomipramine",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=bed54123-2083-465f-97f3-0a796f2a37c7"
+    ]
+  },
+  {
+    "title": "Clonidine",
+    "detail": "Oral solution",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=826de1dc-378e-4c90-86d1-e33f7a4248cd",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c36d94f5-a30d-4997-b141-e79a4ea45ecf"
+    ]
+  },
+  {
+    "title": "Clonidine",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c83e4e4f-bd0e-449d-958a-dc0d570a01ba"
+    ]
+  },
+  {
+    "title": "Clopidogrel",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=86ee71f2-850e-4c8e-87f3-c7a618d59d95",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b573aefa-e337-478f-97e4-eb8472a7e497",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d03cfc18-c9e4-41f8-b54d-6a7564c32afb"
+    ]
+  },
+  {
+    "title": "Digoxin",
+    "detail": "Oral solution",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ce62a741-a981-4880-8ce3-93269606a730"
+    ]
+  },
+  {
+    "title": "Digoxin",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2bcd56ee-4497-4b8d-84db-a1470c77827b",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=48cad559-c17b-4d41-a154-e664e958c1c0"
+    ]
+  },
+  {
+    "title": "Diltiazem",
+    "detail": "Capsule \u00b7 extended release",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=090aa3a9-910e-4f96-b748-783109aa96e6",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1042fa13-e6af-46b9-8008-6c941f0978b1",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9942f1a2-f66d-4d9e-9794-49bee8abf5ab",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d88e3546-3984-4dc9-893a-a29e95804550"
+    ]
+  },
+  {
+    "title": "Diltiazem",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=69ca7cae-fdf3-413a-900b-95cf6e9e7b63",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8329d0ac-d68c-48d2-9cbc-e1a1b60192d9",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f3e7ecef-f360-4987-a4f5-933214130ab2"
+    ]
+  },
+  {
+    "title": "Diltiazem",
+    "detail": "Tablet \u00b7 extended release",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f7137458-0db3-7ecd-e053-6394a90a5f95"
+    ]
+  },
+  {
+    "title": "Doxycycline",
+    "detail": "Capsule",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b8486639-7eb9-4610-9cd4-0e922045d592"
+    ]
+  },
+  {
+    "title": "Doxycycline",
+    "detail": "Oral suspension (after reconstitution)",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b8486639-7eb9-4610-9cd4-0e922045d592",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e0e80435-1b6a-4361-8c8a-e432f8f23a1b"
+    ]
+  },
+  {
+    "title": "Doxycycline",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=294c6fc3-e7ca-46ea-b062-a27dd7b0bc97",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2deeee4f-b342-a178-e063-6394a90af897",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3b9888a2-ca16-43f7-ab6d-f03188ec2c0d",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9f00b2c9-e628-4265-8530-3258dd3cdcd5",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b3cd7b44-db40-4ce5-895e-d4c85a0068ae",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b8486639-7eb9-4610-9cd4-0e922045d592",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=bc321932-b600-4659-a499-1853991b4ab9",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=fbd0a22f-b365-c0a2-e053-6394a90a1e07",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=fd58dbe5-aab2-4378-b054-d5c60d87074e"
+    ]
+  },
+  {
+    "title": "Enalapril",
+    "detail": "Oral solution",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c7934b45-eb6b-44c1-bd2c-ef0fa10850c1"
+    ]
+  },
+  {
+    "title": "Enalapril",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8fe8dc52-dee6-4d33-b798-e90128011f46"
+    ]
+  },
+  {
+    "title": "Fludrocortisone",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6c4a7d2d-00a4-4d80-ab4c-2afd4e4f614e"
+    ]
+  },
+  {
+    "title": "Levothyroxine",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=18717e58-89fb-4e2f-93b6-d6ac3e988d37",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b8c20f76-3ee6-4b29-b77f-ed4ad1baaed9"
+    ]
+  },
+  {
+    "title": "Lomustine",
+    "detail": "Capsule",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=916dfac8-da11-40e4-9e44-a909e29a6b5f"
+    ]
+  },
+  {
+    "title": "Metronidazole",
+    "detail": "Capsule",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f053ad94-d884-457c-9c35-4e0df1d26eea"
+    ]
+  },
+  {
+    "title": "Metronidazole",
+    "detail": "Oral suspension",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e20c14eb-5361-4a93-ab46-a7bd9aeb9b98"
+    ]
+  },
+  {
+    "title": "Metronidazole",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2ae49bf4-a23b-bdcc-e063-6294a90a80a9",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9219588b-0a99-40b9-bdd4-ced6d6efebed"
+    ]
+  },
+  {
+    "title": "Minocycline",
+    "detail": "Capsule",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9013ca48-15f2-43cd-a51d-91cf65c72a7c"
+    ]
+  },
+  {
+    "title": "Minocycline",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3539f84e-b489-4914-96c1-ac3731032971",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=799a9871-3249-471e-b88d-5d8f7d4b96ad"
+    ]
+  },
+  {
+    "title": "Mirtazapine oral",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=98ad1917-a094-44f5-a28f-a64a8cfcd887",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b4b9b66e-87a1-4dbb-9eaf-71221bcb2265",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f23631be-c7ae-46e9-b771-a70be17bc9f0"
+    ]
+  },
+  {
+    "title": "Mitotane",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f0cd76e9-460c-450e-b094-172e636f340a"
+    ]
+  },
+  {
+    "title": "Paroxetine",
+    "detail": "Capsule",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2c5836c3-2099-452e-b6af-d2d50dc359fd"
+    ]
+  },
+  {
+    "title": "Paroxetine",
+    "detail": "Oral suspension",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=134e76f0-45cf-47eb-b6e1-cdb3bb522a0a",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=26d37a39-1c53-461c-8834-c67fbffcfe99"
+    ]
+  },
+  {
+    "title": "Paroxetine",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4acd3e7a-4f19-4428-9452-48ce370cb3db",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b5a8f864-a53d-48d9-aca6-6b64017fb168"
+    ]
+  },
+  {
+    "title": "Selegiline",
+    "detail": "Capsule",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e42d99b0-c62e-49d4-b792-1301bb539b92"
+    ]
+  },
+  {
+    "title": "Selegiline",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=84e25a59-1db6-42bf-b27e-a25c4883a141",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f286c854-3b8c-44a8-b3b5-c828dbabb207"
+    ]
+  },
+  {
+    "title": "Sertraline",
+    "detail": "Capsule",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3a3efb5f-b24a-438d-9253-371ff3b5417d"
+    ]
+  },
+  {
+    "title": "Sertraline",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=de1f85ac-df1b-4b7b-8e18-48ebdc8b9279",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=fda754f6-d0f3-4dce-a17a-927d64f912f7"
+    ]
+  },
+  {
+    "title": "Sildenafil",
+    "detail": "Oral suspension (after reconstitution)",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3bb9363e-b28d-4019-8aae-539233dca214",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8526e8f2-4bb4-430b-9e38-68ee68caa5a4",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9de84092-ebe6-436c-a925-88a6e3861eba"
+    ]
+  },
+  {
+    "title": "Sildenafil",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=31c0f8ab-ed2e-4ead-a8c0-4055f6c43783",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3bb9363e-b28d-4019-8aae-539233dca214",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6d8dbaa6-d61a-46ae-a641-f664104f4714",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=dc998a9c-0770-111b-e053-2a95a90a88a4"
+    ]
+  },
+  {
+    "title": "Spironolactone",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=852684dc-e1c6-4caa-bccb-10ac90bbb3bb",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=963af399-feb7-49d2-a59c-c19edad9c682",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=fb66327e-8261-46ae-b39a-4fa79d520844"
+    ]
+  },
+  {
+    "title": "Sucralfate",
+    "detail": "Oral suspension",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3054ce94-78a2-4da4-8b14-95311b412ab2"
+    ]
+  },
+  {
+    "title": "Sucralfate",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=989ca8a8-3ad6-4ee4-aa9c-eed731828753"
+    ]
+  },
+  {
+    "title": "Telmisartan",
+    "detail": "Oral solution",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f436a826-9f5b-4269-b4ec-97d5522eaca6"
+    ]
+  },
+  {
+    "title": "Telmisartan",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9c22a318-d1f2-4788-9331-66fed71ebf38"
+    ]
+  },
+  {
+    "title": "Torsemide",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=05eaa163-b6e9-438a-85f8-6a60e743d460",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=234ff9d7-a02e-417f-a1f9-94038783cc77"
+    ]
+  },
+  {
+    "title": "Tramadol",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=24aea499-c6f1-9200-e063-6394a90a9db6",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=93b12089-3a0f-4b57-abb1-2429cf31995d",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a6cbd5de-8ae5-49e3-b89b-e35536b115d8",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b5852b90-e415-47ef-8f73-87266b58e033"
+    ]
+  },
+  {
+    "title": "Ursodiol",
+    "detail": "Capsule",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3617fb7a-1f57-4276-bebb-ae6ba4252d4e",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=476179dc-b410-4305-881b-470511765647",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6163fc42-5910-4e19-9e32-3d8e81f50128"
+    ]
+  },
+  {
+    "title": "Ursodiol",
+    "detail": "Tablet",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e8fc4fc2-fe5c-4cba-b6e0-5ceaf2157a61",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=fb79b62a-b450-4d7a-be28-5ee4d174fd58"
+    ]
+  },
+  {
+    "title": "Zonisamide",
+    "detail": "Capsule",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5ab5b6aa-4bdc-4ec6-ba23-44caf2db953e"
+    ]
+  },
+  {
+    "title": "Zonisamide",
+    "detail": "Oral suspension",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ac16fa15-32e9-4f92-8bc6-d8d41ae002c6"
+    ]
+  },
+  {
+    "title": "Butorphanol",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9822ca3f-aee2-46e5-8a96-495400e65d10"
+    ]
+  },
+  {
+    "title": "Hydromorphone",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=31d5a37a-0e90-4e88-be14-75c877be9de2",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9eebd88a-5632-460f-b7b6-26c8a180540d",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e034eb96-03e0-46e1-8b92-5e1f94555e7b",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f9ca2ef5-46d8-475a-a26e-f7c8becd6db7"
+    ]
+  },
+  {
+    "title": "Fentanyl",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0c10e465-4117-48ba-a454-23ccb7a3fcc7",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=38d0c14a-a0c1-44cc-a939-0304eb8037d6",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ce5db1c2-feb1-4ad2-847a-d02e865bd47e"
+    ]
+  },
+  {
+    "title": "Ketamine",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=902c3785-a3cb-472b-ac15-394ac646271d",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=bb912318-2e22-4469-b0a2-774803ee1bb8",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=cc67b0fd-ca73-49f6-b5ca-705dc7331776"
+    ]
+  },
+  {
+    "title": "Midazolam",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1cc9ba6e-fa1b-405e-9de8-720c567b2a73",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4155a60a-b023-4f4a-acae-7bb8fe9dc0c1",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=74666098-1ca8-4c06-8fc4-5de870b1b514",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8675cdb1-c7f5-40cf-b1e0-0960b7ab117b",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9221894f-d840-46f2-a11c-6b71358d3b5b",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=adfe8ece-496d-4118-9990-a1d44d0ac7d9",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c546cfd4-4f2b-4b94-aa47-995595f1a146"
+    ]
+  },
+  {
+    "title": "Diazepam",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a0813073-d0b0-4fd7-b307-56f69c910c82",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f466f8a3-f31c-44f4-b0e8-444464f20f66",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=fa352464-14c8-49e9-b8b7-5a968b1cfa93"
+    ]
+  },
+  {
+    "title": "Dexmedetomidine",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0d2710f2-ee47-4114-ab5c-8dca74cdcb8d",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=42cbeadf-fea3-d2ae-e063-6394a90ad549",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8c162541-986b-4b30-866c-b2631ba2c975",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ada70a68-3e52-4b94-e053-2995a90aa1e0",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=aea9a3ad-c244-42be-9cd3-5df83fe2b522",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f140de5a-f13d-46b4-a742-049c63e474f5"
+    ]
+  },
+  {
+    "title": "Alfaxalone",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f412f5c3-5ba8-43c2-8920-510f34e67f53"
+    ]
+  },
+  {
+    "title": "Epinephrine",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=04f07f15-55e2-411b-abb8-07eab37f5664",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=386519ba-7a44-4edd-9eb1-748419b7a71b",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4f83895f-638c-4515-af03-7c41ae60a42e",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6180fb40-7fca-4602-b3da-ce62b8cd2470",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=677c33a2-4e16-406e-e053-2991aa0a4594",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6add7604-71f6-4d8a-9447-17ad01fa839d",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6e811e28-0199-4df7-a916-5940c632401d",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=7499cbca-b8fe-4fc3-a318-13859ab989a7",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=7663c49d-1b1d-755d-e053-2991aa0a4ee3",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c0d1def8-9f47-0d3e-e053-2995a90af955",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=db18519b-82a9-435b-85c7-a040d644f057"
+    ]
+  },
+  {
+    "title": "Atropine injection",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4c15d3cc-7888-4c82-b3f8-a5d93c5523df",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=532aa441-92ec-42d6-862a-639f8cfe9951",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=6fee1727-52b7-4f73-ab45-ef47d6a1c5bb",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=768dc21a-b7d9-144c-e053-2991aa0af889",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a66eecf9-2d8b-4e2d-8a05-d718dcbc3542",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ad8916e7-206e-409e-2582-30d072845dd4",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c82cb295-ffce-47d6-97ad-a8aa723f4e4f",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d4839e54-b350-4643-8e6e-f0437f5349d6"
+    ]
+  },
+  {
+    "title": "Glycopyrrolate",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4ecb3435-58e5-46cb-b8c2-85b5fd955f83",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=765490fa-8378-40c8-9fa7-b0bfa2e1a0a9",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ccafb5c2-86dd-4bb2-883a-c13e3171227c"
+    ]
+  },
+  {
+    "title": "Lidocaine",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0c0790ec-effd-4d8a-9874-8ca0b31e54d0",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1631e5ca-03d0-4d3b-91e3-2dc14f4eb0e1",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=240c4744-e58c-4c08-93ad-8d6418c4f8a9",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3b2dd84e-cee8-4e58-d494-395a65a353a0",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a5d4b206-cc53-470f-9bca-abfc6ea5cc99",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ad1ef0a8-88db-4648-c098-d009eaeb4e5b",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ba082c2f-64f4-419d-9c88-74f203316e17",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d5e0d06f-ba1e-44d4-aa89-39d6c146dc23",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e0e479e6-4c94-44d0-8074-d0ee7b2bde22",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f824b48c-7039-4ce1-b3df-b3597aba5beb"
+    ]
+  },
+  {
+    "title": "Naloxone",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=201fdedf-1736-4e52-9d7d-de14292547fd",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=958577c3-d2c4-26ad-e053-2a95a90ad73a",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e6467385-6990-498c-8a0e-f4a40ef33cb7"
+    ]
+  },
+  {
+    "title": "Mannitol",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0d914965-7001-45cb-ba51-d7c5964b05bc",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=430669d7-9ad1-9a04-e063-6394a90ababb",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=999ce711-2d5b-0d7d-e053-2995a90a2689"
+    ]
+  },
+  {
+    "title": "Calcium gluconate",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8b77c3d2-992d-4261-8421-9cfd07328fbf"
+    ]
+  },
+  {
+    "title": "Dextrose",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=10e98cb0-31a5-4ad1-3eaa-aa4af387a42d",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=36e9478c-5df0-4b47-b97d-de3626d7cb29",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3bb406a9-f5cb-403a-b1bb-5c4facbea3d5",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4ed365da-4e62-4329-c1b9-c197ab4fb6e1",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=50603082-bce5-49eb-9737-e04239cfb695",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=672264e3-9709-4bba-2a9d-12bf70c7396a",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8b25b7e0-703e-4b43-a4eb-52863511602d",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8e7046f8-841e-465a-af69-af9fb3d6799d",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b5cb7a5a-bbe8-4217-a82e-da818f7771c9",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=bd250a46-d229-4e80-b5a1-b34169ccecc4",
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=cb578dba-094c-4787-951d-763d12fd06e1"
+    ]
+  },
+  {
+    "title": "Vincristine",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=49596de6-ab18-49d1-9e5b-30968fc21c36"
+    ]
+  },
+  {
+    "title": "Doxorubicin",
+    "detail": "Injection",
+    "references": [
+      "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=36924f82-6c05-4989-9f41-a398c0ad48e6"
+    ]
+  },
+  {
+    "title": "Laboratory reference",
+    "detail": "IDEXX / Michigan State",
+    "references": [
+      "https://cvm.msu.edu/vdl/news/2026/extended-unavailability-of-pthrp-and-malignancy-profile"
+    ]
+  },
+  {
+    "title": "Laboratory reference",
+    "detail": "IDEXX / Michigan State",
+    "references": [
+      "https://vdl.msu.edu/Bin/Catalog.exe?Action=Print&ID=1388"
+    ]
+  },
+  {
+    "title": "Laboratory reference",
+    "detail": "IDEXX / Michigan State",
+    "references": [
+      "https://vdl.msu.edu/Bin/Catalog.exe?Action=Print&ID=1401"
+    ]
+  },
+  {
+    "title": "Laboratory reference",
+    "detail": "IDEXX / Michigan State",
+    "references": [
+      "https://vdl.msu.edu/Bin/Catalog.exe?Action=Print&ID=1427"
+    ]
+  },
+  {
+    "title": "Laboratory reference",
+    "detail": "IDEXX / Michigan State",
+    "references": [
+      "https://vdl.msu.edu/Bin/Catalog.exe?Action=Print&ID=1494"
+    ]
+  },
+  {
+    "title": "Laboratory reference",
+    "detail": "IDEXX / Michigan State",
+    "references": [
+      "https://vdl.msu.edu/Bin/Catalog.exe?Action=Print&ID=1496"
+    ]
+  },
+  {
+    "title": "Laboratory reference",
+    "detail": "IDEXX / Michigan State",
+    "references": [
+      "https://vdl.msu.edu/Bin/Catalog.exe?Action=Print&ID=1629"
+    ]
+  },
+  {
+    "title": "Laboratory reference",
+    "detail": "IDEXX / Michigan State",
+    "references": [
+      "https://vdl.msu.edu/Bin/Catalog.exe?Action=Print&ID=1637"
+    ]
+  },
+  {
+    "title": "Laboratory reference",
+    "detail": "IDEXX / Michigan State",
+    "references": [
+      "https://vdl.msu.edu/Bin/Catalog.exe?Action=Print&ID=1706"
+    ]
+  },
+  {
+    "title": "Laboratory reference",
+    "detail": "IDEXX / Michigan State",
+    "references": [
+      "https://vdl.msu.edu/Bin/Catalog.exe?Action=Print&ID=1760"
+    ]
+  },
+  {
+    "title": "Laboratory reference",
+    "detail": "IDEXX / Michigan State",
+    "references": [
+      "https://vdl.msu.edu/Bin/Catalog.exe?Action=Print&ID=1777"
+    ]
+  },
+  {
+    "title": "Laboratory reference",
+    "detail": "IDEXX / Michigan State",
+    "references": [
+      "https://vdl.msu.edu/Bin/Catalog.exe?Action=Print&ID=2171"
+    ]
+  },
+  {
+    "title": "Laboratory reference",
+    "detail": "IDEXX / Michigan State",
+    "references": [
+      "https://www.idexx.com/en/veterinary/reference-laboratories/cardiac-health-tests/"
+    ]
+  },
+  {
+    "title": "Laboratory reference",
+    "detail": "IDEXX / Michigan State",
+    "references": [
+      "https://www.idexx.com/en/veterinary/reference-laboratories/cbc-options/"
+    ]
+  },
+  {
+    "title": "Laboratory reference",
+    "detail": "IDEXX / Michigan State",
+    "references": [
+      "https://www.idexx.com/en/veterinary/reference-laboratories/pathology/clinical-pathology/"
+    ]
+  },
+  {
+    "title": "Laboratory reference",
+    "detail": "IDEXX / Michigan State",
+    "references": [
+      "https://www.idexx.com/en/veterinary/reference-laboratories/tests-and-services/"
+    ]
+  },
+  {
+    "title": "Laboratory reference",
+    "detail": "IDEXX / Michigan State",
+    "references": [
+      "https://www.idexx.com/files/fgf-23-diagnostic-update.pdf"
+    ]
+  },
+  {
+    "title": "Laboratory reference",
+    "detail": "IDEXX / Michigan State",
+    "references": [
+      "https://www.idexx.com/files/spec_cpl-spec_fpl_dxu_h.pdf"
+    ]
+  }
+]
