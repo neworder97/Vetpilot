@@ -258,9 +258,10 @@ private struct DoseCalculatorSheet: View {
     @State private var priorCourseHistoryConfirmed = false
     @State private var selectedFrequency: FrequencyChoice = .recommended
     @State private var selectedDoseLevel: DoseSelectionLevel = .low
+    @State private var recommendedDoseSelected = false
     @State private var recommendationHelp = false
     @State private var prescribedBuprenorphine = false
-    @State private var solidRounding: SolidDoseRounding = .nearest
+    @State private var solidRounding: SolidDoseRounding = .exact
     @State private var selectedPresetIndex = 0
     @State private var showProtocolEditor = false
     @FocusState private var weightFieldFocused: Bool
@@ -707,26 +708,37 @@ private struct DoseCalculatorSheet: View {
                     }
                 }
 
-                if let selection = doseSelection, selection.hasRange {
-                    Section("Dose level") {
-                                Picker("Dose level", selection: $selectedDoseLevel) {
-                                    ForEach([DoseSelectionLevel.low, DoseSelectionLevel.high]) { level in
-                                        Text(level.rawValue).tag(level)
-                                    }
-                                }
-                                .pickerStyle(.segmented)
-                                .accessibilityIdentifier("dose.level")
+                Section("Dose selection") {
+                    HStack(spacing: 6) {
+                        doseChoiceButton("Low Dose", selected: !recommendedDoseSelected && selectedDoseLevel == .low, identifier: "dose.level.low") {
+                            recommendedDoseSelected = false; selectedDoseLevel = .low; result = nil
+                        }
+                        doseChoiceButton("Recommended Dose", selected: recommendedDoseSelected, identifier: "dose.level.recommended") {
+                            chooseRecommendedDose()
+                            if hasSourceRecommendedDose { DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } } }
+                        }
+                        doseChoiceButton("High Dose", selected: !recommendedDoseSelected && selectedDoseLevel == .high, identifier: "dose.level.high") {
+                            recommendedDoseSelected = false; selectedDoseLevel = .high; result = nil
+                        }
+                    }
+                    if !hasSourceRecommendedDose {
+                        doseChoiceButton("Range midpoint", selected: selectedDoseLevel == .middle, identifier: "dose.level.midpoint") {
+                            recommendedDoseSelected = false; selectedDoseLevel = .middle; result = nil
+                        }
+                        Text("This selection has no single source-supported default. Tap Recommended Dose for guidance. Range midpoint is arithmetic only.").font(.caption)
                     }
                 }
-                if [.tablet, .capsule].contains(medication.form) && !usesGalliprantChart {
+                if [.tablet, .capsule].contains(medication.form) {
                     Section("Tablet / capsule rounding") {
-                                Picker("Whole-unit rounding", selection: $solidRounding) {
+                                Picker("Tablet / capsule rounding", selection: $solidRounding) {
                                     ForEach(SolidDoseRounding.allCases) { mode in
                                         Text(mode.rawValue).tag(mode)
                                     }
                                 }
                                 .pickerStyle(.segmented)
                                 .accessibilityIdentifier("dose.rounding")
+                                .disabled(usesGalliprantChart)
+                        if usesGalliprantChart { Text("This product uses its labeled tablet chart. Exact portions are retained; generic whole-tablet rounding does not apply.").font(.caption) }
                     }
                 }
                     if (medication.kind != .protocolOnly || protocolDefinition != nil), protocolDefinition?.doseBasis.isRate != true {
@@ -983,11 +995,8 @@ private struct DoseCalculatorSheet: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Recommended Dose") {
-                        if let selection = doseSelection, !selection.hasRange {
-                            calculateCandidate()
-                            weightFieldFocused = false
-                            DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } }
-                        } else { recommendationHelp = true }
+                        chooseRecommendedDose()
+                        if hasSourceRecommendedDose { DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } } }
                     }.accessibilityIdentifier("dose.recommended")
                 }
                 ToolbarItem(placement: .topBarTrailing) {
@@ -1058,6 +1067,7 @@ private struct DoseCalculatorSheet: View {
                 selectedFrequency = .recommended
                 selectedStrengthIndex = 0
                 manualStrength = ""
+                recommendedDoseSelected = false
                 if let c = protocolDefinition?.concentration {
                     concentration = MedicationSafety.input(c)
                 } else if medication.kind == .protocolOnly {
@@ -1072,6 +1082,7 @@ private struct DoseCalculatorSheet: View {
                 result = nil
                 selectedStrengthIndex = 0
                 manualStrength = ""
+                recommendedDoseSelected = false
                 if let c = protocolDefinition?.concentration {
                     concentration = MedicationSafety.input(c)
                 } else if medication.kind == .protocolOnly {
@@ -1152,6 +1163,30 @@ private struct DoseCalculatorSheet: View {
         }
     }
 
+    private var hasSourceRecommendedDose: Bool {
+        AdministrationMath.hasSourceRecommendedDose(for: medication, definition: protocolDefinition, isBuiltInProtocol: usingBuiltInPreset)
+    }
+
+    private func chooseRecommendedDose() {
+        guard hasSourceRecommendedDose else { recommendationHelp = true; return }
+        // A fixed source dose is identical at every level. Preserve the level to
+        // avoid its change observer clearing this freshly calculated result.
+        recommendedDoseSelected = true
+        calculateCandidate()
+        weightFieldFocused = false
+    }
+
+    private func doseChoiceButton(_ title: String, selected: Bool, identifier: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title).font(.subheadline.weight(.semibold)).multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity, minHeight: 44)
+        }
+        .buttonStyle(.bordered)
+        .tint(selected ? AppTheme.blue : .secondary)
+        .accessibilityIdentifier(identifier)
+        .accessibilityAddTraits(selected ? .isSelected : [])
+    }
+
     private var doseSelection: DoseRangeSelection? {
         if let protocolDefinition {
             return AdministrationMath.selection(for: protocolDefinition, kg: kg, level: selectedDoseLevel, prescribedRate: MedicationSafety.parsePositive(prescribedPotassiumRate))
@@ -1170,7 +1205,7 @@ private struct DoseCalculatorSheet: View {
     private func doseLevelRow(_ level: DoseSelectionLevel) -> some View {
         if let choice = selection(for: level) {
             HStack {
-                Text(level.rawValue)
+                Text(level == .middle ? "Range midpoint" : level == .low ? "Low Dose" : "High Dose")
                 Spacer()
                 Text("\(ClinicalData.format(choice.selected)) \(choice.unit)")
                     .foregroundStyle(level == selectedDoseLevel ? AppTheme.blue : .secondary)
@@ -1188,6 +1223,9 @@ private struct DoseCalculatorSheet: View {
         }
         if usesGalliprantChart { return nil }
         if let solid = selectedSolidPlan, let strength = selectedStrength {
+            if solidRounding == .exact {
+                return "Exact math: \(ClinicalData.format(solid.rawUnits)) \(solidUnitName) equivalent per administration • \(activeFrequencyLabel)\nExact mathematical quantity: \(ClinicalData.format(dose.selected)) mg ÷ \(ClinicalData.format(strength)) mg per unit = \(ClinicalData.format(solid.rawUnits)) \(solidUnitName) equivalent. No whole-unit rounding applied."
+            }
             return "\(solidRounding.rawValue): \(ClinicalData.format(solid.roundedUnits)) whole \(solidUnitName) per administration • \(activeFrequencyLabel)\nExact mathematical quantity: \(ClinicalData.format(dose.selected)) mg ÷ \(ClinicalData.format(strength)) mg per unit = \(ClinicalData.format(solid.rawUnits)) \(solidUnitName) equivalent. Delivered candidate: \(ClinicalData.format(solid.deliveredMg)) mg\(kg > 0 ? " (" + ClinicalData.format(solid.deliveredMg / kg) + " mg/kg)" : "")."
         }
         if let volume = selectedAdministrationVolume, volume.unit == "mL" || volume.unit == "mL/hr" {
@@ -1214,7 +1252,7 @@ private struct DoseCalculatorSheet: View {
             if whole != whole.rounded() {
                 return medication.form == .capsule
                     ? "Fractional capsule equivalent only. Do not split or open capsules from this calculation; verify a suitable strength or formulation with the prescribing veterinarian."
-                    : "Fractional tablet equivalent only. Verify that this specific tablet can be divided accurately; existing whole-tablet rounding options remain below."
+                    : "Fractional tablet equivalent only. Verify that this specific tablet can be divided accurately; the whole-tablet rounding options remain available."
             }
         }
         return "Confirm the selected product, route and schedule before administration."
@@ -1255,6 +1293,10 @@ private struct DoseCalculatorSheet: View {
     }
 
     private func administrationInstruction(for solid: SolidAdministrationPlan) -> String {
+        if solidRounding == .exact {
+            if let reason = administrationReviewReason { return "Exact math: " + ClinicalData.format(solid.rawUnits) + " " + solidUnitName + " equivalents. Plan blocked: " + reason }
+            return "Exact math: \(ClinicalData.format(solid.rawUnits)) \(solidUnitName) equivalent; \(ClinicalData.format(solid.deliveredMg)) mg. Verify a usable strength or permitted tablet splitting before administration; do not divide capsules from this calculation."
+        }
         let candidate = "\(solidRounding.rawValue): \(ClinicalData.format(solid.roundedUnits)) whole \(solidUnitName); \(ClinicalData.format(solid.deliveredMg)) mg delivered. "
         if solid.roundedUnits == 0 { return candidate + "Zero whole units is not an administration plan." }
         if let reason = administrationReviewReason { return candidate + "Plan blocked: " + reason }

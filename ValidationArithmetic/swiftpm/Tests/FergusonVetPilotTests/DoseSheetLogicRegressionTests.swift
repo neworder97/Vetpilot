@@ -259,5 +259,20 @@ final class DoseSheetLogicRegressionTests: XCTestCase {
         }
     }
 
+    func testExactMathPreservesFractionalAdministrationAndCourseArithmetic() throws {
+        let m = try XCTUnwrap(ClinicalData.medications.first { $0.generic == "Carprofen" })
+        var p = DoseSheetLogicProbe(medication:m,kg:10,solidRounding:.exact)
+        XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).hasPrefix("Exact math: 1.76 tablet(s) equivalent"))
+        XCTAssertTrue(p.supplySummary(days:7).contains("12.32"))
+        XCTAssertFalse(p.supplySummary(days:7).hasPrefix("Give "))
+        p.selectedFrequency = .q12h
+        XCTAssertEqual(try XCTUnwrap(p.selectedSolidPlan).roundedUnits,0.88,accuracy:1e-12)
+        XCTAssertTrue(p.supplySummary(days:7).contains("12.32"))
+        p.solidRounding = .up
+        XCTAssertTrue(p.supplySummary(days:7).contains("14 whole tablet(s)"))
+        p.solidRounding = .exact
+        XCTAssertTrue(p.supplySummary(days:7).contains("12.32"))
+    }
+
 }
 

@@ -18,6 +18,19 @@ final class FergusonVetPilotUITests: XCTestCase {
         add(attachment)
     }
 
+    private func revealDoseControl(_ element: XCUIElement, towardEarlierFields: Bool = false) {
+        for _ in 0..<24 {
+            if element.exists && element.isHittable && element.frame.minY >= 150 && element.frame.maxY <= app.frame.maxY - 50 { break }
+            let down = element.exists ? element.frame.minY < 150 : towardEarlierFields
+            let start = app.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:down ? 0.4 : 0.72))
+            let end = app.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:down ? 0.72 : 0.4))
+            start.press(forDuration:0.05,thenDragTo:end)
+        }
+        XCTAssertTrue(element.exists && element.isHittable)
+        XCTAssertGreaterThanOrEqual(element.frame.minY,150)
+        XCTAssertLessThanOrEqual(element.frame.maxY,app.frame.maxY - 50)
+    }
+
     private func selectTab(_ name: String) {
         if app.tabBars.buttons[name].exists { app.tabBars.buttons[name].tap() }
         else {
@@ -114,9 +127,9 @@ final class FergusonVetPilotUITests: XCTestCase {
         let quantity = app.staticTexts["dose.result.quantity"]
         for _ in 0..<8 where !quantity.isHittable { app.swipeUp() }
         XCTAssertTrue(quantity.exists)
-        for (mode,units) in [("Round up","2 whole capsule(s)"),("Round down","1 whole capsule(s)"),("Nearest whole","1 whole capsule(s)")] {
+        for (mode,units) in [("Round up","2 whole capsule(s)"),("Round down","1 whole capsule(s)"),("Exact math","1.25 capsule(s) equivalent"),("Nearest whole","1 whole capsule(s)")] {
             let rounding = app.segmentedControls["dose.rounding"]
-            for _ in 0..<16 where !rounding.isHittable { app.swipeDown() }
+            revealDoseControl(rounding, towardEarlierFields:true)
             XCTAssertTrue(rounding.isHittable); rounding.buttons[mode].tap()
             for _ in 0..<16 where !quantity.isHittable { app.swipeUp() }
             XCTAssertTrue(quantity.label.contains(units),quantity.label)
@@ -162,19 +175,29 @@ final class FergusonVetPilotUITests: XCTestCase {
         XCTAssertTrue(calculate.waitForExistence(timeout: 3))
         XCTAssertTrue(calculate.isEnabled)
         for _ in 0..<12 where !calculate.isHittable { app.swipeUp() }
-        app.buttons["dose.recommended"].tap()
+        let lowChoice = app.buttons["dose.level.low"]
+        let highChoice = app.buttons["dose.level.high"]
+        let recommendedChoice = app.buttons["dose.level.recommended"]
+        revealDoseControl(lowChoice,towardEarlierFields:true)
+        XCTAssertEqual(lowChoice.label,"Low Dose")
+        XCTAssertEqual(highChoice.label,"High Dose")
+        XCTAssertEqual(recommendedChoice.label,"Recommended Dose")
+        lowChoice.tap(); XCTAssertTrue(lowChoice.isSelected)
+        highChoice.tap(); XCTAssertTrue(highChoice.isSelected)
+        recommendedChoice.tap()
+        XCTAssertTrue(app.buttons["dose.recommended"].exists,"Retain the toolbar shortcut")
 
         let doseResult = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "44 mg")).firstMatch
         XCTAssertTrue(doseResult.waitForExistence(timeout: 3))
         let quantity = app.staticTexts["dose.result.quantity"]
         for _ in 0..<4 where !quantity.exists { app.swipeUp() }
         XCTAssertTrue(quantity.exists)
-        XCTAssertTrue(quantity.label.contains("2 whole tablet(s)"))
+        XCTAssertTrue(quantity.label.contains("Exact math: 1.76 tablet(s) equivalent"))
         // Regression: taps must update the displayed administration immediately,
         // without clearing the result or requiring another Calculate tap.
-        for (mode, expected) in [("Round down", "1 whole tablet(s)"), ("Round up", "2 whole tablet(s)"), ("Nearest whole", "2 whole tablet(s)")] {
+        for (mode, expected) in [("Round down", "1 whole tablet(s)"), ("Round up", "2 whole tablet(s)"), ("Exact math", "1.76 tablet(s) equivalent"), ("Nearest whole", "2 whole tablet(s)")] {
             let rounding = app.segmentedControls["dose.rounding"]
-            for _ in 0..<16 where !rounding.isHittable { app.swipeDown() }
+            revealDoseControl(rounding, towardEarlierFields:true)
             XCTAssertTrue(rounding.isHittable)
             rounding.buttons[mode].tap()
             for _ in 0..<16 where !quantity.isHittable { app.swipeUp() }
@@ -623,7 +646,12 @@ final class FergusonVetPilotUITests: XCTestCase {
         let result = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "mEq/hr")).firstMatch
         for _ in 0..<4 where !result.exists { app.swipeUp() }
         XCTAssertTrue(result.exists)
-        XCTAssertFalse(app.segmentedControls["dose.level"].exists)
+        let recommendation = app.buttons["dose.level.recommended"]
+        revealDoseControl(recommendation,towardEarlierFields:true)
+        recommendation.tap()
+        XCTAssertTrue(app.alerts["Recommended Dose"].waitForExistence(timeout:3))
+        XCTAssertTrue(app.alerts.staticTexts.matching(NSPredicate(format:"label CONTAINS %@","no single source-supported default")).firstMatch.exists)
+        app.alerts.buttons["OK"].tap()
     }
     func testMedicationInputsPrecedeCalculateAndSelectionsSurvive() throws {
         let search = app.textFields["Search medications…"]
@@ -634,25 +662,37 @@ final class FergusonVetPilotUITests: XCTestCase {
         let weight = app.textFields["dose.sheet.weight"]
         weight.tap(); weight.typeText("10")
         app.buttons["dose.keyboard.done"].tap()
-        let level = app.segmentedControls["dose.level"]
-        for _ in 0..<8 where !level.isHittable { app.swipeUp() }
-        XCTAssertTrue(level.exists)
-        level.buttons["High"].tap()
+        let low = app.buttons["dose.level.low"], high = app.buttons["dose.level.high"], recommendation = app.buttons["dose.level.recommended"]
+        revealDoseControl(low)
+        XCTAssertEqual(low.label,"Low Dose"); XCTAssertEqual(high.label,"High Dose")
+        recommendation.tap()
+        XCTAssertTrue(app.alerts["Recommended Dose"].waitForExistence(timeout:3))
+        XCTAssertTrue(app.alerts.staticTexts.matching(NSPredicate(format:"label CONTAINS %@","no single source-supported default")).firstMatch.exists)
+        app.alerts.buttons["OK"].tap()
+        let midpoint = app.buttons["dose.level.midpoint"]
+        revealDoseControl(midpoint); midpoint.tap()
+        let midpointCalculate = app.buttons["dose.calculate"]
+        revealDoseControl(midpointCalculate)
+        midpointCalculate.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:0.5)).tap()
+        let midpointAmount = app.staticTexts["dose.candidate.amount"]
+        XCTAssertTrue(midpointAmount.waitForExistence(timeout:5))
+        XCTAssertTrue(midpointAmount.label.contains("75 mg"),midpointAmount.label)
+        revealDoseControl(high,towardEarlierFields:true); high.tap()
         let frequency = app.buttons["dose.frequency.recommended"]
         for _ in 0..<8 where !frequency.isHittable { app.swipeUp() }
         XCTAssertTrue(frequency.exists)
         let days = app.buttons["dose.supply.7"]
-        for _ in 0..<8 where !days.isHittable { app.swipeUp() }
-        XCTAssertTrue(days.exists); days.tap()
+        revealDoseControl(days)
+        days.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:0.5)).tap()
         XCTAssertFalse(app.staticTexts["dose.candidate.amount"].exists)
         let calculate = app.buttons["dose.calculate"]
-        for _ in 0..<8 where !calculate.isHittable { app.swipeUp() }
-        calculate.tap()
+        revealDoseControl(calculate)
+        calculate.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:0.5)).tap()
         let amount = app.staticTexts["dose.candidate.amount"]
         for _ in 0..<8 where !amount.isHittable { app.swipeUp() }
         XCTAssertTrue(amount.label.contains("100 mg"))
         let quantity = app.staticTexts["dose.result.quantity"]
-        XCTAssertTrue(quantity.label.contains("1 whole tablet(s)"))
+        XCTAssertTrue(quantity.label.contains("Exact math: 1 tablet(s) equivalent"))
         let supply = app.staticTexts["dose.supply.summary"]
         for _ in 0..<8 where !supply.isHittable { app.swipeUp() }
         XCTAssertTrue(supply.label.contains("Give 1 tablet PO q24 hours for 7 days"))

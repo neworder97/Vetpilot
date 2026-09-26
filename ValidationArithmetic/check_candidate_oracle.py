@@ -47,9 +47,12 @@ for r in p['presets']:
     delta=(float(c['displayedAmount'])-c['selected'])/c['selected']
     if abs(delta)>.05:display_large.append({'id':r['id'],'kg':c['kg'],'level':c['level'],'value':c['selected'],'display':c['displayedAmount'],'error_percent':100*delta})
    for s in c['solids']:
-    raw=target/D(s['strength']);mode={'Round down':ROUND_FLOOR,'Round up':ROUND_CEILING,'Nearest whole':ROUND_HALF_UP}[s['rounding']];rounded=raw.to_integral_value(rounding=mode)
+    raw=target/D(s['strength'])
+    rounded=raw if s['rounding']=='Exact math' else raw.to_integral_value(rounding={'Round down':ROUND_FLOOR,'Round up':ROUND_CEILING,'Nearest whole':ROUND_HALF_UP}[s['rounding']])
     check(s['raw'],raw,r['id']+':raw-solid');scount+=1
-    if float(rounded)!=s['rounded']:
+    if s['rounding']=='Exact math':
+     check(s['rounded'],rounded,r['id']+':exact-solid')
+    elif float(rounded)!=s['rounded']:
      round_boundary.append({'id':r['id'],'kg':c['kg'],'level':c['level'],'strength':s['strength'],'mode':s['rounding'],'exact_units':str(raw),'actual_rounded':s['rounded'],'expected_rounded':str(rounded)})
     check(s['delivered'],D(s['rounded'])*D(s['strength']),r['id']+':delivered-solid')
 summary={'preset_count':len(p['presets']),'medication_names':len({r['generic'] for r in p['presets']}),'weights_per_preset':10,'levels':3,'preset_weight_level_cases':sum(len(r['cases']) for r in p['presets']),'numeric_comparisons':n,'numeric_mismatches':errors,'volume_cases':vcount,'solid_rounding_cases':scount,'rounding_boundary_mismatches':round_boundary,'nonzero_volumes_displayed_as_zero':rounded_to_zero,'amount_display_errors_over_5_percent':display_large,'automatic_medication_entries':len(p['automaticMedications']),'invalid_input_probes':p['invalidInputs']}

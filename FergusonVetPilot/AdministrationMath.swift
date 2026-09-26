@@ -16,6 +16,7 @@ enum DoseSelectionLevel: String, CaseIterable, Identifiable {
 }
 
 enum SolidDoseRounding: String, CaseIterable, Identifiable {
+    case exact = "Exact math"
     case down = "Round down"
     case nearest = "Nearest whole"
     case up = "Round up"
@@ -47,6 +48,15 @@ struct SolidAdministrationPlan: Equatable {
 }
 
 enum AdministrationMath {
+    /// Mirrors the website: a range midpoint is never a source recommendation.
+    static func hasSourceRecommendedDose(for medication: Medication, definition: ProtocolMedicationDefinition? = nil, isBuiltInProtocol: Bool = false) -> Bool {
+        if let definition {
+            return isBuiltInProtocol && definition.minDose > 0 && definition.minDose == definition.maxDose && !MedicationSafety.requiresPrescribedPotassiumRate(key: definition.medicationKey)
+        }
+        guard !medication.source.hasPrefix("USER-SOURCE-BACKED"), !medication.source.hasPrefix("CUSTOM-UNVERIFIED"), medication.kind != .protocolOnly else { return false }
+        return (medication.minDose > 0 && medication.minDose == medication.maxDose) || medication.kind == .robenacoxibCatBand
+    }
+
     static func interpolate(_ low: Double, _ high: Double, level: DoseSelectionLevel) -> Double {
         low + ((high - low) * level.fraction)
     }
@@ -182,6 +192,7 @@ enum AdministrationMath {
         let roundingInput = MedicationSafety.snapIntegerBoundary(raw)
         let rounded: Double
         switch rounding {
+        case .exact: rounded = raw
         case .down: rounded = floor(roundingInput)
         case .nearest: rounded = MedicationSafety.snapHalfBoundary(raw).rounded(.toNearestOrAwayFromZero)
         case .up: rounded = ceil(roundingInput)

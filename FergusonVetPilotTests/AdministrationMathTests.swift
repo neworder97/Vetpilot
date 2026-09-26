@@ -63,14 +63,14 @@ final class AdministrationMathTests: XCTestCase {
         for medication in MedicationFormulations.organized where [.tablet, .capsule].contains(medication.form) {
             for strength in medication.strengths {
                 for (raw, down, nearest, up) in [(0.2,0.0,0.0,1.0),(0.5,0.0,1.0,1.0),(1.24,1.0,1.0,2.0),(1.5,1.0,2.0,2.0),(1.76,1.0,2.0,2.0),(2.0,2.0,2.0,2.0)] {
-                    for (mode, expected) in [(SolidDoseRounding.down,down),(.nearest,nearest),(.up,up)] {
+                    for (mode, expected) in [(SolidDoseRounding.exact,raw),(.down,down),(.nearest,nearest),(.up,up)] {
                         let plan = try XCTUnwrap(AdministrationMath.solidPlan(targetMg: raw * strength, strengthMg: strength, rounding: mode))
                         XCTAssertEqual(plan.rawUnits,raw,accuracy:1e-10,medication.displayName)
-                        XCTAssertEqual(plan.roundedUnits,expected,medication.displayName)
+                        XCTAssertEqual(plan.roundedUnits,expected,accuracy:1e-10,medication.displayName)
                         XCTAssertEqual(plan.deliveredMg,expected * strength,accuracy:1e-10)
                         for perDay in [1.0,2.0,3.0,4.0] {
                             let count = AdministrationMath.administrations(days:14,dosesPerDay:perDay)
-                            XCTAssertEqual(plan.roundedUnits * Double(count),expected * 14 * perDay)
+                            XCTAssertEqual(plan.roundedUnits * Double(count),expected * 14 * perDay,accuracy:1e-8)
                         }
                         cases += 1
                     }
@@ -92,7 +92,7 @@ final class AdministrationMathTests: XCTestCase {
                 for mode in SolidDoseRounding.allCases {
                     let plan = try XCTUnwrap(AdministrationMath.solidPlan(targetMg:perDose.selected,strengthMg:strength,rounding:mode))
                     let raw = 44 / perDay / strength
-                    let expected = mode == .down ? floor(raw) : mode == .up ? ceil(raw) : raw.rounded()
+                    let expected = mode == .exact ? raw : mode == .down ? floor(raw) : mode == .up ? ceil(raw) : raw.rounded()
                     XCTAssertEqual(plan.roundedUnits,expected)
                     XCTAssertEqual(plan.deliveredMg,expected * strength)
                     // A mathematical rounding result must not silently be approved
@@ -111,6 +111,24 @@ final class AdministrationMathTests: XCTestCase {
         }
         XCTAssertEqual(try XCTUnwrap(AdministrationMath.solidPlan(targetMg:1.499999999,strengthMg:1,rounding:.nearest)).roundedUnits,1)
         XCTAssertEqual(try XCTUnwrap(AdministrationMath.solidPlan(targetMg:1.500000001,strengthMg:1,rounding:.nearest)).roundedUnits,2)
+    }
+
+    func testExactMathAndDoseControlParity() throws {
+        XCTAssertEqual(SolidDoseRounding.allCases.map(\.rawValue),["Exact math","Round down","Nearest whole","Round up"])
+        let exact = try XCTUnwrap(AdministrationMath.solidPlan(targetMg:44,strengthMg:25,rounding:.exact))
+        XCTAssertEqual(exact.roundedUnits,1.76,accuracy:1e-12)
+        XCTAssertEqual(exact.deliveredMg,44,accuracy:1e-12)
+        let carprofen = try XCTUnwrap(ClinicalData.medications.first { $0.generic == "Carprofen" })
+        XCTAssertTrue(AdministrationMath.hasSourceRecommendedDose(for:carprofen))
+        let cefpodoxime = try XCTUnwrap(ClinicalData.medications.first { $0.generic == "Cefpodoxime proxetil" })
+        XCTAssertFalse(AdministrationMath.hasSourceRecommendedDose(for:cefpodoxime),"A range midpoint is not a recommendation")
+        let potassium = try XCTUnwrap(ClinicalData.medications.first { $0.generic == "Potassium chloride" })
+        var definition = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == "potassium-chloride-dog-1" }).definition
+        definition.minDose = 0.1; definition.maxDose = 0.1
+        XCTAssertFalse(AdministrationMath.hasSourceRecommendedDose(for:potassium,definition:definition,isBuiltInProtocol:true))
+        let preset = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.definition.minDose > 0 && $0.definition.minDose == $0.definition.maxDose && !$0.id.hasPrefix("potassium-chloride") })
+        XCTAssertTrue(AdministrationMath.hasSourceRecommendedDose(for:carprofen,definition:preset.definition,isBuiltInProtocol:true))
+        XCTAssertFalse(AdministrationMath.hasSourceRecommendedDose(for:carprofen,definition:preset.definition,isBuiltInProtocol:false),"A clinic-entered rule must not become a catalog recommendation")
     }
 
 }
