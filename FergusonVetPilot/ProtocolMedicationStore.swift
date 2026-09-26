@@ -108,9 +108,8 @@ struct ProtocolMedicationDefinition: Identifiable, Codable, Equatable {
     }
 
     static func key(for medication: Medication, species: Species) -> String {
-        [medication.generic, medication.brand, medication.form.rawValue, species.rawValue]
-            .joined(separator: "|")
-            .lowercased()
+        let identity = medication.protocolIdentity ?? [medication.generic, medication.brand, medication.form.rawValue].joined(separator: "|")
+        return [identity, species.rawValue].joined(separator: "|").lowercased()
     }
 }
 

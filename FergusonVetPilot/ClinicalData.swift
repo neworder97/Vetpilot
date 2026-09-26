@@ -44,6 +44,7 @@ struct Medication: Identifiable, Hashable {
     let concentration: Double?
     let controlled: Bool
     var formulation: MedicationFormulation? = nil
+    var protocolIdentity: String? = nil
 
     var displayName: String {
         let name = formulation.map { "\(generic) · \($0.label)" } ?? generic
@@ -3137,6 +3138,10 @@ enum MedicationFormulations {
                 concentration: variant.customConcentration == true ? nil : variant.keepProtocolConcentration == true ? original.concentration : variant.concentrations?.first ?? (form == original.form ? original.concentration : nil),
                 controlled: original.controlled)
             medication.formulation = variant
+            let legacyIdentity = [original.generic, original.brand, original.form.rawValue].joined(separator: "|")
+            let sameOriginalForm = form == original.form && !variant.label.lowercased().contains("extended release")
+            medication.protocolIdentity = sameOriginalForm ? legacyIdentity :
+                [original.generic, original.brand, variant.form, variant.label].joined(separator: "|")
             return medication
         }
     }

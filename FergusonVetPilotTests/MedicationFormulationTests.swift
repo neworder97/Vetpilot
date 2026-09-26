@@ -73,4 +73,17 @@ final class MedicationFormulationTests: XCTestCase {
         }
     }
 
+    func testLegacyClinicOverridesRemainAccessibleWithoutCrossingReleaseTypes() throws {
+        let original = try XCTUnwrap(ClinicalData.medications.first { $0.generic == "Levetiracetam" })
+        let immediate = try XCTUnwrap(MedicationFormulations.organized.first { $0.generic == "Levetiracetam" && $0.formulation?.label == "Tablet" })
+        let extended = try XCTUnwrap(MedicationFormulations.organized.first { $0.generic == "Levetiracetam" && $0.formulation?.label == "Tablet · extended release" })
+        let liquid = try XCTUnwrap(MedicationFormulations.organized.first { $0.generic == "Levetiracetam" && $0.form == .liquid })
+        for species in [Species.dog, .cat] {
+            let legacy = ProtocolMedicationDefinition.key(for: original, species: species)
+            XCTAssertEqual(ProtocolMedicationDefinition.key(for: immediate, species: species), legacy)
+            XCTAssertNotEqual(ProtocolMedicationDefinition.key(for: extended, species: species), legacy)
+            XCTAssertNotEqual(ProtocolMedicationDefinition.key(for: liquid, species: species), legacy)
+        }
+    }
+
 }
