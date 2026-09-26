@@ -255,6 +255,10 @@ final class FergusonVetPilotUITests: XCTestCase {
         let week = app.buttons["7 days"]
         for _ in 0..<8 where !week.isHittable { app.swipeUp() }
         week.tap()
+        let calculateGabapentin = app.buttons["gabapentin.calculate"]
+        for _ in 0..<8 where !calculateGabapentin.isHittable { app.swipeUp() }
+        XCTAssertTrue(calculateGabapentin.exists); calculateGabapentin.tap()
+        XCTAssertTrue(app.staticTexts["gabapentin.calculate.status"].exists)
         let course = app.staticTexts["gabapentin.course"]
         for _ in 0..<8 where !course.isHittable { app.swipeUp() }
         XCTAssertTrue(course.waitForExistence(timeout: 3))
@@ -264,6 +268,19 @@ final class FergusonVetPilotUITests: XCTestCase {
         for _ in 0..<8 where !amount.isHittable { app.swipeUp() }
         XCTAssertTrue(amount.waitForExistence(timeout: 3))
         XCTAssertTrue(amount.label.contains("150"))
+        for (mode, units, total) in [("Round up", "2 whole capsule(s)", "56 whole capsule(s)"), ("Round down", "1 whole capsule(s)", "28 whole capsule(s)")] {
+            let control = app.buttons["gabapentin.rounding." + mode]
+            for _ in 0..<10 where !control.isHittable { app.swipeDown() }
+            XCTAssertTrue(control.exists); control.tap()
+            let rounded = app.staticTexts["gabapentin.rounded.amount"]
+            for _ in 0..<10 where !rounded.isHittable { app.swipeUp() }
+            XCTAssertTrue(rounded.label.contains(units))
+            let totalLabel = app.staticTexts["gabapentin.rounded.course"]
+            for _ in 0..<8 where !totalLabel.isHittable { app.swipeUp() }
+            XCTAssertTrue(totalLabel.label.contains(total))
+            XCTAssertTrue(totalLabel.label.contains("Not an approved dispensing instruction"))
+        }
+
         for _ in 0..<8 where !app.segmentedControls["gabapentin.purpose"].isHittable { app.swipeDown() }
         app.segmentedControls["gabapentin.purpose"].buttons["Fractious"].tap()
         for _ in 0..<8 where !amount.isHittable { app.swipeUp() }

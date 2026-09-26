@@ -44,4 +44,18 @@ final class ClinicDoseMathTests: XCTestCase {
         XCTAssertNil(PrescriptionSummary.text(amount: .infinity, unit: "mL", route: "PO", hours: 12, days: 15))
     }
 
+    func testWholeUnitRoundingAndCourseCandidates() throws {
+        let c = try XCTUnwrap(ClinicDoseMath.gabapentin(weight: 10, pounds: false, dose: 15, strength: 100))
+        XCTAssertEqual(c.mg, 150)
+        for (mode, expected) in [("Round down", 1.0), ("Nearest whole", 2.0), ("Round up", 2.0), ("Exact math", 1.5)] {
+            let units = try XCTUnwrap(ClinicDoseMath.roundedUnits(quantity: c.quantity!, mode: mode))
+            XCTAssertEqual(units, expected)
+            XCTAssertEqual(try XCTUnwrap(ClinicDoseMath.course(quantity: units, hours: 12, days: 15)).units, expected * 30)
+        }
+        XCTAssertEqual(ClinicDoseMath.roundedUnits(quantity: 0.2, mode: "Round down"), 0)
+        XCTAssertNil(ClinicDoseMath.course(quantity: 0, hours: 12, days: 15))
+        XCTAssertEqual(ClinicDoseMath.roundedUnits(quantity: 1.9999999999999998, mode: "Round down"), 2)
+        XCTAssertNil(ClinicDoseMath.roundedUnits(quantity: .infinity, mode: "Round up"))
+    }
+
 }

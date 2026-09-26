@@ -17,6 +17,16 @@ enum ClinicDoseMath {
         guard units.isFinite, units > 0 else { return nil }
         return (administrations, units)
     }
+    static func roundedUnits(quantity: Double, mode: String) -> Double? {
+        guard quantity.isFinite, quantity > 0 else { return nil }
+        let q = MedicationSafety.snapIntegerBoundary(quantity)
+        switch mode {
+        case "Round down": return floor(q)
+        case "Round up": return ceil(q)
+        case "Nearest whole": return q.rounded()
+        default: return quantity
+        }
+    }
     static func buprenorphine(weight: Double, pounds: Bool, dose: Double, perKg: Bool) -> (mg: Double, ml: Double)? {
         guard weight.isFinite, weight > 0, dose.isFinite, dose > 0 else { return nil }
         let kg = weight * (pounds ? 0.45359237 : 1)
@@ -37,6 +47,8 @@ struct ClinicGabapentinView: View {
     @State private var formulation = "Capsule"
     @State private var interval = 0
     @State private var days = ""
+    @State private var rounding = "Exact math"
+    @State private var calculateRequested = 0
     private var selectedForm: String { lockedForm ?? formulation }
     private var listedStrengths: [Int] { selectedForm == "Capsule" ? [100,200,300,400] : [600,800] }
     @Environment(\.dismiss) private var dismiss
@@ -81,6 +93,15 @@ struct ClinicGabapentinView: View {
                     Text("Oral (PO) · immediate-release products only")
                     Link("RELGAABI capsule label, including 200 mg", destination: URL(string: "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4cc6615b-5447-9c0e-e063-6394a90a2883")!).font(.caption)
                 }
+                Section("Tablet / capsule rounding") {
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
+                        ForEach(["Exact math", "Round down", "Nearest whole", "Round up"], id: \.self) { mode in
+                            Button(mode) { rounding = mode }.buttonStyle(.bordered)
+                                .tint(rounding == mode ? AppTheme.blue : .secondary)
+                                .accessibilityIdentifier("gabapentin.rounding." + mode)
+                        }
+                    }
+                }
                 Section("Frequency") {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
                         Button("Recommended") { interval = 0 }.buttonStyle(.bordered).tint(interval == 0 ? AppTheme.blue : .secondary)
@@ -97,6 +118,16 @@ struct ClinicGabapentinView: View {
                     } }
                     TextField("Prescribed course length (days)", text: $days).keyboardType(.numberPad).accessibilityIdentifier("gabapentin.days")
                 }
+                Section {
+                    Button("Calculate dose") {
+                        calculateRequested += 1
+                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    }.buttonStyle(.borderedProminent).accessibilityIdentifier("gabapentin.calculate")
+                    if calculateRequested > 0 {
+                        Text(calculation == nil ? "Enter a positive weight and select the prescribed dose; verify any entered strength." : "Calculation updated from current inputs.")
+                            .accessibilityIdentifier("gabapentin.calculate.status")
+                    }
+                }
                 Section("Automatic calculation") {
                     if let c = calculation {
                         Text("\(MedicationSafety.display(c.mg)) mg").font(.title2.bold()).accessibilityIdentifier("gabapentin.amount")
@@ -104,14 +135,30 @@ struct ClinicGabapentinView: View {
                         if let quantity = c.quantity {
                             Text("\(MedicationSafety.display(quantity)) \(selectedForm.lowercased())(s) at \(strength) mg each").accessibilityIdentifier("gabapentin.quantity")
                             Text("Quantity = \(MedicationSafety.display(c.mg)) mg ÷ \(strength) mg. Exact mathematical quantity; confirm permitted tablet splitting. Do not interpret a fractional capsule as an instruction to divide its contents.").font(.footnote)
-                            if let course = ClinicDoseMath.course(quantity: quantity, hours: interval, days: Int(days) ?? 0) {
-                                if let summary = PrescriptionSummary.text(amount: quantity, unit: selectedForm.lowercased(), route: "PO", hours: Double(interval), days: Int(days) ?? 0) {
-                                    Text("Administration and quantity").font(.headline)
-                                    Text(summary).accessibilityIdentifier("gabapentin.administration.summary")
+                            if let units = ClinicDoseMath.roundedUnits(quantity: quantity, mode: rounding) {
+                                let delivered = units * (Double(strength) ?? 0)
+                                let matches = delivered > 0 && abs(delivered - c.mg) <= max(1e-9, c.mg * 1e-12)
+                                if rounding != "Exact math" {
+                                    Text("Rounded dose candidate").font(.headline)
+                                    Text("\(MedicationSafety.display(units)) whole \(selectedForm.lowercased())(s) per administration · \(MedicationSafety.display(delivered)) mg · \(MedicationSafety.display(delivered / c.kg)) mg/kg")
+                                        .accessibilityIdentifier("gabapentin.rounded.amount")
+                                    Text(matches ? "Matches the selected prescribed amount." : "Outside the selected prescribed amount. Veterinarian review is required before using this rounded dose.")
+                                    if units == 0 { Text("Zero whole units is not an administration plan. Choose another verified strength.") }
                                 }
-                                Text("Course: \(course.administrations) administrations · \(MedicationSafety.display(course.units)) \(selectedForm.lowercased()) equivalents in total").accessibilityIdentifier("gabapentin.course")
-                                Text("Exact course arithmetic before dispensing rounding. Verify the actual administered units and prescribed duration.").font(.footnote)
-                            } else if !days.isEmpty { Text("Select the prescribed frequency and a whole number of days (1–3650) to calculate course quantity.").font(.footnote) }
+                                if let course = ClinicDoseMath.course(quantity: units, hours: interval, days: Int(days) ?? 0) {
+                                    if matches, let summary = PrescriptionSummary.text(amount: units, unit: selectedForm.lowercased(), route: "PO", hours: Double(interval), days: Int(days) ?? 0) {
+                                        Text("Administration and quantity").font(.headline)
+                                        Text(summary).accessibilityIdentifier("gabapentin.administration.summary")
+                                    }
+                                    if rounding == "Exact math" {
+                                        Text("Course: \(course.administrations) administrations · \(MedicationSafety.display(course.units)) \(selectedForm.lowercased()) equivalents in total").accessibilityIdentifier("gabapentin.course")
+                                        Text("Exact course arithmetic before dispensing rounding. Verify the actual administered units and prescribed duration.").font(.footnote)
+                                    } else {
+                                        Text("Candidate quantity: \(MedicationSafety.display(course.units)) whole \(selectedForm.lowercased())(s) for \(days) days at every \(interval) hours. \(matches ? "" : "Not an approved dispensing instruction.")")
+                                            .accessibilityIdentifier("gabapentin.rounded.course")
+                                    }
+                                } else if !days.isEmpty && units != 0 { Text("Select the prescribed frequency and a whole number of days (1–3650) to calculate course quantity.").font(.footnote) }
+                            }
                         } else { Text("Enter verified strength to calculate tablets/capsules.") }
                     } else { Text(dose == 0 ? "Select the prescribed 25 or 30 mg/kg dose." : "Enter a positive weight and, if supplied, a positive strength.") }
                 }
@@ -139,6 +186,7 @@ struct PrescribedBuprenorphineView: View {
     @State private var frequency = ""
     @State private var courseDays = ""
     @State private var verified = false
+    @State private var calculateRequested = 0
     @Environment(\.dismiss) private var dismiss
     private var complete: Bool { verified && [product,route,frequency].allSatisfy { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty } }
     var body: some View {
@@ -166,6 +214,13 @@ struct PrescribedBuprenorphineView: View {
                     TextField("Prescribed course length (days)", text: $courseDays).keyboardType(.numberPad)
                     LabeledContent("Verified concentration", value: "0.6 mg/mL")
                     Toggle("Product, release type and prescription verified", isOn: $verified)
+                }
+                Section {
+                    Button("Calculate dose / volume") {
+                        calculateRequested += 1
+                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    }.buttonStyle(.borderedProminent).accessibilityIdentifier("buprenorphine.calculate")
+                    if calculateRequested > 0 { Text("The calculation below uses the current verified prescription inputs.") }
                 }
                 Section("Automatic conversion") {
                     if complete, let c = ClinicDoseMath.buprenorphine(weight: Double(weight) ?? 0, pounds: unit == "lb", dose: Double(dose) ?? 0, perKg: basis == "mg/kg") {

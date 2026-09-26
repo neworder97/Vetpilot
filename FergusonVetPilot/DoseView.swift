@@ -697,13 +697,14 @@ private struct DoseCalculatorSheet: View {
                                 .accessibilityIdentifier("dose.level")
                     }
                 }
-                if selectedSolidPlan != nil {
+                if [.tablet, .capsule].contains(medication.form) && !usesGalliprantChart {
                     Section("Tablet / capsule rounding") {
                                 Picker("Whole-unit rounding", selection: $solidRounding) {
                                     ForEach(SolidDoseRounding.allCases) { mode in
                                         Text(mode.rawValue).tag(mode)
                                     }
                                 }
+                                .pickerStyle(.segmented)
                                 .accessibilityIdentifier("dose.rounding")
                     }
                 }
