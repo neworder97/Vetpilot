@@ -231,9 +231,17 @@ final class FergusonVetPilotUITests: XCTestCase {
         XCTAssertTrue(blocked.exists)
         XCTAssertTrue(blocked.label.contains("outside the selected dose range"),blocked.label)
         let duration = app.buttons["dose.supply.7"]
-        for _ in 0..<16 where !duration.isHittable { app.swipeDown() }
+        for _ in 0..<24 {
+            if duration.exists && duration.isHittable && duration.frame.minY >= 150 && duration.frame.maxY <= app.frame.maxY - 50 { break }
+            let down = !duration.exists || duration.frame.minY < 150
+            let start = app.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:down ? 0.4 : 0.72))
+            let end = app.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:down ? 0.72 : 0.4))
+            start.press(forDuration:0.05,thenDragTo:end)
+        }
         XCTAssertTrue(duration.isHittable, "Rounding must not remove duration controls")
-        duration.tap()
+        XCTAssertGreaterThanOrEqual(duration.frame.minY,150)
+        XCTAssertLessThanOrEqual(duration.frame.maxY,app.frame.maxY - 50)
+        duration.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:0.5)).tap()
         let supply = app.staticTexts["dose.supply.summary"]
         for _ in 0..<16 where !supply.isHittable { app.swipeUp() }
         XCTAssertTrue(supply.label.contains("Candidate quantity: 14 whole tablet(s)"), supply.label)
