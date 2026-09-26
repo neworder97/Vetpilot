@@ -232,7 +232,7 @@ final class FergusonVetPilotUITests: XCTestCase {
         search.tap()
         search.typeText("gabapentin")
 
-        let gabapentin = app.staticTexts["Gabapentin · Capsule (Neurontin)"].firstMatch
+        let gabapentin = app.staticTexts["Gabapentin · Capsule (Neurontin / generics)"].firstMatch
         XCTAssertTrue(gabapentin.waitForExistence(timeout: 3))
         gabapentin.tap()
 

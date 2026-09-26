@@ -38,7 +38,7 @@ struct ClinicGabapentinView: View {
     @State private var interval = 0
     @State private var days = ""
     private var selectedForm: String { lockedForm ?? formulation }
-    private var listedStrengths: [Int] { selectedForm == "Capsule" ? [100,300,400] : [600,800] }
+    private var listedStrengths: [Int] { selectedForm == "Capsule" ? [100,200,300,400] : [600,800] }
     @Environment(\.dismiss) private var dismiss
     private var dose: Double { purpose == "Pain" ? 15 : purpose == "Fractious" ? 50 : sedation }
     private var calculation: (kg: Double, mg: Double, quantity: Double?)? {
@@ -78,7 +78,8 @@ struct ClinicGabapentinView: View {
                         }
                     }
                     TextField("Verified strength (mg per unit)", text: $strength).keyboardType(.decimalPad).accessibilityIdentifier("gabapentin.strength")
-                    Text("Oral (PO)")
+                    Text("Oral (PO) · immediate-release products only")
+                    Link("RELGAABI capsule label, including 200 mg", destination: URL(string: "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4cc6615b-5447-9c0e-e063-6394a90a2883")!).font(.caption)
                 }
                 Section("Frequency") {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {

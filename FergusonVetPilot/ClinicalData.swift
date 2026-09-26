@@ -1390,9 +1390,12 @@ enum MedicationFormulations {
       "label": "Capsule",
       "strengths": [
         100,
+        200,
         300,
         400
-      ]
+      ],
+      "brand": "Neurontin / generics",
+      "productSource": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4cc6615b-5447-9c0e-e063-6394a90a2883"
     },
     {
       "form": "Tablet",
