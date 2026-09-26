@@ -33,10 +33,11 @@ final class DoseSheetLogicRegressionTests: XCTestCase {
     func testSyntheticDailyTotalHasSameWeeklySupplyForOneOrTwoAdministrations() throws {
         let m=Medication(generic:"Arithmetic fixture",brand:"",drugClass:"",species:[.dog],form:.tablet,indication:"Test only",kind:.mgKg,minDose:4,maxDose:4,frequency:"q24h total daily dose",route:"PO",notes:"",source:"Test only",strengths:[20],concentration:nil,controlled:false)
         var p=DoseSheetLogicProbe(medication:m,kg:10)
-        XCTAssertTrue(p.supplySummary(days:7).contains("quantity to dispense: 14"))
+        XCTAssertTrue(p.supplySummary(days:7).contains("Quantity: 14 tablets"))
         p.selectedFrequency = .q12h
         XCTAssertEqual(try XCTUnwrap(p.selectedSolidPlan).roundedUnits,1)
-        XCTAssertTrue(p.supplySummary(days:7).contains("quantity to dispense: 14"))
+        XCTAssertTrue(p.supplySummary(days:7).contains("Give 1 tablet PO q12 hours for 7 days"))
+        XCTAssertTrue(p.supplySummary(days:7).contains("Quantity: 14 tablets"))
     }
     func testMethocarbamolRecognizesDailyAmountWording() throws {
         let m=try XCTUnwrap(ClinicalData.medications.first { $0.generic=="Methocarbamol" })
@@ -85,7 +86,7 @@ final class DoseSheetLogicRegressionTests: XCTestCase {
         var p=DoseSheetLogicProbe(medication:m,kg:5)
         XCTAssertNil(p.selectedSolidPlan)
         XCTAssertEqual(try XCTUnwrap(p.galliprantPlan).units,0.5)
-        XCTAssertTrue(p.supplySummary(days:7).contains("quantity to dispense: 4 whole tablets"))
+        XCTAssertTrue(p.supplySummary(days:7).contains("Quantity: 4 tablets"))
         p.selectedFrequency = .q12h
         XCTAssertFalse(p.canPlanSupply)
     }
@@ -94,7 +95,7 @@ final class DoseSheetLogicRegressionTests: XCTestCase {
         var p=DoseSheetLogicProbe(medication:m,kg:4)
         XCTAssertTrue(p.supplySummary(days:2).contains("Blocked"))
         p.priorCourseHistoryConfirmed=true;p.priorCourseDoses=1
-        XCTAssertTrue(p.supplySummary(days:2).contains("quantity to dispense: 2"))
+        XCTAssertTrue(p.supplySummary(days:2).contains("Quantity: 2 tablets"))
         XCTAssertTrue(p.supplySummary(days:3).contains("Blocked"))
         XCTAssertTrue(p.supplySummary(days:30).contains("Blocked"))
         p.selectedFrequency = .q12h

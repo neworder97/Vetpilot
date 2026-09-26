@@ -564,7 +564,8 @@ final class FergusonVetPilotUITests: XCTestCase {
         XCTAssertTrue(quantity.label.contains("1 tablet(s)"))
         let supply = app.staticTexts["dose.supply.summary"]
         for _ in 0..<8 where !supply.isHittable { app.swipeUp() }
-        XCTAssertTrue(supply.label.contains("quantity to dispense: 7"))
+        XCTAssertTrue(supply.label.contains("Give 1 tablet PO q24 hours for 7 days"))
+        XCTAssertTrue(supply.label.contains("Quantity: 7 tablets"))
         let candidateShot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
         candidateShot.name = "Medication-candidate-first"; candidateShot.lifetime = .keepAlways; add(candidateShot)
         // A changed weight must clear the old calculated candidate, not show stale math.
