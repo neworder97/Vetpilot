@@ -59,6 +59,12 @@ enum MedicationSafety {
         return abs(value - nearest) <= tolerance ? nearest : value
     }
 
+    /// Absorb only binary noise at half-unit ties before nearest-whole rounding.
+    static func snapHalfBoundary(_ value: Double) -> Double {
+        let doubled = value * 2
+        return doubled.isFinite ? snapIntegerBoundary(doubled) / 2 : value
+    }
+
     static func dailyTotal(_ frequency: String) -> Bool {
         let value = frequency.lowercased()
         return value.contains("total daily dose") || value.contains("total daily amount")

@@ -208,9 +208,11 @@ final class FergusonVetPilotUITests: XCTestCase {
         calculate.tap()
         // This specific 25-mg strength cannot exactly deliver the fixed 22-mg
         // per-administration target. It must not become a dispense instruction.
-        let blocked = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "outside the selected dose range")).firstMatch
-        for _ in 0..<6 where !blocked.isHittable { app.swipeDown() }
+        let blocked = app.staticTexts["dose.candidate.rounded"]
+        _ = blocked.waitForExistence(timeout:3)
+        for _ in 0..<12 where !blocked.isHittable { app.swipeUp() }
         XCTAssertTrue(blocked.exists)
+        XCTAssertTrue(blocked.label.contains("outside the selected dose range"),blocked.label)
         let duration = app.buttons["dose.supply.7"]
         for _ in 0..<16 where !duration.isHittable { app.swipeDown() }
         XCTAssertTrue(duration.isHittable, "Rounding must not remove duration controls")

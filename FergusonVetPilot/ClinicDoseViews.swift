@@ -23,7 +23,7 @@ enum ClinicDoseMath {
         switch mode {
         case "Round down": return floor(q)
         case "Round up": return ceil(q)
-        case "Nearest whole": return q.rounded()
+        case "Nearest whole": return MedicationSafety.snapHalfBoundary(quantity).rounded()
         default: return quantity
         }
     }

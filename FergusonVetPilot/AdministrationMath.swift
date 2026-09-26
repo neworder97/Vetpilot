@@ -183,7 +183,7 @@ enum AdministrationMath {
         let rounded: Double
         switch rounding {
         case .down: rounded = floor(roundingInput)
-        case .nearest: rounded = roundingInput.rounded(.toNearestOrAwayFromZero)
+        case .nearest: rounded = MedicationSafety.snapHalfBoundary(raw).rounded(.toNearestOrAwayFromZero)
         case .up: rounded = ceil(roundingInput)
         }
         guard rounded.isFinite, (rounded * strengthMg).isFinite else { return nil }

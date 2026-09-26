@@ -103,4 +103,14 @@ final class AdministrationMathTests: XCTestCase {
         }
     }
 
+    func testHalfUnitTiesAbsorbOnlyBinaryNoise() throws {
+        for value in [1.5,1.5.nextDown,1.5.nextUp] {
+            XCTAssertEqual(try XCTUnwrap(AdministrationMath.solidPlan(targetMg:value,strengthMg:1,rounding:.nearest)).roundedUnits,2)
+            XCTAssertEqual(try XCTUnwrap(AdministrationMath.solidPlan(targetMg:value,strengthMg:1,rounding:.down)).roundedUnits,1)
+            XCTAssertEqual(ClinicDoseMath.roundedUnits(quantity:value,mode:"Nearest whole"),2)
+        }
+        XCTAssertEqual(try XCTUnwrap(AdministrationMath.solidPlan(targetMg:1.499999999,strengthMg:1,rounding:.nearest)).roundedUnits,1)
+        XCTAssertEqual(try XCTUnwrap(AdministrationMath.solidPlan(targetMg:1.500000001,strengthMg:1,rounding:.nearest)).roundedUnits,2)
+    }
+
 }
