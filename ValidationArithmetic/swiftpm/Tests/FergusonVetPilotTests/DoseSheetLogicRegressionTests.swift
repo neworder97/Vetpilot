@@ -152,21 +152,21 @@ final class DoseSheetLogicRegressionTests: XCTestCase {
     func testReadableQuantityTracksDoseLevelAndStrength() throws {
         let med = Medication(generic:"Quantity fixture",brand:"",drugClass:"",species:[.dog],form:.tablet,indication:"Test only",kind:.mgKg,minDose:2,maxDose:6,frequency:"q12h",route:"PO",notes:"",source:"Test only",strengths:[10,20],concentration:nil,controlled:false)
         var p = DoseSheetLogicProbe(medication:med,kg:10)
-        for (level, expected) in [(DoseSelectionLevel.low,"2 tablet(s)"),(.middle,"4 tablet(s)"),(.high,"6 tablet(s)")] {
+        for (level, expected) in [(DoseSelectionLevel.low,"Nearest whole: 2 whole tablet(s)"),(.middle,"Nearest whole: 4 whole tablet(s)"),(.high,"Nearest whole: 6 whole tablet(s)")] {
             p.selectedDoseLevel = level
             let text = try XCTUnwrap(p.readableAdministrationSummary)
             XCTAssertTrue(text.hasPrefix(expected),text)
             XCTAssertTrue(text.contains("q12h"),text)
         }
         p.selectedStrengthIndex = 1
-        XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).hasPrefix("3 tablet(s)"))
+        XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).hasPrefix("Nearest whole: 3 whole tablet(s)"))
     }
     func testReadableDailyTotalDividesBeforeDisplayingQuantity() throws {
         let med = Medication(generic:"Daily fixture",brand:"",drugClass:"",species:[.dog],form:.tablet,indication:"Test only",kind:.mgKg,minDose:4,maxDose:4,frequency:"q24h total daily dose",route:"PO",notes:"",source:"Test only",strengths:[20],concentration:nil,controlled:false)
         var p = DoseSheetLogicProbe(medication:med,kg:10)
-        XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).hasPrefix("2 tablet(s)"))
+        XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).hasPrefix("Nearest whole: 2 whole tablet(s)"))
         p.selectedFrequency = .q12h
-        XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).hasPrefix("1 tablet(s)"))
+        XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).hasPrefix("Nearest whole: 1 whole tablet(s)"))
     }
     func testReadableInjectionVolumeUsesSelectedDoseAndConcentration() throws {
         let med = Medication(generic:"Volume fixture",brand:"",drugClass:"",species:[.dog],form:.injection,indication:"Test only",kind:.mgKg,minDose:1,maxDose:3,frequency:"q12h",route:"SC",notes:"",source:"Test only",strengths:[],concentration:10,controlled:false)
@@ -183,7 +183,8 @@ final class DoseSheetLogicRegressionTests: XCTestCase {
     func testReadableCapsuleFractionDoesNotAuthorizeSplitting() throws {
         let med = Medication(generic:"Capsule fixture",brand:"",drugClass:"",species:[.dog],form:.capsule,indication:"Test only",kind:.mgKg,minDose:3,maxDose:3,frequency:"q12h",route:"PO",notes:"",source:"Test only",strengths:[20],concentration:nil,controlled:false)
         let p = DoseSheetLogicProbe(medication:med,kg:10)
-        XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).hasPrefix("1.5 capsule(s) equivalent"))
+        XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).hasPrefix("Nearest whole: 2 whole capsule(s)"))
+        XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).contains("1.5 capsule(s) equivalent"))
         XCTAssertTrue(try XCTUnwrap(p.readableAdministrationNote).contains("Do not split or open"))
     }
     func testReadableInfusionKeepsHourlyUnitsAndReviewWarning() throws {
@@ -197,5 +198,41 @@ final class DoseSheetLogicRegressionTests: XCTestCase {
         p.prescribedPotassiumRate = "0.6"
         XCTAssertNil(p.readableAdministrationSummary)
     }
+    func testAllSolidCatalogViewResultsFollowRoundingSelection() throws {
+        var checked = 0
+        for m in MedicationFormulations.organized where [.tablet,.capsule].contains(m.form) && m.generic != "Grapiprant" && m.generic != "Gabapentin" {
+            for species in m.species {
+                let presets = BuiltInProtocolCatalog.presets(for:m,species:species)
+                let branches: [BuiltInProtocolPreset?] = (m.kind == .protocolOnly ? [] : [nil]) + presets.map { Optional($0) }
+                for preset in branches {
+                    let definition = preset.map { MedicationFormulations.definition($0.definition,for:m) }
+                    var p = DoseSheetLogicProbe(medication:m,protocolDefinition:definition,selectedBuiltInPreset:preset,kg:10)
+                    for index in p.activeStrengths.indices {
+                        p.selectedStrengthIndex = index
+                        guard let target = p.administrationSelection, target.unit == "mg", let strength = p.selectedStrength, p.routeSupportsOralSolid else { continue }
+                        let raw = target.selected / strength
+                        let nearest = raw.rounded()
+                        let input = abs(raw-nearest)<1e-12 ? nearest : raw
+                        for (mode,expected) in [(SolidDoseRounding.down,floor(input)),(.nearest,input.rounded()),(.up,ceil(input)),(.down,floor(input))] {
+                            p.solidRounding = mode
+                            let plan = try XCTUnwrap(p.selectedSolidPlan,m.displayName)
+                            XCTAssertEqual(plan.roundedUnits,expected,m.displayName)
+                            XCTAssertEqual(plan.deliveredMg,expected * strength,accuracy:1e-10,m.displayName)
+                            let label = try XCTUnwrap(p.readableAdministrationSummary,m.displayName)
+                            XCTAssertTrue(label.hasPrefix(mode.rawValue + ": " + ClinicalData.format(expected) + " whole"),label)
+                            XCTAssertTrue(label.contains("Exact mathematical quantity:"),label)
+                            if !MedicationSafety.withinRange(plan.deliveredMg,target) {
+                                XCTAssertFalse(p.supplySummary(days:7).hasPrefix("Give "),m.displayName)
+                            }
+                            checked += 1
+                        }
+                    }
+                }
+            }
+        }
+        XCTAssertGreaterThan(checked,1000)
+        print("SOLID_VIEW_ROUNDING_AUDIT: \(checked) production view result cases")
+    }
+
 }
 

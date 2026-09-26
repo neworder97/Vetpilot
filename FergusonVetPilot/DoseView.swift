@@ -1184,7 +1184,7 @@ private struct DoseCalculatorSheet: View {
         if let solid = selectedSolidPlan, let selection = administrationSelection {
             if solid.roundedUnits == 0 { return "Zero whole units is not an administration plan. Verify a different strength or formulation." }
             if !MedicationSafety.withinRange(solid.deliveredMg, selection) {
-                return "Rounded candidate is outside the selected dose range — not an approved dispensing instruction. Verify a different strength, permitted tablet fraction or veterinarian-reviewed protocol."
+                return "Rounded candidate is outside the selected dose range — not an approved dispensing instruction. Verify a different strength, permitted tablet fraction or veterinarian-reviewed protocol." + (medication.form == .capsule ? " Do not split or open capsules from this calculation." : "")
             }
             let whole = MedicationSafety.snapIntegerBoundary(solid.rawUnits)
             if whole != whole.rounded() {
