@@ -207,8 +207,11 @@ final class DoseSheetLogicRegressionTests: XCTestCase {
                 for preset in branches {
                     let definition = preset.map { MedicationFormulations.definition($0.definition,for:m) }
                     var p = DoseSheetLogicProbe(medication:m,protocolDefinition:definition,selectedBuiltInPreset:preset,kg:10)
-                    for index in p.activeStrengths.indices {
+                    let indices = p.activeStrengths.isEmpty ? [0] : Array(p.activeStrengths.indices)
+                    for index in indices {
                         p.selectedStrengthIndex = index
+                        // User-entered test fixture only, never catalog dosing data.
+                        if p.activeStrengths.isEmpty { p.manualStrength = "25" }
                         guard let target = p.administrationSelection, target.unit == "mg", let strength = p.selectedStrength, p.routeSupportsOralSolid else { continue }
                         let raw = target.selected / strength
                         let nearest = raw.rounded()
@@ -232,6 +235,28 @@ final class DoseSheetLogicRegressionTests: XCTestCase {
         }
         XCTAssertGreaterThan(checked,1000)
         print("SOLID_VIEW_ROUNDING_AUDIT: \(checked) production view result cases")
+    }
+
+    func testManualSolidStrengthRejectsInvalidValuesWithoutFallback() throws {
+        let m = try XCTUnwrap(MedicationFormulations.organized.first { $0.generic == "Cisapride" })
+        let preset = try XCTUnwrap(BuiltInProtocolCatalog.presets(for:m,species:.dog).first)
+        var p = DoseSheetLogicProbe(medication:m,protocolDefinition:preset.definition,selectedBuiltInPreset:preset,kg:10)
+        XCTAssertTrue(p.activeStrengths.isEmpty)
+        XCTAssertNil(p.selectedSolidPlan)
+        for value in ["0","-5","nan","inf","1,5"] {
+            p.manualStrength = value
+            XCTAssertNotNil(p.strengthInputError)
+            XCTAssertNil(p.selectedSolidPlan)
+            XCTAssertNil(p.readableAdministrationSummary)
+        }
+        p.manualStrength = "5"
+        XCTAssertNil(p.strengthInputError)
+        let raw = try XCTUnwrap(p.administrationSelection).selected / 5
+        for mode in SolidDoseRounding.allCases {
+            p.solidRounding = mode
+            XCTAssertEqual(try XCTUnwrap(p.selectedSolidPlan).rawUnits,raw,accuracy:1e-12)
+            XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).hasPrefix(mode.rawValue))
+        }
     }
 
 }

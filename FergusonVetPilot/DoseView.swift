@@ -248,6 +248,7 @@ private struct DoseCalculatorSheet: View {
     @State private var patientWeight: String
     @State private var patientWeightUnit: String
     @State private var selectedStrengthIndex = 0
+    @State private var manualStrength = ""
     @State private var concentration = ""
     @State private var infusionConcentrationConfirmed = false
     @State private var prescribedPotassiumRate = ""
@@ -279,6 +280,10 @@ private struct DoseCalculatorSheet: View {
                         }
                         if let error = weightInputError {
                             result = DoseResult(available: false, headline: "Invalid weight", math: "", formulation: "", warning: error)
+                            return
+                        }
+                        if let error = strengthInputError {
+                            result = DoseResult(available: false, headline: "Invalid strength", math: "", formulation: "", warning: error)
                             return
                         }
                         if let error = concentrationInputError {
@@ -352,9 +357,15 @@ private struct DoseCalculatorSheet: View {
     }
 
     private var selectedStrength: Double? {
-        guard !activeStrengths.isEmpty,
-              activeStrengths.indices.contains(selectedStrengthIndex) else { return nil }
+        if activeStrengths.isEmpty { return MedicationSafety.parsePositive(manualStrength) }
+        guard activeStrengths.indices.contains(selectedStrengthIndex) else { return nil }
         return activeStrengths[selectedStrengthIndex]
+    }
+
+    private var strengthInputError: String? {
+        guard [.tablet,.capsule].contains(medication.form), activeStrengths.isEmpty,
+              !manualStrength.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+        return MedicationSafety.parsePositive(manualStrength) == nil ? "Enter a finite positive verified strength in mg per tablet or capsule. No default will be substituted." : nil
     }
 
     private var activeConcentration: Double? {
@@ -620,6 +631,16 @@ private struct DoseCalculatorSheet: View {
                     }
                 }
 
+                if [.tablet,.capsule].contains(medication.form) && activeStrengths.isEmpty && !usesGalliprantChart {
+                    Section("Verified product strength") {
+                        TextField("mg per tablet / capsule", text: $manualStrength)
+                            .keyboardType(.decimalPad)
+                            .accessibilityIdentifier("dose.strength.manual")
+                        Text("Enter the strength printed on the verified product label to calculate tablet/capsule quantity and rounding. No product strength is assumed.").font(.caption)
+                        if let error = strengthInputError { Text(error).foregroundStyle(AppTheme.orange) }
+                    }
+                }
+
                 let needsProtocolConcentration = protocolDefinition?.doseBasis.supportsConcentration == true && !(medication.formulation != nil && [.tablet, .capsule].contains(medication.form))
                 let needsMedicationConcentration = protocolDefinition == nil && [.liquid, .injection, .transdermal].contains(medication.form)
                 let requiredVolumeProtocolConcentration: Double? = {
@@ -775,7 +796,7 @@ private struct DoseCalculatorSheet: View {
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
-                                        .disabled(prescribedRateInputError != nil || weightInputError != nil || !numericWeight.isFinite || numericWeight < 0 || ((protocolDefinition?.doseBasis.requiresWeight ?? true) && numericWeight <= 0) || concentrationInputError != nil || (medication.kind == .protocolOnly && protocolDefinition == nil))
+                                        .disabled(strengthInputError != nil || prescribedRateInputError != nil || weightInputError != nil || !numericWeight.isFinite || numericWeight < 0 || ((protocolDefinition?.doseBasis.requiresWeight ?? true) && numericWeight <= 0) || concentrationInputError != nil || (medication.kind == .protocolOnly && protocolDefinition == nil))
                     .accessibilityIdentifier("dose.calculate")
                 }
 
@@ -996,6 +1017,7 @@ private struct DoseCalculatorSheet: View {
             .onChange(of: selectedStrengthIndex) { _, _ in
                 result = nil
             }
+            .onChange(of: manualStrength) { _, _ in result = nil }
             .onChange(of: concentration) { _, _ in
                 infusionConcentrationConfirmed = false
                 result = nil
@@ -1035,6 +1057,7 @@ private struct DoseCalculatorSheet: View {
                 supplyDays = nil
                 selectedFrequency = .recommended
                 selectedStrengthIndex = 0
+                manualStrength = ""
                 if let c = protocolDefinition?.concentration {
                     concentration = MedicationSafety.input(c)
                 } else if medication.kind == .protocolOnly {
@@ -1048,6 +1071,7 @@ private struct DoseCalculatorSheet: View {
                 infusionConcentrationConfirmed = false
                 result = nil
                 selectedStrengthIndex = 0
+                manualStrength = ""
                 if let c = protocolDefinition?.concentration {
                     concentration = MedicationSafety.input(c)
                 } else if medication.kind == .protocolOnly {
@@ -1157,7 +1181,7 @@ private struct DoseCalculatorSheet: View {
     // An additive rendering of the existing selected-dose math, never a new
     // dosing rule or permission to split a tablet/capsule.
     private var readableAdministrationSummary: String? {
-        guard weightInputError == nil, concentrationInputError == nil,
+        guard weightInputError == nil, concentrationInputError == nil, strengthInputError == nil,
               let dose = administrationSelection else { return nil }
         if usesGalliprantChart, let chart = galliprantPlan {
             return "\(ClinicalData.format(chart.units)) tablet(s) of \(ClinicalData.format(chart.strengthMg)) mg • \(activeFrequencyLabel)\nProduct-chart amount: \(ClinicalData.format(chart.deliveredMg)) mg per administration"

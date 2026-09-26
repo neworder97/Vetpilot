@@ -96,6 +96,34 @@ final class FergusonVetPilotUITests: XCTestCase {
         XCTAssertEqual(app.state, .runningForeground)
     }
 
+    func testManualCapsuleStrengthAndLiveRounding() throws {
+        let search = app.textFields["Search medications…"]
+        search.tap(); search.typeText("Cisapride")
+        let medication = app.staticTexts["Cisapride (compounded)"].firstMatch
+        XCTAssertTrue(medication.waitForExistence(timeout:4)); medication.tap()
+        app.segmentedControls.buttons["kg"].tap()
+        let weight = app.textFields["dose.sheet.weight"]
+        weight.tap(); weight.typeText("25"); app.buttons["dose.keyboard.done"].tap()
+        let strength = app.textFields["dose.strength.manual"]
+        for _ in 0..<12 where !strength.isHittable { app.swipeUp() }
+        XCTAssertTrue(strength.isHittable); strength.tap(); strength.typeText("2")
+        app.buttons["dose.keyboard.done"].tap()
+        let calculate = app.buttons["dose.calculate"]
+        for _ in 0..<16 where !calculate.isHittable { app.swipeUp() }
+        XCTAssertTrue(calculate.isEnabled); calculate.tap()
+        let quantity = app.staticTexts["dose.result.quantity"]
+        for _ in 0..<8 where !quantity.isHittable { app.swipeUp() }
+        XCTAssertTrue(quantity.exists)
+        for (mode,units) in [("Round up","2 whole capsule(s)"),("Round down","1 whole capsule(s)"),("Nearest whole","1 whole capsule(s)")] {
+            let rounding = app.segmentedControls["dose.rounding"]
+            for _ in 0..<16 where !rounding.isHittable { app.swipeDown() }
+            XCTAssertTrue(rounding.isHittable); rounding.buttons[mode].tap()
+            for _ in 0..<16 where !quantity.isHittable { app.swipeUp() }
+            XCTAssertTrue(quantity.label.contains(units),quantity.label)
+            XCTAssertTrue(quantity.label.contains(mode),quantity.label)
+        }
+    }
+
     func testCoreVetPilotFlow() throws {
         XCTAssertTrue(app.staticTexts["VetPilot"].exists)
         XCTAssertTrue(app.tabBars.buttons["Dose"].exists)
