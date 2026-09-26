@@ -204,8 +204,25 @@ final class FergusonVetPilotUITests: XCTestCase {
         for _ in 0..<5 where !overrideWarning.isHittable { app.swipeUp() }
         XCTAssertTrue(overrideWarning.exists)
 
-        for _ in 0..<12 where !calculate.isHittable { app.swipeUp() }
-        calculate.tap()
+        // Lazy Form rows can report isHittable while clipped or behind the
+        // navigation bar. Verify the full button is in the sheet viewport.
+        for _ in 0..<24 {
+            if calculate.exists && calculate.isHittable && calculate.frame.minY >= 150 && calculate.frame.maxY <= app.frame.maxY - 50 { break }
+            let up = !calculate.exists || calculate.frame.maxY > app.frame.maxY - 50
+            let start = app.coordinate(withNormalizedOffset: CGVector(dx:0.5,dy:up ? 0.72 : 0.4))
+            let end = app.coordinate(withNormalizedOffset: CGVector(dx:0.5,dy:up ? 0.4 : 0.72))
+            start.press(forDuration:0.05,thenDragTo:end)
+        }
+        XCTAssertTrue(calculate.exists && calculate.isHittable)
+        XCTAssertGreaterThanOrEqual(calculate.frame.minY,150)
+        XCTAssertLessThanOrEqual(calculate.frame.maxY,app.frame.maxY - 50)
+        XCTAssertTrue(calculate.isEnabled)
+        print("CARPROFEN_Q12_CALCULATE_FRAME=\(calculate.frame)")
+        calculate.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:0.5)).tap()
+        let q12Amount = app.staticTexts["dose.candidate.amount"]
+        XCTAssertTrue(q12Amount.waitForExistence(timeout:5),app.debugDescription)
+        XCTAssertTrue(q12Amount.label.contains("22 mg"),q12Amount.label)
+        XCTAssertTrue(q12Amount.label.contains("q12h"),q12Amount.label)
         // This specific 25-mg strength cannot exactly deliver the fixed 22-mg
         // per-administration target. It must not become a dispense instruction.
         let blocked = app.staticTexts["dose.candidate.rounded"]
