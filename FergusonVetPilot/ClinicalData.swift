@@ -837,15 +837,8 @@ enum MedicationFormulations {
       "protocolRoutes": {
         "hydroxyzine-dog-1": "PO",
         "hydroxyzine-cat-1": "PO"
-      }
-    },
-    {
-      "form": "Injection",
-      "label": "Injection",
-      "protocolRoutes": {
-        "hydroxyzine-dog-1": "IV",
-        "hydroxyzine-cat-1": "IV"
-      }
+      },
+      "productSource": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=7279ad5a-0a49-432d-8fa2-17e4c6ecbadc"
     }
   ],
   "Cyclophosphamide": [
@@ -863,7 +856,7 @@ enum MedicationFormulations {
       "form": "Injection",
       "label": "Injection",
       "protocolRoutes": {
-        "cyclophosphamide-cat-1": "IV or"
+        "cyclophosphamide-cat-1": "IV"
       }
     }
   ],

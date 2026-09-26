@@ -429,7 +429,7 @@ private struct DoseCalculatorSheet: View {
         if recommendedFrequency.lowercased().contains("total per week") {
             return "Weekly totals require a separately reviewed cycle schedule; a daily-frequency override is not valid."
         }
-        let route = activeRoute.uppercased()
+        let route = ((protocolDefinition?.medicationKey.hasPrefix("builtin|") == true ? selectedBuiltInPreset?.route : nil) ?? activeRoute).uppercased()
         if (route.contains("PO") || route.contains("ORAL")) && ["IV", "IM", "SC"].contains(where: route.contains) {
             return "Mixed oral/injectable entry: confirm one route and its matching product concentration in a route-specific protocol."
         }
