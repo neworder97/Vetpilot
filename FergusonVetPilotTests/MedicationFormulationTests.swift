@@ -56,4 +56,21 @@ final class MedicationFormulationTests: XCTestCase {
             XCTAssertEqual(definition.maxDose, 5)
         }
     }
+    func testReleaseBranchesAndInjectionDefaultsRemainDistinct() {
+        for medication in MedicationFormulations.organized {
+            for species in medication.species {
+                for preset in BuiltInProtocolCatalog.presets(for: medication, species: species) {
+                    let definition = MedicationFormulations.definition(preset.definition, for: medication)
+                    if medication.formulation?.keepProtocolConcentration == true {
+                        XCTAssertEqual(definition.concentration, preset.concentration, preset.id)
+                    }
+                    if ["Levetiracetam", "Diltiazem"].contains(medication.generic), medication.form != .injection {
+                        let isER = medication.formulation?.label.contains("extended release") == true
+                        XCTAssertEqual(preset.label.lowercased().contains("extended-release") || preset.label.lowercased().contains("extended release"), isER, preset.id)
+                    }
+                }
+            }
+        }
+    }
+
 }

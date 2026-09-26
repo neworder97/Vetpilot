@@ -429,7 +429,7 @@ private struct DoseCalculatorSheet: View {
         if recommendedFrequency.lowercased().contains("total per week") {
             return "Weekly totals require a separately reviewed cycle schedule; a daily-frequency override is not valid."
         }
-        let route = ((protocolDefinition?.medicationKey.hasPrefix("builtin|") == true ? selectedBuiltInPreset?.route : nil) ?? activeRoute).uppercased()
+        let route = ((medication.formulation != nil && protocolDefinition?.medicationKey.hasPrefix("builtin|") == true ? selectedBuiltInPreset?.route : nil) ?? activeRoute).uppercased()
         if (route.contains("PO") || route.contains("ORAL")) && ["IV", "IM", "SC"].contains(where: route.contains) {
             return "Mixed oral/injectable entry: confirm one route and its matching product concentration in a route-specific protocol."
         }
@@ -596,13 +596,25 @@ private struct DoseCalculatorSheet: View {
                 }
 
                 if let source = medication.formulation?.productSource, let url = URL(string: source) {
-                    Section("Product strength source") { Link("Official product label", destination: url) }
+                    Section("Product strength source") {
+                        if let sources = medication.formulation?.productSources, sources.count > 1 {
+                            DisclosureGroup("Product label references") {
+                                ForEach(Array(sources.enumerated()), id: \.offset) { index, source in
+                                    if let labelURL = URL(string: source) { Link("Product label \(index + 1)", destination: labelURL) }
+                                }
+                            }
+                        } else { Link("Official product label", destination: url) }
+                        Text("Verify the exact product, release type and route. For prepared liquids and infusions, use the verified final concentration.").font(.caption).foregroundStyle(.secondary)
+                    }
                 }
                 if !activeStrengths.isEmpty {
                     Section("Product strength") {
-                        Picker("Strength", selection: $selectedStrengthIndex) {
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 90))], spacing: 8) {
                             ForEach(Array(activeStrengths.enumerated()), id: \.offset) { index, value in
-                                Text("\(ClinicalData.format(value)) mg").tag(index)
+                                Button("\(MedicationSafety.input(value)) mg") { selectedStrengthIndex = index }
+                                    .buttonStyle(.bordered)
+                                    .tint(selectedStrengthIndex == index ? AppTheme.blue : .secondary)
+                                    .accessibilityAddTraits(selectedStrengthIndex == index ? .isSelected : [])
                             }
                         }
                     }
@@ -631,9 +643,9 @@ private struct DoseCalculatorSheet: View {
                                 .font(.footnote.bold())
                         }
                         if let values = medication.formulation?.concentrations {
-                            HStack {
+                            LazyVGrid(columns: [GridItem(.adaptive(minimum: 110))], spacing: 8) {
                                 ForEach(values, id: \.self) { value in
-                                    Button("\(ClinicalData.format(value)) mg/mL") { concentration = MedicationSafety.input(value) }
+                                    Button("\(MedicationSafety.input(value)) mg/mL") { concentration = MedicationSafety.input(value) }
                                         .buttonStyle(.bordered)
                                         .tint(activeConcentration == value ? AppTheme.blue : .secondary)
                                 }
