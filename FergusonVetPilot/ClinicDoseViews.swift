@@ -30,13 +30,15 @@ struct ClinicGabapentinView: View {
     let species: Species
     @State var weight: String
     @State var unit: String
+    var lockedForm: String? = nil
     @State private var purpose = "Pain"
     @State private var sedation = 0.0
     @State private var strength = ""
     @State private var formulation = "Capsule"
     @State private var interval = 0
     @State private var days = ""
-    private var listedStrengths: [Int] { formulation == "Capsule" ? [100,300,400] : [600,800] }
+    private var selectedForm: String { lockedForm ?? formulation }
+    private var listedStrengths: [Int] { selectedForm == "Capsule" ? [100,300,400] : [600,800] }
     @Environment(\.dismiss) private var dismiss
     private var dose: Double { purpose == "Pain" ? 15 : purpose == "Fractious" ? 50 : sedation }
     private var calculation: (kg: Double, mg: Double, quantity: Double?)? {
@@ -65,7 +67,9 @@ struct ClinicGabapentinView: View {
                 Section("Patient and formulation") {
                     TextField("Patient weight", text: $weight).keyboardType(.decimalPad).accessibilityIdentifier("dose.sheet.weight")
                     Picker("Weight unit", selection: $unit) { Text("lb").tag("lb"); Text("kg").tag("kg") }.pickerStyle(.segmented)
-                    Picker("Formulation", selection: $formulation) { Text("Capsule").tag("Capsule"); Text("Tablet").tag("Tablet") }.pickerStyle(.segmented)
+                    if let lockedForm { Text("Formulation: \(lockedForm)") } else {
+                        Picker("Formulation", selection: $formulation) { Text("Capsule").tag("Capsule"); Text("Tablet").tag("Tablet") }.pickerStyle(.segmented)
+                    }
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 90))]) {
                         ForEach(listedStrengths, id: \.self) { mg in
                             Button("\(mg) mg") { strength = String(mg) }
@@ -97,10 +101,10 @@ struct ClinicGabapentinView: View {
                         Text("\(MedicationSafety.display(c.mg)) mg").font(.title2.bold()).accessibilityIdentifier("gabapentin.amount")
                         Text("\(MedicationSafety.display(c.kg)) kg × \(MedicationSafety.display(dose)) mg/kg = \(MedicationSafety.display(c.mg)) mg")
                         if let quantity = c.quantity {
-                            Text("\(MedicationSafety.display(quantity)) \(formulation.lowercased())(s) at \(strength) mg each").accessibilityIdentifier("gabapentin.quantity")
+                            Text("\(MedicationSafety.display(quantity)) \(selectedForm.lowercased())(s) at \(strength) mg each").accessibilityIdentifier("gabapentin.quantity")
                             Text("Quantity = \(MedicationSafety.display(c.mg)) mg ÷ \(strength) mg. Exact mathematical quantity; confirm permitted tablet splitting. Do not interpret a fractional capsule as an instruction to divide its contents.").font(.footnote)
                             if let course = ClinicDoseMath.course(quantity: quantity, hours: interval, days: Int(days) ?? 0) {
-                                Text("Course: \(course.administrations) administrations · \(MedicationSafety.display(course.units)) \(formulation.lowercased()) equivalents in total").accessibilityIdentifier("gabapentin.course")
+                                Text("Course: \(course.administrations) administrations · \(MedicationSafety.display(course.units)) \(selectedForm.lowercased()) equivalents in total").accessibilityIdentifier("gabapentin.course")
                                 Text("Exact course arithmetic before dispensing rounding. Verify the actual administered units and prescribed duration.").font(.footnote)
                             } else if !days.isEmpty { Text("Select the prescribed frequency and a whole number of days (1–3650) to calculate course quantity.").font(.footnote) }
                         } else { Text("Enter verified strength to calculate tablets/capsules.") }

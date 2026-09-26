@@ -2154,7 +2154,16 @@ enum BuiltInProtocolCatalog {
     ]
 
     static func presets(for medication: Medication, species: Species) -> [BuiltInProtocolPreset] {
-        all.filter { $0.species == species && $0.generic.caseInsensitiveCompare(medication.generic) == .orderedSame }
+        if medication.formulation?.bonqat == true {
+            guard species == .cat else { return [] }
+            return [BuiltInProtocolPreset(id: "pregabalin-cat-bonqat", generic: "Pregabalin", species: .cat,
+                label: "Bonqat: transport / veterinary visit anxiety", doseBasis: .mgKg, minDose: 5, maxDose: 5,
+                frequency: "once approximately 90 min before transport or veterinary visit", route: "PO", strengths: [], concentration: 50,
+                sourceReference: "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4f7f35b4-59ec-4a3c-8c71-d28cf0c4f0eb",
+                notes: "Bonqat 50 mg/mL oral solution for cats only. Single 5 mg/kg dose (0.1 mL/kg), approximately 1.5 hours before transport or veterinary visit; may be given on two consecutive days. This labeled regimen is separate from extra-label pregabalin protocols. Review label precautions and concurrent CNS depressants.",
+                confidence: "Manufacturer label", highRisk: true)]
+        }
+        return all.filter { $0.species == species && $0.generic.caseInsensitiveCompare(medication.generic) == .orderedSame && (medication.formulation?.protocolRoutes == nil || medication.formulation?.protocolRoutes?[$0.id] != nil) }
     }
 
     static func hasPreset(for medication: Medication, species: Species) -> Bool {

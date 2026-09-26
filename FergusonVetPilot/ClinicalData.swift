@@ -43,9 +43,11 @@ struct Medication: Identifiable, Hashable {
     let strengths: [Double]
     let concentration: Double?
     let controlled: Bool
+    var formulation: MedicationFormulation? = nil
 
     var displayName: String {
-        brand.isEmpty ? generic : "\(generic) (\(brand))"
+        let name = formulation.map { "\(generic) · \($0.label)" } ?? generic
+        return brand.isEmpty ? name : "\(name) (\(brand))"
     }
 
     func supports(_ species: Species) -> Bool { self.species.contains(species) }
@@ -369,7 +371,7 @@ enum ClinicalData {
 
     static func searchMedications(query: String, species: Species, form: MedicationForm) -> [Medication] {
         let needle = query.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        return medications.filter { m in
+        return MedicationFormulations.organized.filter { m in
             guard m.supports(species) else { return false }
             guard form == .any || m.form == form else { return false }
             if needle.isEmpty { return true }
@@ -470,3 +472,454 @@ enum ClinicalData {
     }
 }
 
+
+
+// Product form organization only. Canonical clinical protocols remain unchanged.
+struct MedicationFormulation: Codable, Hashable {
+    let form: String
+    let label: String
+    var brand: String? = nil
+    var protocolRoutes: [String: String]? = nil
+    var strengths: [Double]? = nil
+    var concentrations: [Double]? = nil
+    var productSource: String? = nil
+    var bonqat: Bool? = nil
+}
+
+enum MedicationFormulations {
+    static let rules: [String: [MedicationFormulation]] = {
+        let json = #"""
+{
+  "Levetiracetam": [
+    {
+      "form": "Tablet",
+      "label": "Tablet",
+      "protocolRoutes": {
+        "levetiracetam-dog-1": "PO",
+        "levetiracetam-dog-2": "PO \u2014 ER tablet whole",
+        "levetiracetam-cat-1": "PO",
+        "levetiracetam-cat-2": "PO \u2014 ER tablet whole"
+      }
+    },
+    {
+      "form": "Injection",
+      "label": "Injection",
+      "protocolRoutes": {
+        "levetiracetam-dog-3": "IV",
+        "levetiracetam-cat-3": "IV"
+      }
+    }
+  ],
+  "Famotidine": [
+    {
+      "form": "Tablet",
+      "label": "Tablet",
+      "protocolRoutes": {
+        "famotidine-dog-1": "PO",
+        "famotidine-cat-1": "PO"
+      }
+    },
+    {
+      "form": "Injection",
+      "label": "Injection",
+      "protocolRoutes": {
+        "famotidine-dog-1": "IV"
+      }
+    }
+  ],
+  "Ondansetron": [
+    {
+      "form": "Tablet",
+      "label": "Tablet",
+      "protocolRoutes": {
+        "ondansetron-dog-1": "PO",
+        "ondansetron-cat-1": "PO"
+      }
+    },
+    {
+      "form": "Injection",
+      "label": "Injection",
+      "protocolRoutes": {
+        "ondansetron-dog-2": "IV",
+        "ondansetron-cat-2": "IV"
+      }
+    }
+  ],
+  "Diphenhydramine": [
+    {
+      "form": "Tablet",
+      "label": "Tablet",
+      "protocolRoutes": {
+        "diphenhydramine-dog-1": "PO",
+        "diphenhydramine-cat-1": "PO"
+      }
+    },
+    {
+      "form": "Injection",
+      "label": "Injection",
+      "protocolRoutes": {
+        "diphenhydramine-dog-1": "IM/SC",
+        "diphenhydramine-cat-1": "IM/SC"
+      }
+    }
+  ],
+  "Cetirizine": [
+    {
+      "form": "Tablet",
+      "label": "Tablet",
+      "protocolRoutes": {
+        "cetirizine-dog-1": "PO",
+        "cetirizine-dog-2": "PO",
+        "cetirizine-cat-1": "PO",
+        "cetirizine-cat-2": "PO"
+      }
+    },
+    {
+      "form": "Liquid",
+      "label": "Oral solution",
+      "protocolRoutes": {
+        "cetirizine-dog-1": "PO",
+        "cetirizine-dog-2": "PO",
+        "cetirizine-cat-1": "PO",
+        "cetirizine-cat-2": "PO"
+      },
+      "concentrations": [
+        1
+      ]
+    }
+  ],
+  "Furosemide": [
+    {
+      "form": "Injection",
+      "label": "Injection",
+      "protocolRoutes": {
+        "furosemide-dog-1": "IV/IM",
+        "furosemide-dog-3": "IV CRI",
+        "furosemide-cat-1": "IV/IM",
+        "furosemide-cat-3": "IV CRI"
+      }
+    },
+    {
+      "form": "Tablet",
+      "label": "Tablet",
+      "protocolRoutes": {
+        "furosemide-dog-2": "PO",
+        "furosemide-cat-2": "PO"
+      }
+    }
+  ],
+  "Amoxicillin": [
+    {
+      "form": "Capsule",
+      "label": "Capsule",
+      "protocolRoutes": {
+        "amoxicillin-dog-1": "PO",
+        "amoxicillin-cat-1": "PO"
+      }
+    },
+    {
+      "form": "Injection",
+      "label": "Injection",
+      "protocolRoutes": {
+        "amoxicillin-dog-1": "SC/IV",
+        "amoxicillin-cat-1": "SC/IV"
+      }
+    }
+  ],
+  "Enrofloxacin": [
+    {
+      "form": "Tablet",
+      "label": "Tablet",
+      "protocolRoutes": {
+        "enrofloxacin-dog-1": "PO",
+        "enrofloxacin-cat-1": "PO"
+      }
+    },
+    {
+      "form": "Injection",
+      "label": "Injection",
+      "protocolRoutes": {
+        "enrofloxacin-dog-1": "IV/SC",
+        "enrofloxacin-cat-1": "IV/SC"
+      }
+    }
+  ],
+  "Orbifloxacin": [
+    {
+      "form": "Tablet",
+      "label": "Tablet",
+      "protocolRoutes": {
+        "orbifloxacin-dog-1": "PO tablet",
+        "orbifloxacin-cat-1": "PO tablet"
+      }
+    },
+    {
+      "form": "Liquid",
+      "label": "Oral suspension",
+      "protocolRoutes": {
+        "orbifloxacin-dog-2": "PO suspension",
+        "orbifloxacin-cat-2": "PO suspension"
+      }
+    }
+  ],
+  "Pantoprazole": [
+    {
+      "form": "Tablet",
+      "label": "Tablet",
+      "protocolRoutes": {
+        "pantoprazole-dog-1": "PO",
+        "pantoprazole-cat-1": "PO"
+      }
+    },
+    {
+      "form": "Injection",
+      "label": "Injection",
+      "protocolRoutes": {
+        "pantoprazole-dog-1": "IV",
+        "pantoprazole-cat-1": "IV"
+      }
+    }
+  ],
+  "Metoclopramide": [
+    {
+      "form": "Tablet",
+      "label": "Tablet",
+      "protocolRoutes": {
+        "metoclopramide-dog-1": "PO",
+        "metoclopramide-cat-1": "PO"
+      }
+    },
+    {
+      "form": "Injection",
+      "label": "Injection",
+      "protocolRoutes": {
+        "metoclopramide-dog-1": "SC/IM",
+        "metoclopramide-dog-2": "IV CRI",
+        "metoclopramide-cat-1": "SC/IM",
+        "metoclopramide-cat-2": "IV CRI"
+      }
+    }
+  ],
+  "Dexamethasone": [
+    {
+      "form": "Tablet",
+      "label": "Tablet",
+      "protocolRoutes": {
+        "dexamethasone-dog-1": "PO",
+        "dexamethasone-cat-1": "PO"
+      }
+    },
+    {
+      "form": "Injection",
+      "label": "Injection",
+      "protocolRoutes": {
+        "dexamethasone-dog-2": "IV",
+        "dexamethasone-cat-2": "IV"
+      }
+    }
+  ],
+  "Methylprednisolone": [
+    {
+      "form": "Tablet",
+      "label": "Tablet",
+      "protocolRoutes": {
+        "methylprednisolone-cat-1": "PO",
+        "methylprednisolone-dog-1": "PO"
+      }
+    },
+    {
+      "form": "Injection",
+      "label": "Injection",
+      "protocolRoutes": {
+        "methylprednisolone-cat-2": "IM"
+      }
+    }
+  ],
+  "Hydralazine": [
+    {
+      "form": "Tablet",
+      "label": "Tablet",
+      "protocolRoutes": {
+        "hydralazine-dog-1": "PO",
+        "hydralazine-dog-2": "PO"
+      }
+    },
+    {
+      "form": "Injection",
+      "label": "Injection",
+      "protocolRoutes": {
+        "hydralazine-cat-1": "SC"
+      }
+    }
+  ],
+  "Pregabalin": [
+    {
+      "form": "Capsule",
+      "label": "Capsule",
+      "protocolRoutes": {
+        "pregabalin-dog-1": "PO",
+        "pregabalin-cat-1": "PO",
+        "pregabalin-cat-2": "PO"
+      },
+      "strengths": [
+        25,
+        50,
+        75,
+        100,
+        150,
+        200,
+        225,
+        300
+      ],
+      "productSource": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d4734e7d-5079-455e-8ff5-8f4539c998a9"
+    },
+    {
+      "form": "Liquid",
+      "label": "Oral solution \u00b7 20 mg/mL",
+      "protocolRoutes": {
+        "pregabalin-dog-1": "PO",
+        "pregabalin-cat-1": "PO",
+        "pregabalin-cat-2": "PO"
+      },
+      "concentrations": [
+        20
+      ],
+      "productSource": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d4734e7d-5079-455e-8ff5-8f4539c998a9"
+    },
+    {
+      "form": "Liquid",
+      "label": "Compounded oral suspension",
+      "protocolRoutes": {
+        "pregabalin-dog-1": "PO",
+        "pregabalin-cat-1": "PO",
+        "pregabalin-cat-2": "PO"
+      },
+      "concentrations": [],
+      "productSource": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d4734e7d-5079-455e-8ff5-8f4539c998a9",
+      "brand": "Compounded"
+    },
+    {
+      "form": "Liquid",
+      "label": "Oral solution \u00b7 Bonqat 50 mg/mL",
+      "protocolRoutes": {
+        "pregabalin-cat-bonqat": "PO"
+      },
+      "concentrations": [
+        50
+      ],
+      "bonqat": true,
+      "productSource": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4f7f35b4-59ec-4a3c-8c71-d28cf0c4f0eb",
+      "brand": "Bonqat"
+    }
+  ],
+  "Methocarbamol": [
+    {
+      "form": "Tablet",
+      "label": "Tablet",
+      "protocolRoutes": {
+        "methocarbamol-dog-1": "PO",
+        "methocarbamol-cat-1": "PO"
+      }
+    },
+    {
+      "form": "Injection",
+      "label": "Injection",
+      "protocolRoutes": {
+        "methocarbamol-dog-2": "IV",
+        "methocarbamol-cat-2": "IV"
+      }
+    }
+  ],
+  "Hydroxyzine": [
+    {
+      "form": "Tablet",
+      "label": "Tablet",
+      "protocolRoutes": {
+        "hydroxyzine-dog-1": "PO",
+        "hydroxyzine-cat-1": "PO"
+      }
+    },
+    {
+      "form": "Injection",
+      "label": "Injection",
+      "protocolRoutes": {
+        "hydroxyzine-dog-1": "IV",
+        "hydroxyzine-cat-1": "IV"
+      }
+    }
+  ],
+  "Cyclophosphamide": [
+    {
+      "form": "Tablet",
+      "label": "Tablet",
+      "protocolRoutes": {
+        "cyclophosphamide-dog-1": "PO",
+        "cyclophosphamide-dog-2": "PO",
+        "cyclophosphamide-cat-1": "PO",
+        "cyclophosphamide-cat-2": "PO"
+      }
+    },
+    {
+      "form": "Injection",
+      "label": "Injection",
+      "protocolRoutes": {
+        "cyclophosphamide-cat-1": "IV or"
+      }
+    }
+  ],
+  "Gabapentin": [
+    {
+      "form": "Capsule",
+      "label": "Capsule",
+      "strengths": [
+        100,
+        300,
+        400
+      ]
+    },
+    {
+      "form": "Tablet",
+      "label": "Tablet",
+      "strengths": [
+        600,
+        800
+      ]
+    }
+  ]
+}
+"""#
+        return try! JSONDecoder().decode([String: [MedicationFormulation]].self, from: Data(json.utf8))
+    }()
+    static let organized: [Medication] = ClinicalData.medications.flatMap { original in
+        guard let variants = rules[original.generic] else { return [original] }
+        return variants.map { variant in
+            let form = MedicationForm(rawValue: variant.form)!
+            var medication = Medication(generic: original.generic, brand: variant.brand ?? original.brand,
+                drugClass: original.drugClass, species: variant.bonqat == true ? [.cat] : Set(original.species.filter { species in
+                    variant.protocolRoutes == nil || BuiltInProtocolCatalog.all.contains { $0.species == species && variant.protocolRoutes?[$0.id] != nil }
+                }), form: form,
+                indication: original.indication, kind: original.kind, minDose: original.minDose,
+                maxDose: original.maxDose, frequency: original.frequency, route: original.route,
+                notes: original.notes, source: original.source,
+                strengths: variant.strengths ?? (form == original.form ? original.strengths : []),
+                concentration: variant.concentrations?.first ?? (form == original.form ? original.concentration : nil),
+                controlled: original.controlled)
+            medication.formulation = variant
+            return medication
+        }
+    }
+    static func definition(_ definition: ProtocolMedicationDefinition, for medication: Medication) -> ProtocolMedicationDefinition {
+        guard let variant = medication.formulation else { return definition }
+        var result = definition
+        let id = result.medicationKey.replacingOccurrences(of: "builtin|", with: "")
+        result.route = variant.protocolRoutes?[id] ?? result.route
+        if [.tablet, .capsule].contains(medication.form) {
+            result.strengths = variant.strengths ?? result.strengths
+            result.concentration = nil
+        } else {
+            result.strengths = []
+            result.concentration = variant.concentrations?.first ?? (medication.generic == "Pregabalin" ? nil : result.concentration)
+        }
+        return result
+    }
+}

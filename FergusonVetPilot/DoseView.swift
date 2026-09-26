@@ -8,6 +8,7 @@ struct DoseView: View {
     @State private var weightUnit = "lb"
     @State private var form: MedicationForm = .any
     @State private var search = ""
+    @State private var catalogGroup = "All medications"
     @State private var selectedMedication: Medication?
     @State private var showCustomMedications = false
     @ObservedObject var customStore: CustomMedicationStore
@@ -15,10 +16,10 @@ struct DoseView: View {
     @FocusState private var focusedField: DoseField?
 
     private var medications: [Medication] {
-        let builtIn = ClinicalData.searchMedications(query: search, species: species, form: form)
+        let builtIn = ClinicalData.searchMedications(query: search, species: species, form: form).filter(matchesCatalogGroup)
         let needle = search.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         let custom = customStore.definitions.map(\.asMedication).filter { med in
-            guard med.supports(species) else { return false }
+            guard med.supports(species), matchesCatalogGroup(med) else { return false }
             guard form == .any || med.form == form else { return false }
             if needle.isEmpty { return true }
             return [med.generic, med.brand, med.drugClass, med.indication]
@@ -28,6 +29,16 @@ struct DoseView: View {
         }
         return (builtIn + custom).sorted {
             $0.displayName.localizedCaseInsensitiveCompare($1.displayName) == .orderedAscending
+        }
+    }
+
+    private func matchesCatalogGroup(_ medication: Medication) -> Bool {
+        switch catalogGroup {
+        case "Tablets / capsules": return [.tablet, .capsule].contains(medication.form)
+        case "Oral solutions / suspensions": return medication.form == .liquid
+        case "Injections": return medication.form == .injection
+        case "Other forms": return ![.tablet, .capsule, .liquid, .injection].contains(medication.form)
+        default: return true
         }
     }
 
@@ -44,6 +55,18 @@ struct DoseView: View {
                             .foregroundStyle(.secondary)
                     }
 
+                    DisclosureGroup("Medication catalog · \(catalogGroup)") {
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
+                        ForEach(["All medications", "Tablets / capsules", "Oral solutions / suspensions", "Injections", "Other forms"], id: \.self) { category in
+                            Button(category) { catalogGroup = category; form = .any; selectedMedication = nil }
+                                .buttonStyle(.bordered)
+                                .tint(catalogGroup == category ? AppTheme.blue : .secondary)
+                                .accessibilityIdentifier("dose.catalog.\(category)")
+                                .accessibilityAddTraits(catalogGroup == category ? .isSelected : [])
+                        }
+                    }
+                    }
+                    .tint(AppTheme.blue)
                     Picker("Species", selection: $species) {
                         ForEach(Species.allCases) { s in Text(s.rawValue).tag(s) }
                     }
@@ -316,7 +339,8 @@ private struct DoseCalculatorSheet: View {
     }
 
     private var protocolDefinition: ProtocolMedicationDefinition? {
-        clinicOverride ?? selectedBuiltInPreset?.definition
+        if let clinicOverride { return clinicOverride }
+        return selectedBuiltInPreset.map { MedicationFormulations.definition($0.definition, for: medication) }
     }
 
     private var usingBuiltInPreset: Bool {
@@ -371,6 +395,9 @@ private struct DoseCalculatorSheet: View {
     }
 
     private var concentrationInputError: String? {
+        if medication.formulation?.bonqat == true && MedicationSafety.parsePositive(concentration) != 50 {
+            return "Bonqat requires the labeled 50 mg/mL oral solution. Choose the separate entry for another product."
+        }
         let needsValue = (protocolDefinition?.doseBasis.supportsConcentration == true &&
             protocolDefinition?.concentration != nil) ||
             ([MedicationForm.liquid, .injection].contains(medication.form) && medication.concentration != nil)
@@ -394,6 +421,9 @@ private struct DoseCalculatorSheet: View {
     }
 
     private var administrationReviewReason: String? {
+        if medication.formulation?.bonqat == true && (selectedFrequency != .recommended || supplyDays != nil) {
+            return "Bonqat uses a single pre-visit dose and may be given on two consecutive days. Repeating course schedules require a separately reviewed protocol."
+        }
         if let error = prescribedRateInputError { return error }
         if let error = concentrationInputError { return error }
         if recommendedFrequency.lowercased().contains("total per week") {
@@ -437,7 +467,7 @@ private struct DoseCalculatorSheet: View {
 
     var body: some View {
         if medication.generic == "Gabapentin" && !medication.source.hasPrefix("USER-SOURCE-BACKED") && !medication.source.hasPrefix("CUSTOM-UNVERIFIED") {
-            ClinicGabapentinView(species: species, weight: patientWeight, unit: patientWeightUnit)
+            ClinicGabapentinView(species: species, weight: patientWeight, unit: patientWeightUnit, lockedForm: medication.form.rawValue)
         } else { referenceBody }
     }
 
@@ -565,6 +595,9 @@ private struct DoseCalculatorSheet: View {
                     }
                 }
 
+                if let source = medication.formulation?.productSource, let url = URL(string: source) {
+                    Section("Product strength source") { Link("Official product label", destination: url) }
+                }
                 if !activeStrengths.isEmpty {
                     Section("Product strength") {
                         Picker("Strength", selection: $selectedStrengthIndex) {
@@ -575,7 +608,7 @@ private struct DoseCalculatorSheet: View {
                     }
                 }
 
-                let needsProtocolConcentration = protocolDefinition?.doseBasis.supportsConcentration == true
+                let needsProtocolConcentration = protocolDefinition?.doseBasis.supportsConcentration == true && !(medication.formulation != nil && [.tablet, .capsule].contains(medication.form))
                 let needsMedicationConcentration = protocolDefinition == nil && [.liquid, .injection, .transdermal].contains(medication.form)
                 let requiredVolumeProtocolConcentration: Double? = {
                     guard protocolDefinition?.doseBasis == .mLKg else { return nil }
@@ -596,6 +629,18 @@ private struct DoseCalculatorSheet: View {
                         if selectedBuiltInPreset?.id.hasPrefix("ampicillin-sulbactam-") == true {
                             Text("TOTAL COMBINED ampicillin + sulbactam mg/mL, after preparation; not ampicillin alone.")
                                 .font(.footnote.bold())
+                        }
+                        if let values = medication.formulation?.concentrations {
+                            HStack {
+                                ForEach(values, id: \.self) { value in
+                                    Button("\(ClinicalData.format(value)) mg/mL") { concentration = MedicationSafety.input(value) }
+                                        .buttonStyle(.bordered)
+                                        .tint(activeConcentration == value ? AppTheme.blue : .secondary)
+                                }
+                            }
+                        }
+                        if medication.generic == "Pregabalin" {
+                            Text("For a compounded suspension, enter the exact bottle concentration. Product strength does not select a dose regimen.").font(.footnote)
                         }
                         TextField(concentrationUnit, text: $concentration)
                             .keyboardType(.decimalPad)
