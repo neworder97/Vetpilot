@@ -810,6 +810,7 @@ private struct DoseCalculatorSheet: View {
                                 .accessibilityIdentifier("dose.candidate.rounded")
                         }
                         if let days = supplyDays, result.available {
+                            Text("Administration and quantity").font(.headline)
                             Text(supplySummary(days: days))
                                 .font(.subheadline.weight(.semibold))
                                 .accessibilityIdentifier("dose.supply.summary")
@@ -1271,8 +1272,7 @@ private struct DoseCalculatorSheet: View {
             return "\(days) days • \(schedule) • \(administrations) applications of \(ClinicalData.format(selection.selected))-inch ointment strip to each affected eye. Verify the prescribed eye(s); do not convert strip length to drops, mL or tube quantity."
         }
         if usesGalliprantChart, let plan = galliprantPlan {
-            let total = ceil(MedicationSafety.snapIntegerBoundary(plan.units * Double(administrations)))
-            return "\(days) days • \(schedule) • \(ClinicalData.format(plan.units)) × \(ClinicalData.format(plan.strengthMg)) mg tablets per administration • quantity to dispense: \(ClinicalData.format(total)) whole tablets. Chart reference; veterinarian confirmation required."
+            return PrescriptionSummary.text(amount: plan.units, unit: "tablet", route: activeRoute, hours: 24 / dosesPerDay, days: days, allowFraction: true) ?? "Verify the administration and quantity."
         }
         if requiresRibbonApplication {
             return "\(days) days • \(schedule) • \(administrations) applications using the labeled ribbon length. Do not convert ointment to a liquid volume."
@@ -1281,12 +1281,12 @@ private struct DoseCalculatorSheet: View {
            MedicationSafety.withinRange(solid.deliveredMg, selection) {
             let total = ceil(MedicationSafety.snapIntegerBoundary(solid.roundedUnits * Double(administrations)))
             guard total.isFinite else { return "Dispense calculation outside numeric limits." }
-            return "\(days) days • \(schedule) • \(administrations) administration(s) • \(ClinicalData.format(solid.roundedUnits)) \(solidUnitName) per administration • quantity to dispense: \(ClinicalData.format(total)) \(solidUnitName)"
+            return PrescriptionSummary.text(amount: solid.roundedUnits, unit: medication.form == .capsule ? "capsule" : "tablet", route: activeRoute, hours: 24 / dosesPerDay, days: days) ?? "Verify the administration and quantity."
         }
         if let volume = selectedAdministrationVolume, volume.unit == "mL" {
             let total = volume.value * Double(administrations)
             guard MedicationSafety.positiveFinite(total) else { return "Dispense calculation outside numeric limits." }
-            return "\(days) days • \(schedule) • \(administrations) administration(s) • \(ClinicalData.format(volume.value)) mL per administration • calculated quantity to dispense: \(ClinicalData.format(total)) mL"
+            return PrescriptionSummary.text(amount: volume.value, unit: "mL", route: activeRoute, hours: 24 / dosesPerDay, days: days) ?? "Verify the administration and quantity."
         }
         return "No verified administration unit is available. Keep the dose math as a reference; obtain a product-specific dispensing plan."
     }

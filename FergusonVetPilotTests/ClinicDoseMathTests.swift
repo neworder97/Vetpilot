@@ -29,4 +29,19 @@ final class ClinicDoseMathTests: XCTestCase {
         XCTAssertEqual(c.ml, 0.1, accuracy: 1e-10)
         XCTAssertNil(ClinicDoseMath.buprenorphine(weight: 5, pounds: false, dose: -.infinity, perKg: true))
     }
+    func testAdministrationSummaryKeepsPerDoseAndCourseUnits() throws {
+        for unit in ["tablet", "capsule", "mL"] {
+            let text = try XCTUnwrap(PrescriptionSummary.text(amount: 1, unit: unit, route: "PO", hours: 12, days: 15))
+            XCTAssertTrue(text.contains("Give 1 \(unit) PO q12 hours for 15 days"))
+            XCTAssertTrue(text.contains("Quantity: 30 \(unit)"))
+            XCTAssertTrue(try XCTUnwrap(PrescriptionSummary.text(amount: 1, unit: unit, route: "PO", hours: 12, days: 30)).contains("Quantity: 60"))
+        }
+        XCTAssertTrue(try XCTUnwrap(PrescriptionSummary.text(amount: 0.25, unit: "mL", route: "PO", hours: 8, days: 7)).contains("Quantity: 5.25 mL"))
+        let fraction = try XCTUnwrap(PrescriptionSummary.text(amount: 0.5, unit: "capsule", route: "PO", hours: 12, days: 15))
+        XCTAssertFalse(fraction.hasPrefix("Give"))
+        XCTAssertTrue(fraction.contains("Calculated quantity: 15 capsule equivalents"))
+        XCTAssertNil(PrescriptionSummary.text(amount: 1, unit: "mL", route: "PO", hours: 0, days: 15))
+        XCTAssertNil(PrescriptionSummary.text(amount: .infinity, unit: "mL", route: "PO", hours: 12, days: 15))
+    }
+
 }

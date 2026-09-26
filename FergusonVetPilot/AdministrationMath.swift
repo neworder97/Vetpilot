@@ -227,3 +227,22 @@ enum AdministrationMath {
     }
 }
 
+
+
+/// Formats a verified per-administration amount; does not select or validate a dose.
+enum PrescriptionSummary {
+    static func text(amount: Double, unit: String, route: String, hours: Double, days: Int, allowFraction: Bool = false) -> String? {
+        guard amount.isFinite, amount > 0, hours.isFinite, hours > 0,
+              (1...3650).contains(days), !route.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+        let administrations = ceil(MedicationSafety.snapIntegerBoundary(Double(days) * 24 / hours))
+        let total = amount * administrations
+        guard total.isFinite, total > 0 else { return nil }
+        func plural(_ n: Double) -> String { unit == "mL" ? "mL" : unit + (n == 1 ? "" : "s") }
+        let exact = MedicationSafety.snapIntegerBoundary(amount)
+        if unit != "mL", exact != exact.rounded(), !allowFraction {
+            return "Calculated amount: \(MedicationSafety.display(amount)) \(unit) equivalents \(route) q\(MedicationSafety.display(hours)) hours for \(days) days. Calculated quantity: \(MedicationSafety.display(total)) \(unit) equivalents. Verify a usable strength or permitted tablet splitting before dispensing; do not divide capsules from this calculation."
+        }
+        let quantity = unit == "mL" ? total : ceil(MedicationSafety.snapIntegerBoundary(total))
+        return "Give \(MedicationSafety.display(amount)) \(plural(amount)) \(route) q\(MedicationSafety.display(hours)) hours for \(days) days. Quantity: \(MedicationSafety.display(quantity)) \(plural(quantity)). Verify the prescription and product before use."
+    }
+}

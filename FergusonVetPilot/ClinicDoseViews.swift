@@ -105,6 +105,10 @@ struct ClinicGabapentinView: View {
                             Text("\(MedicationSafety.display(quantity)) \(selectedForm.lowercased())(s) at \(strength) mg each").accessibilityIdentifier("gabapentin.quantity")
                             Text("Quantity = \(MedicationSafety.display(c.mg)) mg ÷ \(strength) mg. Exact mathematical quantity; confirm permitted tablet splitting. Do not interpret a fractional capsule as an instruction to divide its contents.").font(.footnote)
                             if let course = ClinicDoseMath.course(quantity: quantity, hours: interval, days: Int(days) ?? 0) {
+                                if let summary = PrescriptionSummary.text(amount: quantity, unit: selectedForm.lowercased(), route: "PO", hours: Double(interval), days: Int(days) ?? 0) {
+                                    Text("Administration and quantity").font(.headline)
+                                    Text(summary).accessibilityIdentifier("gabapentin.administration.summary")
+                                }
                                 Text("Course: \(course.administrations) administrations · \(MedicationSafety.display(course.units)) \(selectedForm.lowercased()) equivalents in total").accessibilityIdentifier("gabapentin.course")
                                 Text("Exact course arithmetic before dispensing rounding. Verify the actual administered units and prescribed duration.").font(.footnote)
                             } else if !days.isEmpty { Text("Select the prescribed frequency and a whole number of days (1–3650) to calculate course quantity.").font(.footnote) }
@@ -169,6 +173,10 @@ struct PrescribedBuprenorphineView: View {
                         Text("\(MedicationSafety.display(c.mg)) mg ÷ 0.6 mg/mL = \(MedicationSafety.display(c.ml)) mL")
                         Text("Prescription: \(dose) \(basis) · \(route) · \(frequency)")
                         if let hours = [6,8,12,24].first(where: { frequency == "q\($0)h" }), let course = ClinicDoseMath.course(quantity: c.ml, hours: hours, days: Int(courseDays) ?? 0) {
+                            if let summary = PrescriptionSummary.text(amount: c.ml, unit: "mL", route: route, hours: Double(hours), days: Int(courseDays) ?? 0) {
+                                Text("Administration and quantity").font(.headline)
+                                Text(summary).accessibilityIdentifier("buprenorphine.administration.summary")
+                            }
                             Text("Course quantity: \(MedicationSafety.display(course.units)) mL · \(course.administrations) administrations. Exact arithmetic for the verified repeating prescription.")
                         } else if !courseDays.isEmpty { Text("Course volume needs an explicit repeating schedule and a whole number of days (1–3650).") }
                     } else { Text("Complete and verify the product and prescription with positive weight and dose to calculate.") }
