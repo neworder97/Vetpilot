@@ -27,7 +27,8 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      - run: deno check Backend/supabase/functions/vetpilot-scribe/index.ts Backend/supabase/functions/vetpilot-account/index.ts
+      - run: deno check Backend/supabase/functions/vetpilot-scribe/index.ts Backend/supabase/functions/vetpilot-account/index.ts Backend/supabase/functions/vetpilot-transfer/index.ts
+      - run: deno test Backend/supabase/functions/vetpilot-transfer/handler_test.ts
       - name: Database isolation and revision tests
         env:
           PGPASSWORD: vetpilot-ci-only

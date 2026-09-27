@@ -11,6 +11,8 @@ struct CytologyLibraryView: View {
     @State private var favorites = false
     @State private var editing: ClinicProtocol?
     @State private var selectingExport = false
+    @State private var qrSharing = false
+    @State private var qrReceiving = false
     @State private var importing = false
     @State private var sharing: ClinicShare?
     static let categories = ["Ear cytology", "Lymph node", "Neoplasia / cancer", "Skin / mass", "Blood", "Urine", "Body fluid", "Normal cells", "Other"]
@@ -40,6 +42,8 @@ struct CytologyLibraryView: View {
                             Button("Editable file with photos") { exportAll(pdf: false) }
                         }.disabled(store.items.isEmpty).accessibilityIdentifier("cytology.export.all")
                     }.buttonStyle(.bordered)
+                    HStack { Button("Share by QR Code") { qrReceiving = false; qrSharing = true }.accessibilityIdentifier("cytology.qr.share")
+                    Button("Scan QR Code") { qrReceiving = true; qrSharing = true }.accessibilityIdentifier("cytology.qr.receive") }.buttonStyle(.bordered)
                     Picker("Sample type", selection: $category) { Text("All").tag("All"); ForEach(Self.categories, id: \.self) { Text($0).tag($0) } }
                     Toggle("Favorites only", isOn: $favorites)
                     if store.items.isEmpty {
@@ -66,6 +70,7 @@ struct CytologyLibraryView: View {
             .toolbar { ToolbarItem(placement: .topBarTrailing) {
                 Button { var item = ClinicProtocol(); item.category = "Ear cytology"; editing = item } label: { Label("Add images", systemImage: "plus") }.accessibilityIdentifier("cytology.new")
             } }
+            .sheet(isPresented: $qrSharing) { QRTransferView(store: store, collection: .cytology, receiving: qrReceiving) }
             .sheet(isPresented: $selectingExport) { CollectionExportView(store: store, title: "Cytology") }
             .sheet(item: $sharing) { ClinicShareSheet(urls: $0.urls) }
             .fileImporter(isPresented: $importing, allowedContentTypes: [.vetPilotProtocol, .json]) { result in

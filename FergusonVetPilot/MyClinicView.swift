@@ -13,6 +13,8 @@ struct MyClinicView: View {
     @State private var emailSettings = false
     @State private var sharing: ClinicShare?
     @State private var selectingExport = false
+    @State private var qrSharing = false
+    @State private var qrReceiving = false
 
     private var filtered: [ClinicProtocol] {
         store.items.filter {
@@ -78,6 +80,8 @@ struct MyClinicView: View {
                     }
                 }
                 Section("Sharing") {
+                    Button("Share by QR Code") { qrReceiving = false; qrSharing = true }.accessibilityIdentifier("clinic.qr.share")
+                    Button("Scan QR Code") { qrReceiving = true; qrSharing = true }.accessibilityIdentifier("clinic.qr.receive")
                     Button("Export — select items") { selectingExport = true }.disabled(store.items.isEmpty).accessibilityIdentifier("clinic.export.select")
                     Button("Email, text & export settings") { emailSettings = true }
                         .accessibilityIdentifier("clinic.email.settings")
@@ -111,6 +115,7 @@ struct MyClinicView: View {
                         .accessibilityIdentifier("clinic.new")
                 }
             }
+            .sheet(isPresented: $qrSharing) { QRTransferView(store: store, collection: .clinic, receiving: qrReceiving) }
             .sheet(isPresented: $selectingExport) { CollectionExportView(store: store, title: "My Clinic") }
             .sheet(isPresented: $emailSettings) { ClinicEmailSettings() }
             .sheet(item: $editor) { item in ClinicEditorView(store: store, initial: item) }
