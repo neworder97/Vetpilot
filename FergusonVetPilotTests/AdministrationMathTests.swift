@@ -2,10 +2,61 @@ import XCTest
 @testable import FergusonVetPilot
 
 final class AdministrationMathTests: XCTestCase {
+    func testExplicitInjectionPrescriptionPreservesUnitsAndRejectsInvalidValues() {
+        let range = DoseRangeSelection(low: 20, high: 60, selected: 20, unit: "mg", math: "10 kg × selected mg/kg", isRate: false)
+        for (dose, amount) in [(2.0, 20.0), (3.25, 32.5), (6.0, 60.0)] {
+            let selected = AdministrationMath.prescribedInjectionSelection(range, minDose: 2, maxDose: 6, prescribedDose: dose)
+            XCTAssertEqual(selected?.selected, amount)
+            XCTAssertEqual(selected?.unit, "mg")
+            XCTAssertEqual(selected?.low, 20)
+            XCTAssertEqual(selected?.high, 60)
+        }
+        for dose in [nil, 0, -1, .nan, .infinity, 1.9, 6.1] as [Double?] {
+            XCTAssertNil(AdministrationMath.prescribedInjectionSelection(range, minDose: 2, maxDose: 6, prescribedDose: dose))
+        }
+        let capped = DoseRangeSelection(low: 20, high: 30, selected: 20, unit: "mg", math: "10 kg × selected mg/kg", isRate: false)
+        XCTAssertNil(AdministrationMath.prescribedInjectionSelection(capped, minDose: 2, maxDose: 6, prescribedDose: 4))
+        let insulin = DoseRangeSelection(low: 5, high: 10, selected: 5, unit: "units", math: "10 kg × selected units/kg", isRate: false)
+        let selected = AdministrationMath.prescribedInjectionSelection(insulin, minDose: 0.5, maxDose: 1, prescribedDose: 0.75)
+        XCTAssertEqual(selected?.selected, 7.5)
+        XCTAssertEqual(selected?.unit, "units")
+        if let selected { XCTAssertEqual(AdministrationMath.volume(selection: selected, basis: .unitsKg, concentration: 40)?.value, 0.1875) }
+    }
+
     func testLowMiddleHighInterpolation() {
         XCTAssertEqual(AdministrationMath.interpolate(10, 20, level: .low), 10, accuracy: 0.000001)
         XCTAssertEqual(AdministrationMath.interpolate(10, 20, level: .middle), 15, accuracy: 0.000001)
         XCTAssertEqual(AdministrationMath.interpolate(10, 20, level: .high), 20, accuracy: 0.000001)
+    }
+
+    func testAllInjectionProtocolsAcceptExplicitDosesWithoutChangingConversions() throws {
+        var checks = 0
+        for medication in MedicationFormulations.organized where medication.form == .injection {
+            for species in medication.species {
+                for preset in BuiltInProtocolCatalog.presets(for: medication, species: species) {
+                    let definition = MedicationFormulations.definition(preset.definition, for: medication)
+                    if MedicationSafety.requiresPrescribedPotassiumRate(key: definition.medicationKey) { continue }
+                    for kg in [1.0, 4.0, 10.0, 50.0] {
+                        for level in DoseSelectionLevel.allCases {
+                            let reference = AdministrationMath.selection(for: definition, kg: kg, level: level)
+                            let dose = definition.minDose + (definition.maxDose - definition.minDose) * level.fraction
+                            let selected = AdministrationMath.prescribedInjectionSelection(reference, minDose: definition.minDose, maxDose: definition.maxDose, prescribedDose: dose)
+                            if let reference {
+                                let candidate = try XCTUnwrap(selected, preset.id)
+                                XCTAssertEqual(candidate.selected, reference.selected, accuracy: max(1e-10, abs(reference.selected) * 1e-12), preset.id)
+                                XCTAssertEqual(candidate.unit, reference.unit, preset.id)
+                                let expectedVolume = AdministrationMath.volume(selection: reference, basis: definition.doseBasis, concentration: definition.concentration)
+                                let actualVolume = AdministrationMath.volume(selection: candidate, basis: definition.doseBasis, concentration: definition.concentration)
+                                XCTAssertEqual(actualVolume?.unit, expectedVolume?.unit, preset.id)
+                                if let expectedVolume, let actualVolume { XCTAssertEqual(actualVolume.value, expectedVolume.value, accuracy: max(1e-12, abs(expectedVolume.value) * 1e-12), preset.id) }
+                            } else { XCTAssertNil(selected, preset.id) }
+                            checks += 1
+                        }
+                    }
+                }
+            }
+        }
+        XCTAssertGreaterThan(checks, 1000)
     }
 
     func testWholeSolidRoundingShowsDeliveredDose() throws {

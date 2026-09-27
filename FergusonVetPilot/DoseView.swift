@@ -252,6 +252,7 @@ private struct DoseCalculatorSheet: View {
     @State private var concentration = ""
     @State private var infusionConcentrationConfirmed = false
     @State private var prescribedPotassiumRate = ""
+    @State private var prescribedInjectionDose = ""
     @State private var result: DoseResult?
     @State private var supplyDays: Int?
     @State private var priorCourseDoses = 0
@@ -276,6 +277,11 @@ private struct DoseCalculatorSheet: View {
     }
 
     private func calculateCandidate() {
+                        if medication.form == .injection { exactMathSelected = true }
+                        if let error = injectionDoseInputError {
+                            result = DoseResult(available: false, headline: "Prescribed dose required", math: "", formulation: "", warning: error)
+                            return
+                        }
                         if let error = prescribedRateInputError {
                             result = DoseResult(available: false, headline: "Prescribed rate required", math: "", formulation: "", warning: error)
                             return
@@ -290,6 +296,10 @@ private struct DoseCalculatorSheet: View {
                         }
                         if let error = concentrationInputError {
                             result = DoseResult(available: false, headline: "Invalid concentration", math: "", formulation: "", warning: error)
+                            return
+                        }
+                        if medication.form == .injection && doseSelection == nil {
+                            result = DoseResult(available: false, headline: "No injection candidate", math: "", formulation: "", warning: "Check the selected protocol, weight, prescribed dose and per-patient limits.")
                             return
                         }
                         if let protocolDefinition {
@@ -710,39 +720,39 @@ private struct DoseCalculatorSheet: View {
                 }
 
                 Section("Dose selection") {
-                    HStack(spacing: 6) {
+                    if medication.form == .injection {
+                        if !requiresPrescribedPotassiumRate {
+                            TextField("Prescribed injection dose (\(injectionDoseBasis))", text: $prescribedInjectionDose)
+                                .keyboardType(.decimalPad)
+                                .accessibilityIdentifier("dose.injection.prescribed")
+                            Text("Protocol reference: \(MedicationSafety.input(injectionMinimum))–\(MedicationSafety.input(injectionMaximum)) \(injectionDoseBasis). Confirm the prescription, indication and route.").font(.caption)
+                            if let error = injectionDoseInputError { Text(error).font(.caption).foregroundStyle(AppTheme.orange) }
+                        }
+                        doseChoiceButton("Exact Math", selected: true, identifier: "dose.level.exact") {
+                            calculateCandidate()
+                            weightFieldFocused = false
+                            DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } }
+                        }.disabled(calculationDisabled)
+                        Text("Exact Math calculates the veterinarian-prescribed dose using the patient weight and verified concentration. It does not choose a dose.").font(.caption)
+                    } else {
+                        HStack(spacing: 6) {
                         doseChoiceButton("Low Dose", selected: !exactMathSelected && !recommendedDoseSelected && selectedDoseLevel == .low, identifier: "dose.level.low") {
                             recommendedDoseSelected = false; selectedDoseLevel = .low; result = nil; exactMathSelected = false
                         }
-                        if medication.form == .injection {
-                            doseChoiceButton("Exact Math", selected: exactMathSelected, identifier: "dose.level.exact") {
-                                exactMathSelected = true
-                                calculateCandidate()
-                                weightFieldFocused = false
-                                DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } }
-                            }.disabled(calculationDisabled)
-                        } else {
                         doseChoiceButton("Recommended Dose", selected: recommendedDoseSelected, identifier: "dose.level.recommended") {
                             chooseRecommendedDose()
                             if hasSourceRecommendedDose { DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } } }
-                        }
-                        }
                         doseChoiceButton("High Dose", selected: !exactMathSelected && !recommendedDoseSelected && selectedDoseLevel == .high, identifier: "dose.level.high") {
                             recommendedDoseSelected = false; selectedDoseLevel = .high; result = nil; exactMathSelected = false
                         }
-                    }
-                    if !hasSourceRecommendedDose {
-                        doseChoiceButton("Range midpoint", selected: !exactMathSelected && selectedDoseLevel == .middle, identifier: "dose.level.midpoint") {
-                            recommendedDoseSelected = false; selectedDoseLevel = .middle; result = nil; exactMathSelected = false
                         }
-                        if medication.form != .injection {
+                        if !hasSourceRecommendedDose {
+                            doseChoiceButton("Range midpoint", selected: selectedDoseLevel == .middle, identifier: "dose.level.midpoint") {
+                                recommendedDoseSelected = false; selectedDoseLevel = .middle; result = nil; exactMathSelected = false
+                            }
                             Text("This selection has no single source-supported default. Tap Recommended Dose for guidance. Range midpoint is arithmetic only.").font(.caption)
                         }
                     }
-                }
-                if medication.form == .injection {
-                    Text("Selected dose level: \(selectedDoseLevel == .high ? "High Dose" : selectedDoseLevel == .middle ? "Range midpoint" : "Low Dose")").font(.caption.bold())
-                    Text("Exact Math calculates the selected dose using the patient weight and verified concentration. Low Dose is selected initially; choose the prescribed level before calculating. Range midpoint is arithmetic only, not a recommendation.").font(.caption)
                 }
                 if [.tablet, .capsule].contains(medication.form) {
                     Section("Tablet / capsule rounding") {
@@ -914,7 +924,7 @@ private struct DoseCalculatorSheet: View {
 
                     if result.available, let selection = doseSelection {
                         Section("Dose range choice") {
-                            if selection.hasRange {
+                            if selection.hasRange && medication.form != .injection {
 
 
                                 doseLevelRow(.low)
@@ -1038,6 +1048,7 @@ private struct DoseCalculatorSheet: View {
                 }
             }
             .onAppear {
+                resetInjectionDose()
                 if let c = protocolDefinition?.concentration ?? medication.concentration {
                     concentration = MedicationSafety.input(c)
                 }
@@ -1056,6 +1067,7 @@ private struct DoseCalculatorSheet: View {
                 infusionConcentrationConfirmed = false
                 result = nil; exactMathSelected = false
             }
+            .onChange(of: prescribedInjectionDose) { _, _ in result = nil }
             .onChange(of: prescribedPotassiumRate) { _, _ in
                 result = nil; exactMathSelected = false
             }
@@ -1085,6 +1097,7 @@ private struct DoseCalculatorSheet: View {
             .onChange(of: priorCourseDoses) { _, _ in result = nil; exactMathSelected = false }
             .onChange(of: priorCourseHistoryConfirmed) { _, _ in result = nil; exactMathSelected = false }
             .onChange(of: selectedPresetIndex) { _, _ in
+                resetInjectionDose()
                 prescribedPotassiumRate = ""
                 infusionConcentrationConfirmed = false
                 result = nil; exactMathSelected = false
@@ -1100,6 +1113,7 @@ private struct DoseCalculatorSheet: View {
                 }
             }
             .onChange(of: protocolStore.definitions) { _, _ in
+                resetInjectionDose()
                 supplyDays = nil
                 selectedFrequency = .recommended
                 prescribedPotassiumRate = ""
@@ -1190,7 +1204,7 @@ private struct DoseCalculatorSheet: View {
 
 
     private var calculationDisabled: Bool {
-        strengthInputError != nil || prescribedRateInputError != nil || weightInputError != nil || !numericWeight.isFinite || numericWeight < 0 || ((protocolDefinition?.doseBasis.requiresWeight ?? true) && numericWeight <= 0) || concentrationInputError != nil || (medication.kind == .protocolOnly && protocolDefinition == nil)
+        injectionDoseInputError != nil || strengthInputError != nil || prescribedRateInputError != nil || weightInputError != nil || !numericWeight.isFinite || numericWeight < 0 || ((protocolDefinition?.doseBasis.requiresWeight ?? true) && numericWeight <= 0) || concentrationInputError != nil || (medication.kind == .protocolOnly && protocolDefinition == nil)
     }
 
     private var hasSourceRecommendedDose: Bool {
@@ -1217,11 +1231,26 @@ private struct DoseCalculatorSheet: View {
         .accessibilityAddTraits(selected ? .isSelected : [])
     }
 
-    private var doseSelection: DoseRangeSelection? {
-        if let protocolDefinition {
-            return AdministrationMath.selection(for: protocolDefinition, kg: kg, level: selectedDoseLevel, prescribedRate: MedicationSafety.parsePositive(prescribedPotassiumRate))
+    private var injectionMinimum: Double { protocolDefinition?.minDose ?? medication.minDose }
+    private var injectionMaximum: Double { protocolDefinition?.maxDose ?? medication.maxDose }
+    private var injectionDoseBasis: String {
+        protocolDefinition?.doseBasis.rawValue ?? (medication.kind == .mgLb ? "mg/lb" : medication.kind == .fixedMg ? "Fixed mg/patient" : "mg/kg")
+    }
+    private func resetInjectionDose() {
+        prescribedInjectionDose = injectionMinimum > 0 && injectionMinimum == injectionMaximum ? MedicationSafety.input(injectionMinimum) : ""
+    }
+    private var injectionDoseInputError: String? {
+        guard medication.form == .injection, !requiresPrescribedPotassiumRate else { return nil }
+        guard let dose = MedicationSafety.parsePositive(prescribedInjectionDose), dose >= injectionMinimum, dose <= injectionMaximum else {
+            return "Enter a finite positive veterinarian-prescribed dose within the selected protocol range, in \(injectionDoseBasis)."
         }
-        return AdministrationMath.selection(for: medication, kg: kg, level: selectedDoseLevel)
+        return nil
+    }
+    private var doseSelection: DoseRangeSelection? {
+        let range = selection(for: selectedDoseLevel)
+        guard medication.form == .injection, !requiresPrescribedPotassiumRate else { return range }
+        return AdministrationMath.prescribedInjectionSelection(range, minDose: injectionMinimum, maxDose: injectionMaximum,
+            prescribedDose: MedicationSafety.parsePositive(prescribedInjectionDose))
     }
 
     private func selection(for level: DoseSelectionLevel) -> DoseRangeSelection? {

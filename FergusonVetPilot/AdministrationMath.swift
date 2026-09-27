@@ -61,6 +61,19 @@ enum AdministrationMath {
         low + ((high - low) * level.fraction)
     }
 
+    /// Select an explicitly prescribed dose without choosing a point in a range.
+    static func prescribedInjectionSelection(_ range: DoseRangeSelection?, minDose: Double, maxDose: Double, prescribedDose: Double?) -> DoseRangeSelection? {
+        guard let range, let dose = prescribedDose,
+              MedicationSafety.positiveFinite(dose), MedicationSafety.positiveFinite(minDose),
+              dose >= minDose, dose <= maxDose else { return nil }
+        let amount = dose * (range.low / minDose)
+        guard MedicationSafety.positiveFinite(amount),
+              amount >= range.low - abs(range.low) * 1e-12,
+              amount <= range.high + abs(range.high) * 1e-12 else { return nil }
+        return DoseRangeSelection(low: range.low, high: range.high, selected: amount,
+            unit: range.unit, math: range.math.replacingOccurrences(of: "selected", with: "prescribed \(MedicationSafety.input(dose))"), isRate: range.isRate)
+    }
+
     static func selection(for medication: Medication, kg: Double, level: DoseSelectionLevel) -> DoseRangeSelection? {
         guard medication.kind != .protocolOnly,
               MedicationSafety.positiveFinite(kg),

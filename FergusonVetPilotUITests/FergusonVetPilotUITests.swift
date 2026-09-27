@@ -610,7 +610,7 @@ final class FergusonVetPilotUITests: XCTestCase {
         XCTAssertFalse(calculate.isEnabled)
     }
 
-    func testInjectionExactMathPreservesSelectedRangeLevel() throws {
+    func testInjectionExactMathUsesExplicitPrescriptionOnly() throws {
         let search = app.textFields["Search medications…"]
         search.tap(); search.typeText("Propofol")
         let medication = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Propofol")).firstMatch
@@ -619,39 +619,34 @@ final class FergusonVetPilotUITests: XCTestCase {
         let weight = app.textFields["dose.sheet.weight"]
         weight.tap(); weight.typeText("10")
         app.buttons["dose.keyboard.done"].tap()
-        let low = app.buttons["dose.level.low"], high = app.buttons["dose.level.high"]
-        revealDoseControl(high); high.tap()
-        let calculate = app.buttons["dose.calculate"]
+        let dose = app.textFields["dose.injection.prescribed"]
+        revealDoseControl(dose)
+        XCTAssertFalse(app.buttons["dose.level.low"].exists)
+        XCTAssertFalse(app.buttons["dose.level.high"].exists)
+        XCTAssertFalse(app.buttons["dose.level.midpoint"].exists)
+        XCTAssertFalse(app.buttons["dose.level.recommended"].exists)
+        let exact = app.buttons["dose.exact"]
+        XCTAssertFalse(exact.isEnabled, "A ranged injection must not choose a dose automatically")
         let amount = app.staticTexts["dose.candidate.amount"]
-        revealDoseControl(calculate); calculate.tap()
-        XCTAssertTrue(amount.waitForExistence(timeout: 4))
-        XCTAssertTrue(amount.label.contains("60 mg"), amount.label)
-        revealDoseControl(high, towardEarlierFields: true)
-        XCTAssertTrue(high.isSelected, "Calculate must preserve High Dose")
-        XCTAssertFalse(app.buttons["dose.level.exact"].isSelected)
-        low.tap()
-        revealDoseControl(calculate); calculate.tap()
-        XCTAssertTrue(amount.waitForExistence(timeout: 4))
-        XCTAssertTrue(amount.label.contains("20 mg"), amount.label)
-        revealDoseControl(low, towardEarlierFields: true)
-        XCTAssertTrue(low.isSelected, "Calculate must preserve Low Dose")
-        XCTAssertFalse(app.buttons["dose.level.exact"].isSelected)
-        high.tap()
-        let exact = app.buttons["dose.level.exact"]
-        XCTAssertEqual(exact.label, "Exact Math")
-        exact.tap()
-        XCTAssertFalse(app.alerts["Recommended Dose"].exists)
-        XCTAssertTrue(amount.waitForExistence(timeout: 4))
-        XCTAssertTrue(amount.label.contains("60 mg"), amount.label)
-        revealDoseControl(exact, towardEarlierFields: true)
-        XCTAssertTrue(exact.isSelected, "Exact Math must show as selected after calculating")
-        revealDoseControl(calculate); calculate.tap()
-        revealDoseControl(exact, towardEarlierFields: true)
-        XCTAssertTrue(exact.isSelected, "Calculate must preserve an explicitly selected Exact Math")
-        revealDoseControl(low, towardEarlierFields: true); low.tap()
-        app.buttons["dose.exact"].tap()
-        XCTAssertTrue(amount.waitForExistence(timeout: 4))
-        XCTAssertTrue(amount.label.contains("20 mg"), amount.label)
+        for (prescribed, expected) in [("2", "20 mg"), ("4", "40 mg"), ("6", "60 mg")] {
+            revealDoseControl(dose, towardEarlierFields: true)
+            dose.tap()
+            let prior = dose.value as? String ?? ""
+            if Double(prior) != nil { dose.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: prior.count)) }
+            dose.typeText(prescribed)
+            app.buttons["dose.keyboard.done"].tap()
+            XCTAssertTrue(exact.isEnabled); exact.tap()
+            XCTAssertTrue(amount.waitForExistence(timeout: 4))
+            XCTAssertTrue(amount.label.contains(expected), amount.label)
+            let calculate = app.buttons["dose.calculate"]
+            revealDoseControl(calculate, towardEarlierFields: true); calculate.tap()
+            XCTAssertTrue(amount.label.contains(expected), amount.label)
+        }
+        revealDoseControl(dose, towardEarlierFields: true); dose.tap()
+        dose.typeText(XCUIKeyboardKey.delete.rawValue + "7")
+        app.buttons["dose.keyboard.done"].tap()
+        XCTAssertFalse(exact.isEnabled, "Out-of-protocol dose must not calculate")
+        XCTAssertFalse(amount.exists, "Changing the prescription clears the old result")
     }
 
     func testPotassiumNeedsExplicitPrescription() throws {
