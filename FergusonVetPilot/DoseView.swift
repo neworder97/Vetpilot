@@ -259,6 +259,7 @@ private struct DoseCalculatorSheet: View {
     @State private var selectedFrequency: FrequencyChoice = .recommended
     @State private var selectedDoseLevel: DoseSelectionLevel = .low
     @State private var recommendedDoseSelected = false
+    @State private var exactMathSelected = false
     @State private var recommendationHelp = false
     @State private var prescribedBuprenorphine = false
     @State private var solidRounding: SolidDoseRounding = .exact
@@ -711,10 +712,11 @@ private struct DoseCalculatorSheet: View {
                 Section("Dose selection") {
                     HStack(spacing: 6) {
                         doseChoiceButton("Low Dose", selected: !exactMathSelected && !recommendedDoseSelected && selectedDoseLevel == .low, identifier: "dose.level.low") {
-                            recommendedDoseSelected = false; selectedDoseLevel = .low; result = nil
+                            recommendedDoseSelected = false; selectedDoseLevel = .low; result = nil; exactMathSelected = false
                         }
                         if medication.form == .injection {
                             doseChoiceButton("Exact Math", selected: exactMathSelected, identifier: "dose.level.exact") {
+                                exactMathSelected = true
                                 calculateCandidate()
                                 weightFieldFocused = false
                                 DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } }
@@ -726,12 +728,12 @@ private struct DoseCalculatorSheet: View {
                         }
                         }
                         doseChoiceButton("High Dose", selected: !exactMathSelected && !recommendedDoseSelected && selectedDoseLevel == .high, identifier: "dose.level.high") {
-                            recommendedDoseSelected = false; selectedDoseLevel = .high; result = nil
+                            recommendedDoseSelected = false; selectedDoseLevel = .high; result = nil; exactMathSelected = false
                         }
                     }
                     if !hasSourceRecommendedDose {
                         doseChoiceButton("Range midpoint", selected: !exactMathSelected && selectedDoseLevel == .middle, identifier: "dose.level.midpoint") {
-                            recommendedDoseSelected = false; selectedDoseLevel = .middle; result = nil
+                            recommendedDoseSelected = false; selectedDoseLevel = .middle; result = nil; exactMathSelected = false
                         }
                         if medication.form != .injection {
                             Text("This selection has no single source-supported default. Tap Recommended Dose for guidance. Range midpoint is arithmetic only.").font(.caption)
@@ -1010,6 +1012,7 @@ private struct DoseCalculatorSheet: View {
                 ToolbarItem(placement: .topBarLeading) {
                     if medication.form == .injection {
                         Button("Exact Math") {
+                            exactMathSelected = true
                             calculateCandidate()
                             weightFieldFocused = false
                             DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } }
@@ -1040,24 +1043,24 @@ private struct DoseCalculatorSheet: View {
                 }
             }
             .onChange(of: patientWeight) { _, _ in
-                result = nil
+                result = nil; exactMathSelected = false
             }
             .onChange(of: patientWeightUnit) { _, _ in
-                result = nil
+                result = nil; exactMathSelected = false
             }
             .onChange(of: selectedStrengthIndex) { _, _ in
-                result = nil
+                result = nil; exactMathSelected = false
             }
-            .onChange(of: manualStrength) { _, _ in result = nil }
+            .onChange(of: manualStrength) { _, _ in result = nil; exactMathSelected = false }
             .onChange(of: concentration) { _, _ in
                 infusionConcentrationConfirmed = false
-                result = nil
+                result = nil; exactMathSelected = false
             }
             .onChange(of: prescribedPotassiumRate) { _, _ in
-                result = nil
+                result = nil; exactMathSelected = false
             }
             .onChange(of: infusionConcentrationConfirmed) { _, _ in
-                result = nil
+                result = nil; exactMathSelected = false
             }
             .sheet(isPresented: $prescribedBuprenorphine) { PrescribedBuprenorphineView(species: species) }
             .alert("Recommended Dose", isPresented: $recommendationHelp) {
@@ -1074,17 +1077,17 @@ private struct DoseCalculatorSheet: View {
                 )
             }
             .onChange(of: selectedDoseLevel) { _, _ in
-                result = nil
+                result = nil; exactMathSelected = false
             }
             // Rounding changes only the administration presentation. Keep the
             // verified target/result visible and derive the candidate immediately.
-            .onChange(of: selectedFrequency) { _, _ in result = nil }
-            .onChange(of: priorCourseDoses) { _, _ in result = nil }
-            .onChange(of: priorCourseHistoryConfirmed) { _, _ in result = nil }
+            .onChange(of: selectedFrequency) { _, _ in result = nil; exactMathSelected = false }
+            .onChange(of: priorCourseDoses) { _, _ in result = nil; exactMathSelected = false }
+            .onChange(of: priorCourseHistoryConfirmed) { _, _ in result = nil; exactMathSelected = false }
             .onChange(of: selectedPresetIndex) { _, _ in
                 prescribedPotassiumRate = ""
                 infusionConcentrationConfirmed = false
-                result = nil
+                result = nil; exactMathSelected = false
                 supplyDays = nil
                 selectedFrequency = .recommended
                 selectedStrengthIndex = 0
@@ -1101,7 +1104,7 @@ private struct DoseCalculatorSheet: View {
                 selectedFrequency = .recommended
                 prescribedPotassiumRate = ""
                 infusionConcentrationConfirmed = false
-                result = nil
+                result = nil; exactMathSelected = false
                 selectedStrengthIndex = 0
                 manualStrength = ""
                 recommendedDoseSelected = false
@@ -1185,7 +1188,6 @@ private struct DoseCalculatorSheet: View {
         }
     }
 
-    private var exactMathSelected: Bool { medication.form == .injection && result != nil }
 
     private var calculationDisabled: Bool {
         strengthInputError != nil || prescribedRateInputError != nil || weightInputError != nil || !numericWeight.isFinite || numericWeight < 0 || ((protocolDefinition?.doseBasis.requiresWeight ?? true) && numericWeight <= 0) || concentrationInputError != nil || (medication.kind == .protocolOnly && protocolDefinition == nil)
