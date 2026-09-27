@@ -709,7 +709,8 @@ final class FergusonVetPilotUITests: XCTestCase {
         recommendation.tap()
         XCTAssertFalse(app.alerts["Recommended Dose"].exists)
         let midpointCalculate = app.buttons["dose.calculate"]
-        revealDoseControl(midpointCalculate)
+        // Recommended now calculates and scrolls to the result; Calculate is above it.
+        revealDoseControl(midpointCalculate,towardEarlierFields:true)
         midpointCalculate.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:0.5)).tap()
         let midpointAmount = app.staticTexts["dose.candidate.amount"]
         XCTAssertTrue(midpointAmount.waitForExistence(timeout:5))
