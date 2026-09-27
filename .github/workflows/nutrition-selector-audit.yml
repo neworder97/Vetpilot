@@ -1,0 +1,34 @@
+name: Nutrition selector audit
+on:
+  push:
+    branches: [audit/nutrition-selectors-20260927]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  nutrition-ios:
+    runs-on: macos-15
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: brew install xcodegen
+      - name: Test actual nutrition UI and production calculation
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p NutritionAuditResults
+          xcodegen generate
+          RUNTIME=$(xcrun simctl list runtimes -j | python3 -c 'import json,sys; a=[r for r in json.load(sys.stdin)["runtimes"] if r.get("isAvailable") and r["identifier"].startswith("com.apple.CoreSimulator.SimRuntime.iOS-")]; a.sort(key=lambda r:tuple(int(v) for v in r["version"].split("."))); print(a[-1]["identifier"])')
+          SIM=$(xcrun simctl create NutritionSelectorAudit com.apple.CoreSimulator.SimDeviceType.iPhone-16 "$RUNTIME")
+          trap 'xcrun simctl shutdown "$SIM" || true; xcrun simctl delete "$SIM" || true' EXIT
+          xcrun simctl boot "$SIM"
+          xcrun simctl bootstatus "$SIM" -b
+          xcodebuild test -project FergusonVetPilot.xcodeproj -scheme FergusonVetPilot -destination "platform=iOS Simulator,id=$SIM" -parallel-testing-enabled NO -only-testing:FergusonVetPilotTests/NutritionMathTests -only-testing:FergusonVetPilotUITests/NutritionSelectorAuditUITests -only-testing:FergusonVetPilotUITests/FergusonVetPilotUITests/testNutritionReproductiveStatusAndWeightUnitConversion -only-testing:FergusonVetPilotUITests/FergusonVetPilotUITests/testNutritionIntakeOverrideFloorAndRecovery -resultBundlePath NutritionAuditResults/Tests.xcresult CODE_SIGNING_ALLOWED=NO 2>&1 | tee NutritionAuditResults/test.log
+      - name: Save audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: VetPilot-Nutrition-Selector-Audit
+          path: NutritionAuditResults/
