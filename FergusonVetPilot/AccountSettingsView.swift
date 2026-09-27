@@ -10,8 +10,6 @@ struct AccountSettingsView: View {
     @State private var createAccount = false
     @State private var sharing = false
     @State private var deleteConfirmation = false
-    @State private var deleteLocalConfirmation = false
-    @State private var notice: String?
     var body: some View {
         NavigationStack {
             Form {
@@ -63,23 +61,8 @@ struct AccountSettingsView: View {
                     Text(backgroundStatus).accessibilityIdentifier("account.sync.background")
                     Text("VetPilot requests a sync when you leave the app and periodic background refreshes. iOS controls timing; background sync is not every 30 seconds. Force-quitting the app can prevent background refresh until you open it again.").font(.caption)
                 }
-                Section("Remove old Scribe data") {
-                    Text("Scribe has been replaced. Delete its old notes and recordings from this device and its cloud notes from your signed-in account.")
-                    Button("Delete old Scribe records", role: .destructive) { deleteLocalConfirmation = true }
-                    if let notice { Text(notice) }
-                }
             }.navigationTitle("Settings")
                 .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
-                .confirmationDialog("Delete old Scribe notes and recordings?", isPresented: $deleteLocalConfirmation) {
-                    Button("Delete Scribe records", role: .destructive) { Task {
-                        do {
-                            if let id = account.userID { _ = try await account.request(path: "rest/v1/scribe_encounters?user_id=eq." + id.uuidString.lowercased(), method: "DELETE") }
-                            let root = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("VetPilot/Scribe")
-                            if FileManager.default.fileExists(atPath: root.path) { try FileManager.default.removeItem(at: root) }
-                            notice = "Scribe records deleted. My Clinic and Cytology were not changed."
-                        } catch { account.error = error.localizedDescription }
-                    } }
-                } message: { Text("This cannot be undone. My Clinic and Cytology are not affected.") }
                 .alert("Account", isPresented: Binding(get: { account.error != nil }, set: { if !$0 { account.error = nil } })) {
                     Button("OK") { account.error = nil }
                 } message: { Text(account.error ?? "") }
