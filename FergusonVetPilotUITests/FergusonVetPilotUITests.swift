@@ -178,12 +178,11 @@ final class FergusonVetPilotUITests: XCTestCase {
         let lowChoice = app.buttons["dose.level.low"]
         let highChoice = app.buttons["dose.level.high"]
         let recommendedChoice = app.buttons["dose.level.recommended"]
-        revealDoseControl(lowChoice,towardEarlierFields:true)
-        XCTAssertEqual(lowChoice.label,"Low Dose")
-        XCTAssertEqual(highChoice.label,"High Dose")
-        XCTAssertEqual(recommendedChoice.label,"Recommended Dose")
-        lowChoice.tap(); XCTAssertTrue(lowChoice.isSelected)
-        highChoice.tap(); XCTAssertTrue(highChoice.isSelected)
+        revealDoseControl(recommendedChoice,towardEarlierFields:true)
+        XCTAssertFalse(lowChoice.exists)
+        XCTAssertFalse(highChoice.exists)
+        XCTAssertTrue(recommendedChoice.label.contains("Recommended / Exact Math"))
+        XCTAssertTrue(recommendedChoice.label.contains("4.4 mg/kg"))
         recommendedChoice.tap()
         XCTAssertTrue(app.buttons["dose.recommended"].exists,"Retain the toolbar shortcut")
 
@@ -703,13 +702,12 @@ final class FergusonVetPilotUITests: XCTestCase {
         app.buttons["dose.keyboard.done"].tap()
         let low = app.buttons["dose.level.low"], high = app.buttons["dose.level.high"], recommendation = app.buttons["dose.level.recommended"]
         revealDoseControl(low)
-        XCTAssertEqual(low.label,"Low Dose"); XCTAssertEqual(high.label,"High Dose")
+        XCTAssertTrue(low.label.contains("Low Dose")); XCTAssertTrue(low.label.contains("5 mg/kg"))
+        XCTAssertTrue(high.label.contains("High Dose")); XCTAssertTrue(high.label.contains("10 mg/kg"))
+        XCTAssertTrue(recommendation.label.contains("Recommended / Mid-range"))
+        XCTAssertTrue(recommendation.label.contains("7.5 mg/kg"))
         recommendation.tap()
-        XCTAssertTrue(app.alerts["Recommended Dose"].waitForExistence(timeout:3))
-        XCTAssertTrue(app.alerts.staticTexts.matching(NSPredicate(format:"label CONTAINS %@","no single source-supported default")).firstMatch.exists)
-        app.alerts.buttons["OK"].tap()
-        let midpoint = app.buttons["dose.level.midpoint"]
-        revealDoseControl(midpoint); midpoint.tap()
+        XCTAssertFalse(app.alerts["Recommended Dose"].exists)
         let midpointCalculate = app.buttons["dose.calculate"]
         revealDoseControl(midpointCalculate)
         midpointCalculate.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:0.5)).tap()

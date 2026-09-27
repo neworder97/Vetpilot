@@ -3,6 +3,37 @@ import XCTest
 
 // These execute extracted production view-logic bodies, NOT UIKit/SwiftUI screens.
 final class DoseSheetLogicRegressionTests: XCTestCase {
+    func testEveryNonInjectionRangeSelectsLowMidpointAndHigh() throws {
+        var count = 0
+        for m in MedicationFormulations.organized where m.generic != "Gabapentin" && m.form != .injection {
+            for species in m.species {
+                let presets = BuiltInProtocolCatalog.presets(for:m,species:species)
+                let branches: [BuiltInProtocolPreset?] = (m.kind == .protocolOnly ? [] : [nil]) + presets.map { Optional($0) }
+                for preset in branches {
+                    let definition = preset.map { MedicationFormulations.definition($0.definition,for:m) }
+                    var p = DoseSheetLogicProbe(medication:m,protocolDefinition:definition,selectedBuiltInPreset:preset,kg:10)
+                    if p.isInjectionCalculation { continue }
+                    let low = definition?.minDose ?? m.minDose, high = definition?.maxDose ?? m.maxDose
+                    XCTAssertEqual(p.hasDoseRange, low > 0 && high > low && m.kind != .robenacoxibCatBand)
+                    for level in [DoseSelectionLevel.low,.high] {
+                        p.selectedDoseLevel = level
+                        p.recommendedDoseSelected = false
+                        XCTAssertEqual(p.doseSelection?.selected,p.selection(for:level)?.selected)
+                        p.recommendedDoseSelected = true
+                        XCTAssertEqual(p.doseSelection?.selected,p.selection(for:p.hasDoseRange ? .middle : level)?.selected)
+                        // Re-reading for Calculate must preserve the midpoint selection.
+                        XCTAssertEqual(p.doseSelection?.selected,p.selection(for:p.hasDoseRange ? .middle : level)?.selected)
+                        p.recommendedDoseSelected = false
+                        XCTAssertEqual(p.doseSelection?.selected,p.selection(for:level)?.selected)
+                    }
+                    count += 1
+                }
+            }
+        }
+        XCTAssertGreaterThan(count,250)
+        print("RANGE_FIXED_SELECTOR_AUDIT: \(count) production view protocol states")
+    }
+
     func testReferenceInjectionUsesPrescriptionWhileOralProtocolKeepsDoseChoices() throws {
         let med = try XCTUnwrap(ClinicalData.medications.first { $0.generic == "Desmopressin" })
         let injectable = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == "desmopressin-dog-1" })

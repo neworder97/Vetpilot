@@ -261,7 +261,6 @@ private struct DoseCalculatorSheet: View {
     @State private var selectedDoseLevel: DoseSelectionLevel = .low
     @State private var recommendedDoseSelected = false
     @State private var exactMathSelected = false
-    @State private var recommendationHelp = false
     @State private var prescribedBuprenorphine = false
     @State private var solidRounding: SolidDoseRounding = .exact
     @State private var selectedPresetIndex = 0
@@ -791,9 +790,9 @@ private struct DoseCalculatorSheet: View {
                             DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } }
                         }.disabled(calculationDisabled).accessibilityIdentifier("dose.exact")
                     } else {
-                    Button("Recommended Dose") {
+                    Button(hasDoseRange ? "Mid-range" : "Exact Math") {
                         chooseRecommendedDose()
-                        if hasSourceRecommendedDose { DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } } }
+                        DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } }
                     }.accessibilityIdentifier("dose.recommended")
                     }
                 }
@@ -846,11 +845,6 @@ private struct DoseCalculatorSheet: View {
     private func calculatorPresentation(scrollProxy: ScrollViewProxy) -> some View {
         inputObservedCalculator(scrollProxy: scrollProxy)
             .sheet(isPresented: $prescribedBuprenorphine) { PrescribedBuprenorphineView(species: species) }
-            .alert("Recommended Dose", isPresented: $recommendationHelp) {
-                Button("OK", role: .cancel) { }
-            } message: {
-                Text("This selection has no single source-supported default. Choose the appropriate species, indication, route and product protocol. For a dose range, the treating veterinarian selects the dose; its midpoint is not automatically recommended.")
-            }
             .sheet(isPresented: $showProtocolEditor) {
                 ProtocolMedicationEditorView(
                     medication: medication,
@@ -873,6 +867,7 @@ private struct DoseCalculatorSheet: View {
             .onChange(of: priorCourseHistoryConfirmed) { _, _ in result = nil; exactMathSelected = false }
             .onChange(of: selectedPresetIndex) { _, _ in
                 resetInjectionDose()
+                if !isInjectionCalculation { selectedDoseLevel = .low }
                 prescribedPotassiumRate = ""
                 infusionConcentrationConfirmed = false
                 result = nil; exactMathSelected = false
@@ -889,6 +884,7 @@ private struct DoseCalculatorSheet: View {
             }
             .onChange(of: protocolStore.definitions) { _, _ in
                 resetInjectionDose()
+                if !isInjectionCalculation { selectedDoseLevel = .low }
                 supplyDays = nil
                 selectedFrequency = .recommended
                 prescribedPotassiumRate = ""
@@ -1156,26 +1152,37 @@ private struct DoseCalculatorSheet: View {
                 }.disabled(calculationDisabled)
                 Text("Exact Math calculates the veterinarian-prescribed dose using the patient weight and verified concentration. It does not choose a dose.").font(.caption)
             } else {
-                HStack(spacing: 6) {
-                doseChoiceButton("Low Dose", selected: !exactMathSelected && !recommendedDoseSelected && selectedDoseLevel == .low, identifier: "dose.level.low") {
-                    recommendedDoseSelected = false; selectedDoseLevel = .low; result = nil; exactMathSelected = false
-                }
-                doseChoiceButton("Recommended Dose", selected: recommendedDoseSelected, identifier: "dose.level.recommended") {
-                    chooseRecommendedDose()
-                    if hasSourceRecommendedDose { DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } } }
-                }
-                doseChoiceButton("High Dose", selected: !exactMathSelected && !recommendedDoseSelected && selectedDoseLevel == .high, identifier: "dose.level.high") {
-                    recommendedDoseSelected = false; selectedDoseLevel = .high; result = nil; exactMathSelected = false
-                }
-                }
-                if !hasSourceRecommendedDose {
-                    doseChoiceButton("Range midpoint", selected: selectedDoseLevel == .middle, identifier: "dose.level.midpoint") {
-                        recommendedDoseSelected = false; selectedDoseLevel = .middle; result = nil; exactMathSelected = false
+                if hasDoseRange {
+                    HStack(spacing: 6) {
+                        doseChoiceButton(doseOptionTitle("Low Dose", value: injectionMinimum), selected: !recommendedDoseSelected && selectedDoseLevel == .low, identifier: "dose.level.low") {
+                            recommendedDoseSelected = false; selectedDoseLevel = .low; result = nil; exactMathSelected = false
+                        }
+                        doseChoiceButton(doseOptionTitle("Recommended / Mid-range", value: injectionMinimum + (injectionMaximum - injectionMinimum) / 2), selected: recommendedDoseSelected || selectedDoseLevel == .middle, identifier: "dose.level.recommended") {
+                            chooseRecommendedDose()
+                            DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } }
+                        }
+                        doseChoiceButton(doseOptionTitle("High Dose", value: injectionMaximum), selected: !recommendedDoseSelected && selectedDoseLevel == .high, identifier: "dose.level.high") {
+                            recommendedDoseSelected = false; selectedDoseLevel = .high; result = nil; exactMathSelected = false
+                        }
                     }
-                    Text("This selection has no single source-supported default. Tap Recommended Dose for guidance. Range midpoint is arithmetic only.").font(.caption)
+                    Text("Recommended / Mid-range is the arithmetic midpoint of the displayed range, not a separately sourced dosing recommendation.").font(.caption)
+                } else {
+                    doseChoiceButton(doseOptionTitle("Recommended / Exact Math", value: injectionMinimum), selected: true, identifier: "dose.level.recommended") {
+                        chooseRecommendedDose()
+                        DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } }
+                    }
                 }
             }
         }
+    }
+
+    private var hasDoseRange: Bool {
+        medication.kind != .robenacoxibCatBand && injectionMinimum > 0 && injectionMaximum > injectionMinimum
+    }
+
+    private func doseOptionTitle(_ title: String, value: Double) -> String {
+        if medication.kind == .robenacoxibCatBand { return "\(title)\nWeight-band dose" }
+        return "\(title)\n\(MedicationSafety.input(value)) \(injectionDoseBasis)"
     }
 
     private var canChooseSupply: Bool {
@@ -1258,9 +1265,8 @@ private struct DoseCalculatorSheet: View {
     }
 
     private func chooseRecommendedDose() {
-        guard hasSourceRecommendedDose else { recommendationHelp = true; return }
-        // A fixed source dose is identical at every level. Preserve the level to
-        // avoid its change observer clearing this freshly calculated result.
+        // Keep the selected endpoint state unchanged so its onChange handler
+        // cannot clear the newly calculated midpoint. doseSelection applies it.
         recommendedDoseSelected = true
         calculateCandidate()
         weightFieldFocused = false
@@ -1300,7 +1306,7 @@ private struct DoseCalculatorSheet: View {
         return nil
     }
     private var doseSelection: DoseRangeSelection? {
-        let range = selection(for: selectedDoseLevel)
+        let range = selection(for: !isInjectionCalculation && recommendedDoseSelected && hasDoseRange ? .middle : selectedDoseLevel)
         guard isInjectionCalculation, !requiresPrescribedPotassiumRate else { return range }
         return AdministrationMath.prescribedInjectionSelection(range, minDose: injectionMinimum, maxDose: injectionMaximum,
             prescribedDose: MedicationSafety.parsePositive(prescribedInjectionDose))
@@ -1317,10 +1323,10 @@ private struct DoseCalculatorSheet: View {
     private func doseLevelRow(_ level: DoseSelectionLevel) -> some View {
         if let choice = selection(for: level) {
             HStack {
-                Text(level == .middle ? "Range midpoint" : level == .low ? "Low Dose" : "High Dose")
+                Text(level == .middle ? "Recommended / Mid-range" : level == .low ? "Low Dose" : "High Dose")
                 Spacer()
                 Text("\(ClinicalData.format(choice.selected)) \(choice.unit)")
-                    .foregroundStyle(level == selectedDoseLevel ? AppTheme.blue : .secondary)
+                    .foregroundStyle(level == (recommendedDoseSelected && hasDoseRange ? .middle : selectedDoseLevel) ? AppTheme.blue : .secondary)
             }
         }
     }
