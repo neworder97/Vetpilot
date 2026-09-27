@@ -497,6 +497,12 @@ private struct DoseCalculatorSheet: View {
     private var referenceBody: some View {
         NavigationStack {
             ScrollViewReader { scrollProxy in
+                protocolObservedCalculator(scrollProxy: scrollProxy)
+            }
+        }
+    }
+
+    private func calculatorForm(scrollProxy: ScrollViewProxy) -> some View {
             Form {
                 medicationProtocolSections
                 patientAndProductSections
@@ -586,6 +592,12 @@ private struct DoseCalculatorSheet: View {
                     .accessibilityIdentifier("dose.calculate")
                 }
 
+                calculatorResultSections
+            }
+    }
+
+    @ViewBuilder
+    private var calculatorResultSections: some View {
                 if let result {
                     Section("Calculated candidate") {
                         if result.available, let selected = administrationSelection ?? doseSelection {
@@ -762,7 +774,10 @@ private struct DoseCalculatorSheet: View {
 
 
                 }
-            }
+    }
+
+    private func calculatorToolbar(scrollProxy: ScrollViewProxy) -> some View {
+        calculatorForm(scrollProxy: scrollProxy)
             .scrollDismissesKeyboard(.interactively)
             .navigationTitle("Dose")
             .navigationBarTitleDisplayMode(.inline)
@@ -795,6 +810,10 @@ private struct DoseCalculatorSheet: View {
                     .accessibilityIdentifier("dose.keyboard.done")
                 }
             }
+    }
+
+    private func inputObservedCalculator(scrollProxy: ScrollViewProxy) -> some View {
+        calculatorToolbar(scrollProxy: scrollProxy)
             .onAppear {
                 resetInjectionDose()
                 if let c = protocolDefinition?.concentration ?? medication.concentration {
@@ -822,6 +841,10 @@ private struct DoseCalculatorSheet: View {
             .onChange(of: infusionConcentrationConfirmed) { _, _ in
                 result = nil; exactMathSelected = false
             }
+    }
+
+    private func calculatorPresentation(scrollProxy: ScrollViewProxy) -> some View {
+        inputObservedCalculator(scrollProxy: scrollProxy)
             .sheet(isPresented: $prescribedBuprenorphine) { PrescribedBuprenorphineView(species: species) }
             .alert("Recommended Dose", isPresented: $recommendationHelp) {
                 Button("OK", role: .cancel) { }
@@ -836,6 +859,10 @@ private struct DoseCalculatorSheet: View {
                     seed: selectedBuiltInPreset?.definition
                 )
             }
+    }
+
+    private func protocolObservedCalculator(scrollProxy: ScrollViewProxy) -> some View {
+        calculatorPresentation(scrollProxy: scrollProxy)
             .onChange(of: selectedDoseLevel) { _, _ in
                 result = nil; exactMathSelected = false
             }
@@ -876,8 +903,6 @@ private struct DoseCalculatorSheet: View {
                     concentration = ""
                 }
             }
-            }
-        }
     }
 
     @ViewBuilder
