@@ -168,11 +168,14 @@ final class DoseSheetLogicRegressionTests: XCTestCase {
         p.selectedFrequency = .q12h
         XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).hasPrefix("Nearest whole: 1 whole tablet(s)"))
     }
-    func testReadableInjectionVolumeUsesSelectedDoseAndConcentration() throws {
+    func testReadableInjectionVolumeUsesExplicitPrescriptionAndConcentration() throws {
         let med = Medication(generic:"Volume fixture",brand:"",drugClass:"",species:[.dog],form:.injection,indication:"Test only",kind:.mgKg,minDose:1,maxDose:3,frequency:"q12h",route:"SC",notes:"",source:"Test only",strengths:[],concentration:10,controlled:false)
         var p = DoseSheetLogicProbe(medication:med,kg:10,concentration:"10")
-        for (level, expected) in [(DoseSelectionLevel.low,"1 mL"),(.middle,"2 mL"),(.high,"3 mL")] {
-            p.selectedDoseLevel = level
+        XCTAssertNotNil(p.injectionDoseInputError)
+        XCTAssertNil(p.readableAdministrationSummary)
+        for (dose, expected) in [("1","1 mL"),("2","2 mL"),("3","3 mL")] {
+            p.prescribedInjectionDose = dose
+            XCTAssertNil(p.injectionDoseInputError)
             XCTAssertTrue(try XCTUnwrap(p.readableAdministrationSummary).hasPrefix(expected))
         }
         p.concentration = "20"

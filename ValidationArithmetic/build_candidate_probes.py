@@ -10,8 +10,8 @@ def block(pattern):
   if view[i]=='}':depth-=1
   i+=1
  return view[m.start():i]
-fields=['readableAdministrationSummary','readableAdministrationNote','requiresPrescribedPotassiumRate','prescribedRateInputError','numericWeight','weightInputError','activeStrengths','selectedStrength','strengthInputError','activeConcentration','recommendedFrequency','activeRoute','activeFrequencyLabel','dosesPerDay','doseSelection','selectedSolidPlan','routeSupportsOralSolid','routeSupportsMeasuredVolume','solidUnitName','selectedAdministrationVolume','canPlanSupply','canChooseSupply','administrationSelection','requiresRibbonApplication','usesGalliprantChart','galliprantPlan','concentrationInputError','administrationReviewReason']
-funcs=['administrationInstruction','volumeInstruction','supplySummary']
+fields=['injectionMinimum','injectionMaximum','injectionDoseBasis','injectionDoseInputError','readableAdministrationSummary','readableAdministrationNote','requiresPrescribedPotassiumRate','prescribedRateInputError','numericWeight','weightInputError','activeStrengths','selectedStrength','strengthInputError','activeConcentration','recommendedFrequency','activeRoute','activeFrequencyLabel','dosesPerDay','doseSelection','selectedSolidPlan','routeSupportsOralSolid','routeSupportsMeasuredVolume','solidUnitName','selectedAdministrationVolume','canPlanSupply','canChooseSupply','administrationSelection','requiresRibbonApplication','usesGalliprantChart','galliprantPlan','concentrationInputError','administrationReviewReason']
+funcs=['selection','administrationInstruction','volumeInstruction','supplySummary']
 chunks=[block(r'private enum FrequencyChoice:')]+[block(r'private var '+f+r':') for f in fields]+[block(r'private func '+f+r'\(') for f in funcs]
 head='''import Foundation
 struct DoseSheetLogicProbe {
@@ -24,6 +24,7 @@ struct DoseSheetLogicProbe {
  var concentration = ""
  var infusionConcentrationConfirmed = false
  var prescribedPotassiumRate = ""
+ var prescribedInjectionDose = ""
  var selectedFrequency: FrequencyChoice = .recommended
  var selectedDoseLevel: DoseSelectionLevel = .middle
  var solidRounding: SolidDoseRounding = .nearest
