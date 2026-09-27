@@ -35,6 +35,40 @@ final class ClinicTests: XCTestCase {
         XCTAssertEqual(decoded.items[0].revision, item.revision)
         try ClinicTransfer.validatePhotos(decoded.items)
     }
+    func testLargeCollectionTransferRoundTripAndLimit() throws {
+        let items = (0..<1000).map { _ in example() }
+        let decoded = try ClinicPackage.decode(ClinicPackage(items: items).encoded())
+        XCTAssertEqual(decoded.items.count, 1000)
+        XCTAssertEqual(decoded.items.map(\.id), items.map(\.id))
+        XCTAssertThrowsError(try ClinicPackage(items: items + [example()]).encoded())
+    }
+    func testCollectionLimitRejectsSaveAndImportWithoutLosingData() throws {
+        for collection in ["clinic", "cytology"] {
+            let url = directory.appendingPathComponent(collection + ".json")
+            let store = ClinicStore(fileURL: url, collection: collection)
+            try store.importCopies(ClinicPackage(items: (0..<1000).map { _ in example() }))
+            let before = try Data(contentsOf: url)
+            XCTAssertThrowsError(try store.save(example()))
+            XCTAssertThrowsError(try store.importCopies(ClinicPackage(items: [example()])))
+            XCTAssertEqual(try Data(contentsOf: url), before)
+            XCTAssertEqual(ClinicStore(fileURL: url, collection: collection).items.count, 1000)
+            var edit = store.items[0]; edit.notes = "Still editable at capacity"
+            try store.save(edit)
+            XCTAssertEqual(store.items[0].notes, edit.notes)
+        }
+    }
+    func testLegacyOversizedCollectionRemainsAvailableWithoutGrowing() throws {
+        let url = directory.appendingPathComponent("legacy.json")
+        let encoder = JSONEncoder(); encoder.dateEncodingStrategy = .iso8601
+        try encoder.encode((0..<1001).map { _ in example() }).write(to: url)
+        let store = ClinicStore(fileURL: url)
+        XCTAssertEqual(store.items.count, 1001)
+        XCTAssertThrowsError(try store.save(example()))
+        var edit = store.items[0]; edit.notes = "Preserved legacy edit"
+        try store.save(edit)
+        XCTAssertEqual(ClinicStore(fileURL: url).items.count, 1001)
+        XCTAssertEqual(store.items[0].notes, edit.notes)
+    }
     func testDuplicateImportsNeverOverwriteAndPersist() throws {
         let url = directory.appendingPathComponent("store.json")
         let store = ClinicStore(fileURL: url); let item = example()

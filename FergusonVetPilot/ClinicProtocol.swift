@@ -98,11 +98,13 @@ struct ClinicPackage: Codable, Equatable, Identifiable {
     var exportedAt = Date()
     var items: [ClinicProtocol]
 
+    static let maximumItems = 1000
     static let maximumBytes = 15_000_000
     func encoded() throws -> Data {
-        guard format == "VetPilot.MyClinic", schemaVersion == 1, !items.isEmpty, items.count <= 100, Set(items.map(\.id)).count == items.count else {
+        guard format == "VetPilot.MyClinic", schemaVersion == 1, !items.isEmpty, Set(items.map(\.id)).count == items.count else {
             throw ClinicFileError.invalid("Unsupported or empty VetPilot protocol file.")
         }
+        guard items.count <= Self.maximumItems else { throw ClinicFileError.invalid("A transfer supports up to 1,000 entries. Select fewer entries to export.") }
         for item in items { _ = try item.validated() }
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601

@@ -46,6 +46,8 @@ final class ClinicStore: ObservableObject {
 
     private func commit(_ updated: [ClinicProtocol]) throws {
         guard !loadFailed else { throw ClinicFileError.invalid("Saved data needs recovery before changes can be saved.") }
+        guard updated.count <= max(ClinicPackage.maximumItems, items.count) else { throw ClinicFileError.invalid("Collection limit is 1,000 entries. Export entries for safekeeping before making room; nothing has been removed.") }
+        // Existing oversized collections remain readable and editable, but cannot grow.
         let encoder = JSONEncoder(); encoder.dateEncodingStrategy = .iso8601
         // Canonical second-resolution ISO dates match the website and cloud payload.
         let decoder = JSONDecoder(); decoder.dateDecodingStrategy = .iso8601
@@ -89,6 +91,7 @@ final class ClinicStore: ObservableObject {
             guard remote.count <= 1000, Set(remote.map(\.id)).count == remote.count else { throw ClinicFileError.invalid("Duplicate cloud protocol IDs.") }
             try ClinicTransfer.validatePhotos(remote)
             let merged = ClinicMerge.merge(local: items, base: state.baseline, remote: remote)
+            guard merged.count <= ClinicPackage.maximumItems else { throw ClinicFileError.invalid("Sync supports up to 1,000 entries. Existing local and cloud entries have been preserved.") }
             let old = state; state.baseline = remote; state.version = version
             do { try commit(merged) } catch { state = old; throw error }
             if items != remote {
