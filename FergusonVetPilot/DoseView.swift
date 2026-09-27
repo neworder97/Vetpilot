@@ -498,263 +498,10 @@ private struct DoseCalculatorSheet: View {
         NavigationStack {
             ScrollViewReader { scrollProxy in
             Form {
-                Section {
-                    Text(medication.displayName)
-                        .font(.headline)
-                        .foregroundStyle(AppTheme.blue)
-                    Text(medication.indication)
-                }
-
-                if medication.generic == "Buprenorphine" {
-                    Section("Additional concentration") {
-                        Button("0.6 mg/mL · prescribed-dose conversion") { prescribedBuprenorphine = true }
-                    }
-                }
-                if medication.kind == .protocolOnly {
-                    Section("Medication protocol") {
-                        if let clinicOverride {
-                            Label("Clinic override enabled for \(species.rawValue)", systemImage: "checkmark.circle.fill")
-                                .foregroundStyle(Color.green)
-                            LabeledContent("Equation", value: clinicOverride.doseBasis.rawValue)
-                            if !clinicOverride.frequency.isEmpty {
-                                LabeledContent("Frequency", value: clinicOverride.frequency)
-                            }
-                            if !clinicOverride.route.isEmpty {
-                                LabeledContent("Route", value: clinicOverride.route)
-                            }
-                            Button("Edit clinic override") { showProtocolEditor = true }
-                            if !builtInPresets.isEmpty {
-                                Button("Disable override and use preloaded protocols", role: .destructive) {
-                                    protocolStore.remove(for: medication, species: species)
-                                    selectedPresetIndex = 0
-                                }
-                            }
-                        } else if !builtInPresets.isEmpty {
-                            Label("Preloaded calculator available", systemImage: "checkmark.seal.fill")
-                                .foregroundStyle(Color.green)
-                                .accessibilityIdentifier("dose.protocol.preloaded")
-
-                            if builtInPresets.count > 1 {
-                                Picker("Protocol / indication", selection: $selectedPresetIndex) {
-                                    ForEach(Array(builtInPresets.enumerated()), id: \.element.id) { index, preset in
-                                        Text(preset.displayLabel).tag(index)
-                                    }
-                                }
-                                .accessibilityIdentifier("dose.protocol.picker")
-                            }
-
-                            if let selectedBuiltInPreset {
-                                Text(selectedBuiltInPreset.label)
-                                    .font(.footnote.weight(.semibold))
-                                LabeledContent("Equation", value: selectedBuiltInPreset.doseBasis.rawValue)
-                                if !selectedBuiltInPreset.frequency.isEmpty {
-                                    LabeledContent("Frequency", value: selectedBuiltInPreset.frequency)
-                                }
-                                if !selectedBuiltInPreset.route.isEmpty {
-                                    LabeledContent("Route", value: selectedBuiltInPreset.route)
-                                }
-                                if !selectedBuiltInPreset.confidence.isEmpty {
-                                    LabeledContent("Research confidence", value: selectedBuiltInPreset.confidence)
-                                }
-                                if selectedBuiltInPreset.highRisk {
-                                    Text("High-risk/monitored protocol: choose the intended indication/route/product or treatment branch and verify the final plan with the veterinarian before use.")
-                                        .font(.caption.weight(.semibold))
-                                        .foregroundStyle(AppTheme.orange)
-                                }
-                            }
-
-                            Button {
-                                showProtocolEditor = true
-                            } label: {
-                                Label("Enter / edit clinic override", systemImage: "slider.horizontal.3")
-                            }
-                            .buttonStyle(.bordered)
-                            .accessibilityIdentifier("dose.protocol.override")
-                        } else {
-                            Text("No preloaded automatic rule is available for this entry.")
-                                .foregroundStyle(.secondary)
-                            Button {
-                                showProtocolEditor = true
-                            } label: {
-                                Label("Enable Calculator / Enter Protocol", systemImage: "plus.circle.fill")
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .accessibilityIdentifier("dose.protocol.enable")
-                        }
-                    }
-                }
-
-                Section("Patient weight") {
-                    HStack {
-                        TextField("Enter weight", text: $patientWeight)
-                            .keyboardType(.decimalPad)
-                            .focused($weightFieldFocused)
-                            .accessibilityIdentifier("dose.sheet.weight")
-
-                        Picker("Unit", selection: $patientWeightUnit) {
-                            Text("lb").tag("lb")
-                            Text("kg").tag("kg")
-                        }
-                        .pickerStyle(.segmented)
-                        .frame(width: 130)
-                    }
-
-                    if let error = weightInputError {
-                        Text(error).font(.caption).foregroundStyle(AppTheme.orange)
-                            .accessibilityIdentifier("dose.weight.error")
-                    }
-                    if numericWeight > 0 {
-                        Text("\(ClinicalData.format(kg)) kg / \(ClinicalData.format(ClinicalData.kgToLb(kg))) lb")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.secondary)
-                    } else if (protocolDefinition?.doseBasis.requiresWeight == false && !MedicationSafety.requiresEligibilityWeight(key: protocolDefinition?.medicationKey ?? "")) {
-                        Text("The selected protocol uses a fixed per-patient/eye dose; weight is optional for the arithmetic.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    } else {
-                        Text("Enter a patient weight to enable automatic calculation.")
-                            .font(.caption)
-                            .foregroundStyle(AppTheme.orange)
-                    }
-                }
-
-                if let source = medication.formulation?.productSource, let url = URL(string: source) {
-                    Section("Product strength source") {
-                        if let sources = medication.formulation?.productSources, sources.count > 1 {
-                            DisclosureGroup("Product label references") {
-                                ForEach(Array(sources.enumerated()), id: \.offset) { index, source in
-                                    if let labelURL = URL(string: source) { Link("Product label \(index + 1)", destination: labelURL) }
-                                }
-                            }
-                        } else { Link("Official product label", destination: url) }
-                        Text("Verify the exact product, release type and route. For prepared liquids and infusions, use the verified final concentration.").font(.caption).foregroundStyle(.secondary)
-                    }
-                }
-                if !activeStrengths.isEmpty {
-                    Section("Product strength") {
-                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 90))], spacing: 8) {
-                            ForEach(Array(activeStrengths.enumerated()), id: \.offset) { index, value in
-                                Button("\(MedicationSafety.input(value)) mg") { selectedStrengthIndex = index }
-                                    .buttonStyle(.bordered)
-                                    .tint(selectedStrengthIndex == index ? AppTheme.blue : .secondary)
-                                    .accessibilityAddTraits(selectedStrengthIndex == index ? .isSelected : [])
-                            }
-                        }
-                    }
-                }
-
-                if [.tablet,.capsule].contains(medication.form) && activeStrengths.isEmpty && !usesGalliprantChart {
-                    Section("Verified product strength") {
-                        TextField("mg per tablet / capsule", text: $manualStrength)
-                            .keyboardType(.decimalPad)
-                            .accessibilityIdentifier("dose.strength.manual")
-                        Text("Enter the strength printed on the verified product label to calculate tablet/capsule quantity and rounding. No product strength is assumed.").font(.caption)
-                        if let error = strengthInputError { Text(error).foregroundStyle(AppTheme.orange) }
-                    }
-                }
-
-                let needsProtocolConcentration = protocolDefinition?.doseBasis.supportsConcentration == true && !(medication.formulation != nil && [.tablet, .capsule].contains(medication.form))
-                let needsMedicationConcentration = protocolDefinition == nil && [.liquid, .injection, .transdermal].contains(medication.form)
-                let requiredVolumeProtocolConcentration: Double? = {
-                    guard protocolDefinition?.doseBasis == .mLKg else { return nil }
-                    return protocolDefinition?.concentration
-                }()
-
-                if let required = requiredVolumeProtocolConcentration {
-                    Section("Required product concentration (mg/mL)") {
-                        Text("\(ClinicalData.format(required)) mg/mL")
-                            .font(.headline)
-                        Text("This preloaded mL/kg protocol applies to this product concentration. Do not substitute a different concentration without selecting or entering the matching veterinarian-approved protocol.")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
-                } else if (needsProtocolConcentration || needsMedicationConcentration) && medication.generic != "Mirtazapine transdermal" {
-                    let concentrationUnit = protocolDefinition?.doseBasis.concentrationLabel ?? "mg/mL"
-                    Section(protocolDefinition?.doseBasis.isRate == true ? "Final infusion concentration (\(concentrationUnit))" : "Concentration (\(concentrationUnit)) — verify product") {
-                        if selectedBuiltInPreset?.id.hasPrefix("ampicillin-sulbactam-") == true {
-                            Text("TOTAL COMBINED ampicillin + sulbactam mg/mL, after preparation; not ampicillin alone.")
-                                .font(.footnote.bold())
-                        }
-                        if let values = medication.formulation?.concentrations {
-                            LazyVGrid(columns: [GridItem(.adaptive(minimum: 110))], spacing: 8) {
-                                ForEach(values, id: \.self) { value in
-                                    Button("\(MedicationSafety.input(value)) mg/mL") { concentration = MedicationSafety.input(value) }
-                                        .buttonStyle(.bordered)
-                                        .tint(activeConcentration == value ? AppTheme.blue : .secondary)
-                                }
-                            }
-                        }
-                        if medication.generic == "Pregabalin" {
-                            Text("For a compounded suspension, enter the exact bottle concentration. Product strength does not select a dose regimen.").font(.footnote)
-                        }
-                        TextField(concentrationUnit, text: $concentration)
-                            .keyboardType(.decimalPad)
-                            .accessibilityIdentifier("dose.concentration")
-                        if let error = concentrationInputError {
-                            Text(error).foregroundStyle(AppTheme.orange)
-                                .accessibilityIdentifier("dose.concentration.error")
-                        }
-                        if protocolDefinition?.doseBasis.isRate == true {
-                            Text("Enter the concentration of the final prepared infusion in \(concentrationUnit), including any dilution. Stock vial concentration is not the pump concentration after dilution.")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                            Toggle("Final prepared infusion concentration verified", isOn: $infusionConcentrationConfirmed)
-                                .accessibilityIdentifier("dose.infusion.concentration.verified")
-                        } else {
-                            Text("Enter the exact product concentration in \(concentrationUnit).")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                }
-
-                if requiresPrescribedPotassiumRate {
-                    Section("Prescribed potassium rate (mEq/kg/hr)") {
-                        TextField("Veterinarian-prescribed mEq/kg/hr", text: $prescribedPotassiumRate)
-                            .keyboardType(.decimalPad)
-                            .accessibilityIdentifier("dose.potassium.prescribed.rate")
-                        Text("Use the current serum potassium and the complete fluid prescription. Maximum 0.5 mEq/kg/hr. Never bolus KCl-containing fluids. Account for all potassium sources.")
-                            .font(.footnote)
-                        if let error = prescribedRateInputError { Text(error).foregroundStyle(AppTheme.orange) }
-                    }
-                }
-
-                Section("Dose selection") {
-                    if isInjectionCalculation {
-                        if !requiresPrescribedPotassiumRate {
-                            TextField("Prescribed injection dose (\(injectionDoseBasis))", text: $prescribedInjectionDose)
-                                .keyboardType(.decimalPad)
-                                .accessibilityIdentifier("dose.injection.prescribed")
-                            Text("Protocol reference: \(MedicationSafety.input(injectionMinimum))–\(MedicationSafety.input(injectionMaximum)) \(injectionDoseBasis). Confirm the prescription, indication and route.").font(.caption)
-                            if let error = injectionDoseInputError { Text(error).font(.caption).foregroundStyle(AppTheme.orange) }
-                        }
-                        doseChoiceButton("Exact Math", selected: true, identifier: "dose.level.exact") {
-                            calculateCandidate()
-                            weightFieldFocused = false
-                            DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } }
-                        }.disabled(calculationDisabled)
-                        Text("Exact Math calculates the veterinarian-prescribed dose using the patient weight and verified concentration. It does not choose a dose.").font(.caption)
-                    } else {
-                        HStack(spacing: 6) {
-                        doseChoiceButton("Low Dose", selected: !exactMathSelected && !recommendedDoseSelected && selectedDoseLevel == .low, identifier: "dose.level.low") {
-                            recommendedDoseSelected = false; selectedDoseLevel = .low; result = nil; exactMathSelected = false
-                        }
-                        doseChoiceButton("Recommended Dose", selected: recommendedDoseSelected, identifier: "dose.level.recommended") {
-                            chooseRecommendedDose()
-                            if hasSourceRecommendedDose { DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } } }
-                        }
-                        doseChoiceButton("High Dose", selected: !exactMathSelected && !recommendedDoseSelected && selectedDoseLevel == .high, identifier: "dose.level.high") {
-                            recommendedDoseSelected = false; selectedDoseLevel = .high; result = nil; exactMathSelected = false
-                        }
-                        }
-                        if !hasSourceRecommendedDose {
-                            doseChoiceButton("Range midpoint", selected: selectedDoseLevel == .middle, identifier: "dose.level.midpoint") {
-                                recommendedDoseSelected = false; selectedDoseLevel = .middle; result = nil; exactMathSelected = false
-                            }
-                            Text("This selection has no single source-supported default. Tap Recommended Dose for guidance. Range midpoint is arithmetic only.").font(.caption)
-                        }
-                    }
-                }
+                medicationProtocolSections
+                patientAndProductSections
+                concentrationSections
+                doseSelectionSection(scrollProxy: scrollProxy)
                 if [.tablet, .capsule].contains(medication.form) {
                     Section("Tablet / capsule rounding") {
                                 Picker("Tablet / capsule rounding", selection: $solidRounding) {
@@ -1129,6 +876,279 @@ private struct DoseCalculatorSheet: View {
                     concentration = ""
                 }
             }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var medicationProtocolSections: some View {
+        Section {
+            Text(medication.displayName)
+                .font(.headline)
+                .foregroundStyle(AppTheme.blue)
+            Text(medication.indication)
+        }
+
+        if medication.generic == "Buprenorphine" {
+            Section("Additional concentration") {
+                Button("0.6 mg/mL · prescribed-dose conversion") { prescribedBuprenorphine = true }
+            }
+        }
+        if medication.kind == .protocolOnly {
+            Section("Medication protocol") {
+                if let clinicOverride {
+                    Label("Clinic override enabled for \(species.rawValue)", systemImage: "checkmark.circle.fill")
+                        .foregroundStyle(Color.green)
+                    LabeledContent("Equation", value: clinicOverride.doseBasis.rawValue)
+                    if !clinicOverride.frequency.isEmpty {
+                        LabeledContent("Frequency", value: clinicOverride.frequency)
+                    }
+                    if !clinicOverride.route.isEmpty {
+                        LabeledContent("Route", value: clinicOverride.route)
+                    }
+                    Button("Edit clinic override") { showProtocolEditor = true }
+                    if !builtInPresets.isEmpty {
+                        Button("Disable override and use preloaded protocols", role: .destructive) {
+                            protocolStore.remove(for: medication, species: species)
+                            selectedPresetIndex = 0
+                        }
+                    }
+                } else if !builtInPresets.isEmpty {
+                    Label("Preloaded calculator available", systemImage: "checkmark.seal.fill")
+                        .foregroundStyle(Color.green)
+                        .accessibilityIdentifier("dose.protocol.preloaded")
+
+                    if builtInPresets.count > 1 {
+                        Picker("Protocol / indication", selection: $selectedPresetIndex) {
+                            ForEach(Array(builtInPresets.enumerated()), id: \.element.id) { index, preset in
+                                Text(preset.displayLabel).tag(index)
+                            }
+                        }
+                        .accessibilityIdentifier("dose.protocol.picker")
+                    }
+
+                    if let selectedBuiltInPreset {
+                        Text(selectedBuiltInPreset.label)
+                            .font(.footnote.weight(.semibold))
+                        LabeledContent("Equation", value: selectedBuiltInPreset.doseBasis.rawValue)
+                        if !selectedBuiltInPreset.frequency.isEmpty {
+                            LabeledContent("Frequency", value: selectedBuiltInPreset.frequency)
+                        }
+                        if !selectedBuiltInPreset.route.isEmpty {
+                            LabeledContent("Route", value: selectedBuiltInPreset.route)
+                        }
+                        if !selectedBuiltInPreset.confidence.isEmpty {
+                            LabeledContent("Research confidence", value: selectedBuiltInPreset.confidence)
+                        }
+                        if selectedBuiltInPreset.highRisk {
+                            Text("High-risk/monitored protocol: choose the intended indication/route/product or treatment branch and verify the final plan with the veterinarian before use.")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(AppTheme.orange)
+                        }
+                    }
+
+                    Button {
+                        showProtocolEditor = true
+                    } label: {
+                        Label("Enter / edit clinic override", systemImage: "slider.horizontal.3")
+                    }
+                    .buttonStyle(.bordered)
+                    .accessibilityIdentifier("dose.protocol.override")
+                } else {
+                    Text("No preloaded automatic rule is available for this entry.")
+                        .foregroundStyle(.secondary)
+                    Button {
+                        showProtocolEditor = true
+                    } label: {
+                        Label("Enable Calculator / Enter Protocol", systemImage: "plus.circle.fill")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .accessibilityIdentifier("dose.protocol.enable")
+                }
+            }
+        }
+
+    }
+
+    @ViewBuilder
+    private var patientAndProductSections: some View {
+        Section("Patient weight") {
+            HStack {
+                TextField("Enter weight", text: $patientWeight)
+                    .keyboardType(.decimalPad)
+                    .focused($weightFieldFocused)
+                    .accessibilityIdentifier("dose.sheet.weight")
+
+                Picker("Unit", selection: $patientWeightUnit) {
+                    Text("lb").tag("lb")
+                    Text("kg").tag("kg")
+                }
+                .pickerStyle(.segmented)
+                .frame(width: 130)
+            }
+
+            if let error = weightInputError {
+                Text(error).font(.caption).foregroundStyle(AppTheme.orange)
+                    .accessibilityIdentifier("dose.weight.error")
+            }
+            if numericWeight > 0 {
+                Text("\(ClinicalData.format(kg)) kg / \(ClinicalData.format(ClinicalData.kgToLb(kg))) lb")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            } else if (protocolDefinition?.doseBasis.requiresWeight == false && !MedicationSafety.requiresEligibilityWeight(key: protocolDefinition?.medicationKey ?? "")) {
+                Text("The selected protocol uses a fixed per-patient/eye dose; weight is optional for the arithmetic.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else {
+                Text("Enter a patient weight to enable automatic calculation.")
+                    .font(.caption)
+                    .foregroundStyle(AppTheme.orange)
+            }
+        }
+
+        if let source = medication.formulation?.productSource, let url = URL(string: source) {
+            Section("Product strength source") {
+                if let sources = medication.formulation?.productSources, sources.count > 1 {
+                    DisclosureGroup("Product label references") {
+                        ForEach(Array(sources.enumerated()), id: \.offset) { index, source in
+                            if let labelURL = URL(string: source) { Link("Product label \(index + 1)", destination: labelURL) }
+                        }
+                    }
+                } else { Link("Official product label", destination: url) }
+                Text("Verify the exact product, release type and route. For prepared liquids and infusions, use the verified final concentration.").font(.caption).foregroundStyle(.secondary)
+            }
+        }
+        if !activeStrengths.isEmpty {
+            Section("Product strength") {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 90))], spacing: 8) {
+                    ForEach(Array(activeStrengths.enumerated()), id: \.offset) { index, value in
+                        Button("\(MedicationSafety.input(value)) mg") { selectedStrengthIndex = index }
+                            .buttonStyle(.bordered)
+                            .tint(selectedStrengthIndex == index ? AppTheme.blue : .secondary)
+                            .accessibilityAddTraits(selectedStrengthIndex == index ? .isSelected : [])
+                    }
+                }
+            }
+        }
+
+        if [.tablet,.capsule].contains(medication.form) && activeStrengths.isEmpty && !usesGalliprantChart {
+            Section("Verified product strength") {
+                TextField("mg per tablet / capsule", text: $manualStrength)
+                    .keyboardType(.decimalPad)
+                    .accessibilityIdentifier("dose.strength.manual")
+                Text("Enter the strength printed on the verified product label to calculate tablet/capsule quantity and rounding. No product strength is assumed.").font(.caption)
+                if let error = strengthInputError { Text(error).foregroundStyle(AppTheme.orange) }
+            }
+        }
+
+    }
+
+    @ViewBuilder
+    private var concentrationSections: some View {
+        let needsProtocolConcentration = protocolDefinition?.doseBasis.supportsConcentration == true && !(medication.formulation != nil && [.tablet, .capsule].contains(medication.form))
+        let needsMedicationConcentration = protocolDefinition == nil && [.liquid, .injection, .transdermal].contains(medication.form)
+        let requiredVolumeProtocolConcentration: Double? = {
+            guard protocolDefinition?.doseBasis == .mLKg else { return nil }
+            return protocolDefinition?.concentration
+        }()
+
+        if let required = requiredVolumeProtocolConcentration {
+            Section("Required product concentration (mg/mL)") {
+                Text("\(ClinicalData.format(required)) mg/mL")
+                    .font(.headline)
+                Text("This preloaded mL/kg protocol applies to this product concentration. Do not substitute a different concentration without selecting or entering the matching veterinarian-approved protocol.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+        } else if (needsProtocolConcentration || needsMedicationConcentration) && medication.generic != "Mirtazapine transdermal" {
+            let concentrationUnit = protocolDefinition?.doseBasis.concentrationLabel ?? "mg/mL"
+            Section(protocolDefinition?.doseBasis.isRate == true ? "Final infusion concentration (\(concentrationUnit))" : "Concentration (\(concentrationUnit)) — verify product") {
+                if selectedBuiltInPreset?.id.hasPrefix("ampicillin-sulbactam-") == true {
+                    Text("TOTAL COMBINED ampicillin + sulbactam mg/mL, after preparation; not ampicillin alone.")
+                        .font(.footnote.bold())
+                }
+                if let values = medication.formulation?.concentrations {
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 110))], spacing: 8) {
+                        ForEach(values, id: \.self) { value in
+                            Button("\(MedicationSafety.input(value)) mg/mL") { concentration = MedicationSafety.input(value) }
+                                .buttonStyle(.bordered)
+                                .tint(activeConcentration == value ? AppTheme.blue : .secondary)
+                        }
+                    }
+                }
+                if medication.generic == "Pregabalin" {
+                    Text("For a compounded suspension, enter the exact bottle concentration. Product strength does not select a dose regimen.").font(.footnote)
+                }
+                TextField(concentrationUnit, text: $concentration)
+                    .keyboardType(.decimalPad)
+                    .accessibilityIdentifier("dose.concentration")
+                if let error = concentrationInputError {
+                    Text(error).foregroundStyle(AppTheme.orange)
+                        .accessibilityIdentifier("dose.concentration.error")
+                }
+                if protocolDefinition?.doseBasis.isRate == true {
+                    Text("Enter the concentration of the final prepared infusion in \(concentrationUnit), including any dilution. Stock vial concentration is not the pump concentration after dilution.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    Toggle("Final prepared infusion concentration verified", isOn: $infusionConcentrationConfirmed)
+                        .accessibilityIdentifier("dose.infusion.concentration.verified")
+                } else {
+                    Text("Enter the exact product concentration in \(concentrationUnit).")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+
+        if requiresPrescribedPotassiumRate {
+            Section("Prescribed potassium rate (mEq/kg/hr)") {
+                TextField("Veterinarian-prescribed mEq/kg/hr", text: $prescribedPotassiumRate)
+                    .keyboardType(.decimalPad)
+                    .accessibilityIdentifier("dose.potassium.prescribed.rate")
+                Text("Use the current serum potassium and the complete fluid prescription. Maximum 0.5 mEq/kg/hr. Never bolus KCl-containing fluids. Account for all potassium sources.")
+                    .font(.footnote)
+                if let error = prescribedRateInputError { Text(error).foregroundStyle(AppTheme.orange) }
+            }
+        }
+
+    }
+
+    @ViewBuilder
+    private func doseSelectionSection(scrollProxy: ScrollViewProxy) -> some View {
+        Section("Dose selection") {
+            if isInjectionCalculation {
+                if !requiresPrescribedPotassiumRate {
+                    TextField("Prescribed injection dose (\(injectionDoseBasis))", text: $prescribedInjectionDose)
+                        .keyboardType(.decimalPad)
+                        .accessibilityIdentifier("dose.injection.prescribed")
+                    Text("Protocol reference: \(MedicationSafety.input(injectionMinimum))–\(MedicationSafety.input(injectionMaximum)) \(injectionDoseBasis). Confirm the prescription, indication and route.").font(.caption)
+                    if let error = injectionDoseInputError { Text(error).font(.caption).foregroundStyle(AppTheme.orange) }
+                }
+                doseChoiceButton("Exact Math", selected: true, identifier: "dose.level.exact") {
+                    calculateCandidate()
+                    weightFieldFocused = false
+                    DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } }
+                }.disabled(calculationDisabled)
+                Text("Exact Math calculates the veterinarian-prescribed dose using the patient weight and verified concentration. It does not choose a dose.").font(.caption)
+            } else {
+                HStack(spacing: 6) {
+                doseChoiceButton("Low Dose", selected: !exactMathSelected && !recommendedDoseSelected && selectedDoseLevel == .low, identifier: "dose.level.low") {
+                    recommendedDoseSelected = false; selectedDoseLevel = .low; result = nil; exactMathSelected = false
+                }
+                doseChoiceButton("Recommended Dose", selected: recommendedDoseSelected, identifier: "dose.level.recommended") {
+                    chooseRecommendedDose()
+                    if hasSourceRecommendedDose { DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } } }
+                }
+                doseChoiceButton("High Dose", selected: !exactMathSelected && !recommendedDoseSelected && selectedDoseLevel == .high, identifier: "dose.level.high") {
+                    recommendedDoseSelected = false; selectedDoseLevel = .high; result = nil; exactMathSelected = false
+                }
+                }
+                if !hasSourceRecommendedDose {
+                    doseChoiceButton("Range midpoint", selected: selectedDoseLevel == .middle, identifier: "dose.level.midpoint") {
+                        recommendedDoseSelected = false; selectedDoseLevel = .middle; result = nil; exactMathSelected = false
+                    }
+                    Text("This selection has no single source-supported default. Tap Recommended Dose for guidance. Range midpoint is arithmetic only.").font(.caption)
+                }
             }
         }
     }
