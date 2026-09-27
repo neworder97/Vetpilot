@@ -144,9 +144,10 @@ final class CustomMedicationStore: ObservableObject {
         syncStatus = id == nil ? "Guest medications — stored on this device" : "Medication sync pending"
         load()
     }
-    func add(_ definition: CustomMedicationDefinition) {
+    @discardableResult
+    func add(_ definition: CustomMedicationDefinition) -> Bool {
         var next = state; next.items.append(definition)
-        do { try commit(next); syncStatus = "Saved locally — sync pending" } catch { syncStatus = error.localizedDescription }
+        do { try commit(next); syncStatus = "Saved locally — sync pending"; return true } catch { syncStatus = error.localizedDescription; return false }
     }
     func remove(at offsets: IndexSet) {
         var next = state; next.items.remove(atOffsets: offsets)
@@ -271,6 +272,7 @@ private struct CustomMedicationEditorView: View {
     @State private var concentration = ""
     @State private var sourceReference = ""
     @State private var notes = ""
+    @State private var saveError: String?
 
     private var valid: Bool {
         !generic.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
@@ -319,6 +321,7 @@ private struct CustomMedicationEditorView: View {
                         .foregroundStyle(.secondary)
                 }
 
+                if let saveError { Section { Text(saveError).foregroundStyle(.red) } }
                 Section("Notes") {
                     TextField("Safety notes / constraints", text: $notes, axis: .vertical)
                 }
@@ -334,7 +337,7 @@ private struct CustomMedicationEditorView: View {
                         guard valid, let low = MedicationSafety.parsePositive(minDose) else { return }
                         let high = Double(maxDose) ?? low
                         let conc = Double(concentration)
-                        store.add(CustomMedicationDefinition(
+                        let saved = store.add(CustomMedicationDefinition(
                             generic: generic,
                             brand: brand,
                             drugClass: drugClass,
@@ -350,7 +353,7 @@ private struct CustomMedicationEditorView: View {
                             sourceReference: sourceReference,
                             notes: notes
                         ))
-                        dismiss()
+                        if saved { dismiss() } else { saveError = store.syncStatus }
                     }
                     .disabled(!valid || !store.ready)
                 }

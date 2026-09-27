@@ -37,4 +37,17 @@ final class CustomMedicationSyncTests: XCTestCase {
             UserDefaults.standard.removeObject(forKey: "ferguson.vetpilot.custom-medications.account." + id.uuidString.lowercased())
         }
     }
+    @MainActor func testRejectedCustomSaveReportsFailureAndPreservesCollection() throws {
+        let owner = UUID()
+        let accountKey = "ferguson.vetpilot.custom-medications.account." + owner.uuidString.lowercased()
+        defer { UserDefaults.standard.removeObject(forKey: accountKey) }
+        let original = try JSONEncoder().encode(CustomMedicationSyncState(items: (0..<500).map { _ in item() }, baseline: [], version: 0))
+        UserDefaults.standard.set(original, forKey: accountKey)
+        let store = CustomMedicationStore(); store.switchAccount(owner)
+        XCTAssertFalse(store.add(item()))
+        XCTAssertEqual(store.definitions.count, 500)
+        XCTAssertEqual(UserDefaults.standard.data(forKey: accountKey), original)
+        XCTAssertTrue(store.syncStatus.contains("Invalid custom medication collection"))
+    }
+
 }
