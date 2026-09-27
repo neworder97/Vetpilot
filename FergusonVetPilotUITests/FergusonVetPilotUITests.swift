@@ -118,15 +118,19 @@ final class FergusonVetPilotUITests: XCTestCase {
         let weight = app.textFields["dose.sheet.weight"]
         weight.tap(); weight.typeText("25"); app.buttons["dose.keyboard.done"].tap()
         let strength = app.textFields["dose.strength.manual"]
-        for _ in 0..<12 where !strength.isHittable { app.swipeUp() }
+        revealDoseControl(strength)
         XCTAssertTrue(strength.isHittable); strength.tap(); strength.typeText("2")
         app.buttons["dose.keyboard.done"].tap()
+        let low = app.buttons["dose.level.low"]
+        revealDoseControl(low); low.tap()
+        XCTAssertTrue(low.isSelected)
         let calculate = app.buttons["dose.calculate"]
-        for _ in 0..<16 where !calculate.isHittable { app.swipeUp() }
-        XCTAssertTrue(calculate.isEnabled); calculate.tap()
+        revealDoseControl(calculate)
+        XCTAssertTrue(calculate.isEnabled)
+        calculate.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:0.5)).tap()
         let quantity = app.staticTexts["dose.result.quantity"]
-        for _ in 0..<8 where !quantity.isHittable { app.swipeUp() }
-        XCTAssertTrue(quantity.exists)
+        XCTAssertTrue(quantity.waitForExistence(timeout:5))
+        revealDoseControl(quantity)
         for (mode,units) in [("Round up","2 whole capsule(s)"),("Round down","1 whole capsule(s)"),("Exact math","1.25 capsule(s) equivalent"),("Nearest whole","1 whole capsule(s)")] {
             let rounding = app.segmentedControls["dose.rounding"]
             revealDoseControl(rounding, towardEarlierFields:true)
