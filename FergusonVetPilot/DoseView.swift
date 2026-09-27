@@ -277,7 +277,7 @@ private struct DoseCalculatorSheet: View {
     }
 
     private func calculateCandidate() {
-                        if medication.form == .injection { exactMathSelected = true }
+                        if isInjectionCalculation { exactMathSelected = true }
                         if let error = injectionDoseInputError {
                             result = DoseResult(available: false, headline: "Prescribed dose required", math: "", formulation: "", warning: error)
                             return
@@ -298,7 +298,7 @@ private struct DoseCalculatorSheet: View {
                             result = DoseResult(available: false, headline: "Invalid concentration", math: "", formulation: "", warning: error)
                             return
                         }
-                        if medication.form == .injection && doseSelection == nil {
+                        if isInjectionCalculation && doseSelection == nil {
                             result = DoseResult(available: false, headline: "No injection candidate", math: "", formulation: "", warning: "Check the selected protocol, weight, prescribed dose and per-patient limits.")
                             return
                         }
@@ -720,7 +720,7 @@ private struct DoseCalculatorSheet: View {
                 }
 
                 Section("Dose selection") {
-                    if medication.form == .injection {
+                    if isInjectionCalculation {
                         if !requiresPrescribedPotassiumRate {
                             TextField("Prescribed injection dose (\(injectionDoseBasis))", text: $prescribedInjectionDose)
                                 .keyboardType(.decimalPad)
@@ -925,7 +925,7 @@ private struct DoseCalculatorSheet: View {
 
                     if result.available, let selection = doseSelection {
                         Section("Dose range choice") {
-                            if selection.hasRange && medication.form != .injection {
+                            if selection.hasRange && !isInjectionCalculation {
 
 
                                 doseLevelRow(.low)
@@ -1004,7 +1004,7 @@ private struct DoseCalculatorSheet: View {
 
 
 
-                    if result.available, medication.form == .injection {
+                    if result.available, isInjectionCalculation {
                         Section("Injectable administration") {
                             Text("Immediate-use injectable: this calculator shows the single administration dose/volume only. No 7-day, 2-week, or 30-day take-home supply counter is available for injectable medications.")
                                 .font(.footnote.weight(.semibold))
@@ -1021,7 +1021,7 @@ private struct DoseCalculatorSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    if medication.form == .injection {
+                    if isInjectionCalculation {
                         Button("Exact Math") {
                             exactMathSelected = true
                             calculateCandidate()
@@ -1138,7 +1138,7 @@ private struct DoseCalculatorSheet: View {
               administrationSelection != nil, concentrationInputError == nil,
               (medication.kind != .protocolOnly || protocolDefinition != nil),
               selectedBuiltInPreset?.highRisk != true,
-              medication.form != .injection, protocolDefinition?.doseBasis.isRate != true else { return false }
+              !isInjectionCalculation, protocolDefinition?.doseBasis.isRate != true else { return false }
         if usesGalliprantChart { return galliprantPlan != nil }
         return true
     }
@@ -1232,6 +1232,13 @@ private struct DoseCalculatorSheet: View {
         .accessibilityAddTraits(selected ? .isSelected : [])
     }
 
+    private var isInjectionCalculation: Bool {
+        if medication.form == .injection { return true }
+        guard medication.form == .reference else { return false }
+        let route = activeRoute.uppercased()
+        return route.range(of: "\\b(IV|IM|SC|SQ|CRI|INTRAVENOUS|INTRAMUSCULAR|SUBCUTANEOUS)\\b", options: .regularExpression) != nil
+            && route.range(of: "\\bPO\\b|ORAL", options: .regularExpression) == nil
+    }
     private var injectionMinimum: Double { protocolDefinition?.minDose ?? medication.minDose }
     private var injectionMaximum: Double { protocolDefinition?.maxDose ?? medication.maxDose }
     private var injectionDoseBasis: String {
@@ -1241,7 +1248,7 @@ private struct DoseCalculatorSheet: View {
         prescribedInjectionDose = injectionMinimum > 0 && injectionMinimum == injectionMaximum ? MedicationSafety.input(injectionMinimum) : ""
     }
     private var injectionDoseInputError: String? {
-        guard medication.form == .injection, !requiresPrescribedPotassiumRate else { return nil }
+        guard isInjectionCalculation, !requiresPrescribedPotassiumRate else { return nil }
         guard let dose = MedicationSafety.parsePositive(prescribedInjectionDose), dose >= injectionMinimum, dose <= injectionMaximum else {
             return "Enter a finite positive veterinarian-prescribed dose within the selected protocol range, in \(injectionDoseBasis)."
         }
@@ -1249,7 +1256,7 @@ private struct DoseCalculatorSheet: View {
     }
     private var doseSelection: DoseRangeSelection? {
         let range = selection(for: selectedDoseLevel)
-        guard medication.form == .injection, !requiresPrescribedPotassiumRate else { return range }
+        guard isInjectionCalculation, !requiresPrescribedPotassiumRate else { return range }
         return AdministrationMath.prescribedInjectionSelection(range, minDose: injectionMinimum, maxDose: injectionMaximum,
             prescribedDose: MedicationSafety.parsePositive(prescribedInjectionDose))
     }
@@ -1336,7 +1343,7 @@ private struct DoseCalculatorSheet: View {
 
     private var routeSupportsMeasuredVolume: Bool {
         let route = activeRoute.uppercased()
-        if medication.form == .liquid || medication.form == .injection || medication.form == .transdermal { return true }
+        if medication.form == .liquid || isInjectionCalculation || medication.form == .transdermal { return true }
         if ["IV", "IM", "SC", "CRI", "INFUSION"].contains(where: route.contains) { return true }
         return selectedStrength == nil
     }

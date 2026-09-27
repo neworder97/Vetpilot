@@ -3,6 +3,23 @@ import XCTest
 
 // These execute extracted production view-logic bodies, NOT UIKit/SwiftUI screens.
 final class DoseSheetLogicRegressionTests: XCTestCase {
+    func testReferenceInjectionUsesPrescriptionWhileOralProtocolKeepsDoseChoices() throws {
+        let med = try XCTUnwrap(ClinicalData.medications.first { $0.generic == "Desmopressin" })
+        let injectable = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == "desmopressin-dog-1" })
+        var p = DoseSheetLogicProbe(medication:med,protocolDefinition:injectable.definition,selectedBuiltInPreset:injectable,kg:10)
+        XCTAssertTrue(p.isInjectionCalculation)
+        XCTAssertNotNil(p.injectionDoseInputError)
+        XCTAssertNil(p.doseSelection)
+        p.prescribedInjectionDose = MedicationSafety.input(injectable.minDose)
+        XCTAssertNil(p.injectionDoseInputError)
+        XCTAssertEqual(try XCTUnwrap(p.doseSelection).selected, injectable.minDose * 10, accuracy: 1e-12)
+        let oral = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == "desmopressin-dog-2" })
+        p.protocolDefinition = oral.definition; p.selectedBuiltInPreset = oral; p.prescribedInjectionDose = ""
+        XCTAssertFalse(p.isInjectionCalculation)
+        XCTAssertNil(p.injectionDoseInputError)
+        XCTAssertNotNil(p.doseSelection)
+    }
+
     func testOintmentPlanCountsApplicationsWithoutInventingVolume() throws {
         let m = try XCTUnwrap(ClinicalData.medications.first { $0.generic == "Cyclosporine ophthalmic" })
         let preset = try XCTUnwrap(BuiltInProtocolCatalog.all.first { $0.id == "cyclosporine-ophthalmic-dog-1" })
