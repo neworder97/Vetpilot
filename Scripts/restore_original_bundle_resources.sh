@@ -8,6 +8,9 @@ if [[ "${2:-}" == "--website-logo" ]]; then
   # website stethoscope compiled by Xcode for this release.
   cp -f "$SRC/VetPilotLogoSource.jpg" "$APP/VetPilotLogoSource.jpg"
   test -s "$APP/Assets.car"
+  # Xcode may recompress standalone PNGs for iphoneos. Preserve this reference
+  # artwork byte-for-byte; the compiled icon/logo assets remain untouched.
+  cp -f "$ROOT/FergusonVetPilot/Resources/VetPilotStethoscope.png" "$APP/VetPilotStethoscope.png"
   cmp "$ROOT/FergusonVetPilot/Resources/VetPilotStethoscope.png" "$APP/VetPilotStethoscope.png"
   echo "Preserved original source artwork and verified the requested website logo."
   exit 0
