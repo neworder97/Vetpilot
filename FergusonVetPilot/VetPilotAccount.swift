@@ -51,6 +51,10 @@ struct VetPilotSession: Codable {
     var user: User
     var receivedAt: Date?
     var origin: String?
+    func matchesRefreshOrigin(_ other: VetPilotSession?) -> Bool {
+        guard let other else { return false }
+        return user.id == other.user.id && refresh_token == other.refresh_token
+    }
     var expiry: Date { expires_at.map(Date.init(timeIntervalSince1970:)) ?? (receivedAt ?? .distantPast).addingTimeInterval(expires_in) }
 }
 
@@ -142,10 +146,16 @@ final class VetPilotAccount: NSObject, ObservableObject, ASWebAuthenticationPres
         if let refreshTask { return try await refreshTask.value.access_token }
         let task = Task { @MainActor in
             let data = try await self.request(path: "auth/v1/token?grant_type=refresh_token", method: "POST", body: ["refresh_token": session.refresh_token], authenticated: false)
-            return try JSONDecoder().decode(VetPilotSession.self, from: data)
+            let updated = try JSONDecoder().decode(VetPilotSession.self, from: data)
+            guard session.matchesRefreshOrigin(self.session), updated.user.id == session.user.id else {
+                throw ScribeError.invalid("Your account changed while reconnecting. Retry from the current account; local data is preserved.")
+            }
+            try Task.checkCancellation()
+            try self.accept(updated)
+            return updated
         }
         refreshTask = task; defer { refreshTask = nil }
-        let updated = try await task.value; try accept(updated); return updated.access_token
+        return try await task.value.access_token
     }
     func signOut() async {
         guard !busy else { return }; busy = true; defer { busy = false }

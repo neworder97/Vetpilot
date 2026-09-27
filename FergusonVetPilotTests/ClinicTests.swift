@@ -163,6 +163,8 @@ final class ClinicTests: XCTestCase {
         XCTAssertEqual(try ClinicTextDraft.recipient("+1 (212) 555-0100"), ["+12125550100"])
         XCTAssertEqual(try ClinicTextDraft.recipient(""), [])
         XCTAssertThrowsError(try ClinicTextDraft.recipient("123"))
+        XCTAssertThrowsError(try ClinicTextDraft.recipient("------"))
+        XCTAssertThrowsError(try ClinicTextDraft.recipient("1234567890123456"))
         XCTAssertThrowsError(try ClinicTextDraft.recipient("2125550100;2125550101"))
         XCTAssertThrowsError(try ClinicTextDraft.recipient("212+5550100"))
     }
