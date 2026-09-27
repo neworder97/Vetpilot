@@ -713,9 +713,17 @@ private struct DoseCalculatorSheet: View {
                         doseChoiceButton("Low Dose", selected: !recommendedDoseSelected && selectedDoseLevel == .low, identifier: "dose.level.low") {
                             recommendedDoseSelected = false; selectedDoseLevel = .low; result = nil
                         }
+                        if medication.form == .injection {
+                            doseChoiceButton("Exact Math", selected: false, identifier: "dose.level.exact") {
+                                calculateCandidate()
+                                weightFieldFocused = false
+                                DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } }
+                            }.disabled(calculationDisabled)
+                        } else {
                         doseChoiceButton("Recommended Dose", selected: recommendedDoseSelected, identifier: "dose.level.recommended") {
                             chooseRecommendedDose()
                             if hasSourceRecommendedDose { DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } } }
+                        }
                         }
                         doseChoiceButton("High Dose", selected: !recommendedDoseSelected && selectedDoseLevel == .high, identifier: "dose.level.high") {
                             recommendedDoseSelected = false; selectedDoseLevel = .high; result = nil
@@ -725,8 +733,13 @@ private struct DoseCalculatorSheet: View {
                         doseChoiceButton("Range midpoint", selected: selectedDoseLevel == .middle, identifier: "dose.level.midpoint") {
                             recommendedDoseSelected = false; selectedDoseLevel = .middle; result = nil
                         }
-                        Text("This selection has no single source-supported default. Tap Recommended Dose for guidance. Range midpoint is arithmetic only.").font(.caption)
+                        if medication.form != .injection {
+                            Text("This selection has no single source-supported default. Tap Recommended Dose for guidance. Range midpoint is arithmetic only.").font(.caption)
+                        }
                     }
+                }
+                if medication.form == .injection {
+                    Text("Exact Math calculates the selected dose using the patient weight and verified concentration. Low Dose is selected initially; choose the prescribed level before calculating. Range midpoint is arithmetic only, not a recommendation.").font(.caption)
                 }
                 if [.tablet, .capsule].contains(medication.form) {
                     Section("Tablet / capsule rounding") {
@@ -808,7 +821,7 @@ private struct DoseCalculatorSheet: View {
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
-                                        .disabled(strengthInputError != nil || prescribedRateInputError != nil || weightInputError != nil || !numericWeight.isFinite || numericWeight < 0 || ((protocolDefinition?.doseBasis.requiresWeight ?? true) && numericWeight <= 0) || concentrationInputError != nil || (medication.kind == .protocolOnly && protocolDefinition == nil))
+                                        .disabled(calculationDisabled)
                     .accessibilityIdentifier("dose.calculate")
                 }
 
@@ -994,10 +1007,18 @@ private struct DoseCalculatorSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
+                    if medication.form == .injection {
+                        Button("Exact Math") {
+                            calculateCandidate()
+                            weightFieldFocused = false
+                            DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } }
+                        }.disabled(calculationDisabled).accessibilityIdentifier("dose.exact")
+                    } else {
                     Button("Recommended Dose") {
                         chooseRecommendedDose()
                         if hasSourceRecommendedDose { DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } } }
                     }.accessibilityIdentifier("dose.recommended")
+                    }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") { dismiss() }
@@ -1161,6 +1182,10 @@ private struct DoseCalculatorSheet: View {
             .buttonStyle(.bordered)
             .accessibilityIdentifier("dose.supply.\(days)")
         }
+    }
+
+    private var calculationDisabled: Bool {
+        strengthInputError != nil || prescribedRateInputError != nil || weightInputError != nil || !numericWeight.isFinite || numericWeight < 0 || ((protocolDefinition?.doseBasis.requiresWeight ?? true) && numericWeight <= 0) || concentrationInputError != nil || (medication.kind == .protocolOnly && protocolDefinition == nil)
     }
 
     private var hasSourceRecommendedDose: Bool {

@@ -610,6 +610,30 @@ final class FergusonVetPilotUITests: XCTestCase {
         XCTAssertFalse(calculate.isEnabled)
     }
 
+    func testInjectionExactMathPreservesSelectedRangeLevel() throws {
+        let search = app.textFields["Search medications…"]
+        search.tap(); search.typeText("Propofol")
+        let medication = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Propofol")).firstMatch
+        XCTAssertTrue(medication.waitForExistence(timeout: 4)); medication.tap()
+        app.segmentedControls.buttons["kg"].tap()
+        let weight = app.textFields["dose.sheet.weight"]
+        weight.tap(); weight.typeText("10")
+        app.buttons["dose.keyboard.done"].tap()
+        let low = app.buttons["dose.level.low"], high = app.buttons["dose.level.high"]
+        revealDoseControl(high); high.tap()
+        let exact = app.buttons["dose.level.exact"]
+        XCTAssertEqual(exact.label, "Exact Math")
+        exact.tap()
+        XCTAssertFalse(app.alerts["Recommended Dose"].exists)
+        let amount = app.staticTexts["dose.candidate.amount"]
+        XCTAssertTrue(amount.waitForExistence(timeout: 4))
+        XCTAssertTrue(amount.label.contains("60 mg"), amount.label)
+        revealDoseControl(low, towardEarlierFields: true); low.tap()
+        app.buttons["dose.exact"].tap()
+        XCTAssertTrue(amount.waitForExistence(timeout: 4))
+        XCTAssertTrue(amount.label.contains("20 mg"), amount.label)
+    }
+
     func testPotassiumNeedsExplicitPrescription() throws {
         let search = app.textFields["Search medications…"]
         search.tap()
@@ -646,12 +670,12 @@ final class FergusonVetPilotUITests: XCTestCase {
         let result = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "mEq/hr")).firstMatch
         for _ in 0..<4 where !result.exists { app.swipeUp() }
         XCTAssertTrue(result.exists)
-        let recommendation = app.buttons["dose.level.recommended"]
-        revealDoseControl(recommendation,towardEarlierFields:true)
-        recommendation.tap()
-        XCTAssertTrue(app.alerts["Recommended Dose"].waitForExistence(timeout:3))
-        XCTAssertTrue(app.alerts.staticTexts.matching(NSPredicate(format:"label CONTAINS %@","no single source-supported default")).firstMatch.exists)
-        app.alerts.buttons["OK"].tap()
+        let exact = app.buttons["dose.level.exact"]
+        revealDoseControl(exact,towardEarlierFields:true)
+        XCTAssertEqual(exact.label, "Exact Math")
+        exact.tap()
+        XCTAssertFalse(app.alerts["Recommended Dose"].exists)
+        XCTAssertTrue(result.waitForExistence(timeout: 4))
     }
     func testMedicationInputsPrecedeCalculateAndSelectionsSurvive() throws {
         let search = app.textFields["Search medications…"]
