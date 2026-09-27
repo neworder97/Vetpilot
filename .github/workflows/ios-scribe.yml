@@ -66,12 +66,12 @@ jobs:
         run: |
           set -o pipefail
           xcodebuild build -project FergusonVetPilot.xcodeproj -scheme FergusonVetPilot -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath .build CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='' 2>&1 | tee ValidationResults/device-build.log
-      - name: Restore original visual resources
+      - name: Verify website logo and preserved original source artwork
         run: |
           APP=$(find .build/Build/Products/Release-iphoneos -maxdepth 1 -name '*.app' -print -quit)
           test -n "$APP"
-          bash Scripts/restore_original_bundle_resources.sh "$APP"
-          for F in PreservedOriginalBundleResources/*; do cmp "$F" "$APP/$(basename "$F")"; done
+          bash Scripts/restore_original_bundle_resources.sh "$APP" --website-logo
+          cmp PreservedOriginalBundleResources/VetPilotLogoSource.jpg "$APP/VetPilotLogoSource.jpg"
       - name: Package unsigned Signulous IPA after validation
         run: bash Scripts/package_validated_ipa.sh
       - name: Save unsigned IPA and release manifest

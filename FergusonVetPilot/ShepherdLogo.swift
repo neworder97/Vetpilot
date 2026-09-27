@@ -13,6 +13,6 @@ struct ShepherdLogo: View {
                 RoundedRectangle(cornerRadius: size * 0.22, style: .continuous)
                     .stroke(Color.white.opacity(0.72), lineWidth: max(1.5, size * 0.025))
             }
-            .accessibilityLabel("VetPilot German Shepherd logo")
+            .accessibilityLabel("VetPilot stethoscope logo")
     }
 }

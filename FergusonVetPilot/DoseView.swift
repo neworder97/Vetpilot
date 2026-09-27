@@ -742,6 +742,7 @@ private struct DoseCalculatorSheet: View {
                         doseChoiceButton("Recommended Dose", selected: recommendedDoseSelected, identifier: "dose.level.recommended") {
                             chooseRecommendedDose()
                             if hasSourceRecommendedDose { DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } } }
+                        }
                         doseChoiceButton("High Dose", selected: !exactMathSelected && !recommendedDoseSelected && selectedDoseLevel == .high, identifier: "dose.level.high") {
                             recommendedDoseSelected = false; selectedDoseLevel = .high; result = nil; exactMathSelected = false
                         }

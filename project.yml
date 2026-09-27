@@ -18,7 +18,7 @@ targets:
       - path: FergusonVetPilot
     preBuildScripts:
       - name: Generate App Icon
-        script: python3 "$SRCROOT/Scripts/generate_app_icon.py"
+        script: python3 "$SRCROOT/Scripts/generate_stethoscope_icon.py"
         basedOnDependencyAnalysis: false
     info:
       path: FergusonVetPilot/Info.plist
