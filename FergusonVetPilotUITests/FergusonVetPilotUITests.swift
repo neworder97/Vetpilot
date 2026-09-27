@@ -628,6 +628,8 @@ final class FergusonVetPilotUITests: XCTestCase {
         let amount = app.staticTexts["dose.candidate.amount"]
         XCTAssertTrue(amount.waitForExistence(timeout: 4))
         XCTAssertTrue(amount.label.contains("60 mg"), amount.label)
+        revealDoseControl(exact, towardEarlierFields: true)
+        XCTAssertTrue(exact.isSelected, "Exact Math must show as selected after calculating")
         revealDoseControl(low, towardEarlierFields: true); low.tap()
         app.buttons["dose.exact"].tap()
         XCTAssertTrue(amount.waitForExistence(timeout: 4))

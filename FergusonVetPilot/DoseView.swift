@@ -710,11 +710,11 @@ private struct DoseCalculatorSheet: View {
 
                 Section("Dose selection") {
                     HStack(spacing: 6) {
-                        doseChoiceButton("Low Dose", selected: !recommendedDoseSelected && selectedDoseLevel == .low, identifier: "dose.level.low") {
+                        doseChoiceButton("Low Dose", selected: !exactMathSelected && !recommendedDoseSelected && selectedDoseLevel == .low, identifier: "dose.level.low") {
                             recommendedDoseSelected = false; selectedDoseLevel = .low; result = nil
                         }
                         if medication.form == .injection {
-                            doseChoiceButton("Exact Math", selected: false, identifier: "dose.level.exact") {
+                            doseChoiceButton("Exact Math", selected: exactMathSelected, identifier: "dose.level.exact") {
                                 calculateCandidate()
                                 weightFieldFocused = false
                                 DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } }
@@ -725,12 +725,12 @@ private struct DoseCalculatorSheet: View {
                             if hasSourceRecommendedDose { DispatchQueue.main.async { withAnimation { scrollProxy.scrollTo("dose.candidate.anchor", anchor: .top) } } }
                         }
                         }
-                        doseChoiceButton("High Dose", selected: !recommendedDoseSelected && selectedDoseLevel == .high, identifier: "dose.level.high") {
+                        doseChoiceButton("High Dose", selected: !exactMathSelected && !recommendedDoseSelected && selectedDoseLevel == .high, identifier: "dose.level.high") {
                             recommendedDoseSelected = false; selectedDoseLevel = .high; result = nil
                         }
                     }
                     if !hasSourceRecommendedDose {
-                        doseChoiceButton("Range midpoint", selected: selectedDoseLevel == .middle, identifier: "dose.level.midpoint") {
+                        doseChoiceButton("Range midpoint", selected: !exactMathSelected && selectedDoseLevel == .middle, identifier: "dose.level.midpoint") {
                             recommendedDoseSelected = false; selectedDoseLevel = .middle; result = nil
                         }
                         if medication.form != .injection {
@@ -739,6 +739,7 @@ private struct DoseCalculatorSheet: View {
                     }
                 }
                 if medication.form == .injection {
+                    Text("Selected dose level: \(selectedDoseLevel == .high ? "High Dose" : selectedDoseLevel == .middle ? "Range midpoint" : "Low Dose")").font(.caption.bold())
                     Text("Exact Math calculates the selected dose using the patient weight and verified concentration. Low Dose is selected initially; choose the prescribed level before calculating. Range midpoint is arithmetic only, not a recommendation.").font(.caption)
                 }
                 if [.tablet, .capsule].contains(medication.form) {
@@ -1183,6 +1184,8 @@ private struct DoseCalculatorSheet: View {
             .accessibilityIdentifier("dose.supply.\(days)")
         }
     }
+
+    private var exactMathSelected: Bool { medication.form == .injection && result != nil }
 
     private var calculationDisabled: Bool {
         strengthInputError != nil || prescribedRateInputError != nil || weightInputError != nil || !numericWeight.isFinite || numericWeight < 0 || ((protocolDefinition?.doseBasis.requiresWeight ?? true) && numericWeight <= 0) || concentrationInputError != nil || (medication.kind == .protocolOnly && protocolDefinition == nil)
