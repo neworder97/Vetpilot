@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ClinicDetailView: View {
+    @EnvironmentObject private var workspace:WorkspaceStore
     @ObservedObject var store: ClinicStore
     let itemID: UUID
     @Environment(\.dismiss) private var dismiss
@@ -16,7 +17,7 @@ struct ClinicDetailView: View {
             if let item {
                 List {
                     Section {
-                        Text(item.title).font(.title2.bold()).foregroundStyle(AppTheme.blue)
+                        Text(item.title).font(.title2.bold()).foregroundStyle(AppTheme.blue).onAppear{workspace.viewed(.clinic(item,kind:"My Clinic"))}
                         Text("\(item.kind) • \(item.category) • Version \(item.revision)").font(.subheadline)
                         Text(ClinicProtocol.reviewNotice).font(.caption).foregroundStyle(AppTheme.orange)
                         if !item.summary.isEmpty { Text(item.summary) }

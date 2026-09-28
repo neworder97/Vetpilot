@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct LabworkView: View {
+    @EnvironmentObject private var workspace:WorkspaceStore
+    @State private var openedTest:LabTestEntry?
     @State private var query = ""
     @State private var provider = "All"
 
@@ -57,6 +59,10 @@ struct LabworkView: View {
                         .font(.footnote).foregroundStyle(.secondary)
                 }
             }
+            .onReceive(workspace.$request) { request in
+                guard let request,request.target.kind=="Lab" else{return};openedTest=LabworkCatalog.tests.first{$0.id==request.target.id}
+            }
+            .sheet(item:$openedTest){ test in NavigationStack { LabTestDetail(test:test).toolbar{ToolbarItem(placement:.confirmationAction){Button("Done"){openedTest=nil}}} } }
             .navigationTitle("Labwork")
             .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: "Test, code, specimen or tube")
         }
@@ -64,6 +70,7 @@ struct LabworkView: View {
 }
 
 private struct LabTestDetail: View {
+    @EnvironmentObject private var workspace:WorkspaceStore
     let test: LabTestEntry
 
     var body: some View {
@@ -76,6 +83,7 @@ private struct LabTestDetail: View {
                     Label("Unavailable — do not submit", systemImage: "exclamationmark.triangle.fill")
                         .foregroundStyle(AppTheme.orange)
                 }
+                WorkspaceFavorite(target:.lab(test))
                 Text(test.purpose)
             }
             if !test.components.isEmpty {
@@ -89,6 +97,7 @@ private struct LabTestDetail: View {
                     Text(test.amount).accessibilityIdentifier("labwork.amount")
                     Label(test.tube, systemImage: test.specimen.contains("slides") || test.specimen.contains("Slides") ? "rectangle.on.rectangle" : "testtube.2")
                         .foregroundStyle(AppTheme.blue)
+                    LabTubeGuide(tube:test.tube)
                     Text(LabworkCatalog.tubeNote).font(.footnote).foregroundStyle(.secondary)
                 }
                 Section("Clot, spin and separate") {
@@ -111,6 +120,7 @@ private struct LabTestDetail: View {
                     .font(.footnote).foregroundStyle(.secondary)
             }
         }
+        .onAppear { workspace.viewed(.lab(test)) }
         .navigationTitle(test.code)
         .navigationBarTitleDisplayMode(.inline)
     }

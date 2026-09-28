@@ -3,6 +3,7 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var tab = 0
+    @StateObject private var workspace = WorkspaceStore()
     @EnvironmentObject private var sync: VetPilotSyncController
     @EnvironmentObject private var account: VetPilotAccount
     private var clinicStore: ClinicStore { sync.clinic }
@@ -12,6 +13,7 @@ struct ContentView: View {
     var body: some View {
         VStack(spacing: 0) {
             BrandHeader { settings = true }
+            WorkspaceQuickBar(clinic: clinicStore, cytology: cytology, medications: sync.medications)
             TabView(selection: $tab) {
                 DoseView(customStore: sync.medications).id(account.userID)
                     .tag(0)
@@ -45,13 +47,19 @@ struct ContentView: View {
                     .tag(8).tabItem { Label("Sources", systemImage: "books.vertical") }
             }
         }
+        .environmentObject(workspace)
+        .onChange(of: workspace.request?.id) { _, _ in
+            guard let request = workspace.request else { return }
+            tab = ["Medication":0,"My Clinic":1,"Breed":2,"Lab":4,"Cytology":5][request.target.kind] ?? tab
+        }
         .background(Color.white)
         .sheet(isPresented: $settings) { AccountSettingsView(account: account, backgroundStatus: sync.backgroundStatus, onSync: { Task { await sync.syncAll() } }) }
         .task(id: account.userID) {
+            workspace.switchAccount(account.userID)
             clinicStore.switchAccount(account.userID); cytology.switchAccount(account.userID); sync.medications.switchAccount(account.userID)
             sync.scheduleBackgroundRefresh()
             while !Task.isCancelled {
-                if scenePhase == .active { await sync.syncAll() }
+                if scenePhase == .active { await sync.syncAll(); await workspace.sync(account: account) }
                 do { try await Task.sleep(nanoseconds: 30_000_000_000) } catch { break }
             }
         }

@@ -2,6 +2,8 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct MyClinicView: View {
+    @EnvironmentObject private var workspace:WorkspaceStore
+    @State private var openedItem:ClinicProtocol?
     @ObservedObject var store: ClinicStore
     var onSync: (() -> Void)? = nil
     var onAccount: (() -> Void)? = nil
@@ -95,6 +97,8 @@ struct MyClinicView: View {
                     Text("Share copies with your team using PDF or an editable .vetpilot file. Shared files are copies; your signed-in collection syncs automatically between your devices.").font(.caption).foregroundStyle(.secondary)
                 }
             }
+            .onReceive(workspace.$request) { request in guard let request,request.target.kind=="My Clinic" else{return};openedItem=store.items.first{$0.id.uuidString.lowercased()==request.target.id} }
+            .sheet(item:$openedItem){item in NavigationStack{ClinicDetailView(store:store,itemID:item.id).toolbar{ToolbarItem(placement:.confirmationAction){Button("Done"){openedItem=nil}}}}}
             .navigationTitle("My Clinic")
             .searchable(text: $search, prompt: "Search protocols, steps or equipment")
             .toolbar {

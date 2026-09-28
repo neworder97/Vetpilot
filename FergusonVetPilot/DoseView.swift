@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct DoseView: View {
+    @EnvironmentObject private var workspace: WorkspaceStore
     private enum DoseField: Hashable { case weight, search }
 
     @State private var species: Species = .dog
@@ -10,6 +11,7 @@ struct DoseView: View {
     @State private var search = ""
     @State private var catalogGroup = "All medications"
     @State private var selectedMedication: Medication?
+    @State private var reopenedInputs: [String:WorkspaceValue]?
     @State private var showCustomMedications = false
     @ObservedObject var customStore: CustomMedicationStore
     @StateObject private var protocolStore = ProtocolMedicationStore()
@@ -127,7 +129,9 @@ struct DoseView: View {
                         ForEach(medications) { med in
                             Button {
                                 focusedField = nil
+                                reopenedInputs = nil
                                 selectedMedication = med
+                                workspace.viewed(.medication(med, species: species))
                             } label: {
                                 MedicationRow(
                                     medication: med,
@@ -143,6 +147,11 @@ struct DoseView: View {
             }
             .navigationBarHidden(true)
             .scrollDismissesKeyboard(.interactively)
+            .onReceive(workspace.$request) { request in
+                guard let request, request.target.kind == "Medication", let med = (MedicationFormulations.organized + customStore.definitions.map(\.asMedication)).first(where: { WorkspaceTarget.medication($0).id == request.target.id }) else { return }
+                species = Species(rawValue: request.target.species ?? "") ?? med.species.first ?? .dog
+                search = ""; catalogGroup = "All medications"; form = .any; reopenedInputs = request.inputs; selectedMedication = med
+            }
             .sheet(isPresented: $showCustomMedications) {
                 CustomMedicationManagerView(store: customStore)
             }
@@ -152,7 +161,8 @@ struct DoseView: View {
                     species: species,
                     protocolStore: protocolStore,
                     weight: MedicationSafety.parsePositive(weight) ?? 0,
-                    weightUnit: weightUnit
+                    weightUnit: weightUnit,
+                    initialInputs: reopenedInputs
                 )
             }
         }
@@ -222,6 +232,9 @@ private struct MedicationRow: View {
 }
 
 private struct DoseCalculatorSheet: View {
+    @EnvironmentObject private var workspace: WorkspaceStore
+    private let initialInputs: [String:WorkspaceValue]?
+    @State private var loadedRecentInputs = false
     private enum FrequencyChoice: String, CaseIterable, Identifiable {
         case recommended = "Recommended"
         case q6h = "q6h"
@@ -267,12 +280,45 @@ private struct DoseCalculatorSheet: View {
     @State private var showProtocolEditor = false
     @FocusState private var weightFieldFocused: Bool
 
-    init(medication: Medication, species: Species, protocolStore: ProtocolMedicationStore, weight: Double, weightUnit: String) {
+    init(medication: Medication, species: Species, protocolStore: ProtocolMedicationStore, weight: Double, weightUnit: String, initialInputs: [String:WorkspaceValue]? = nil) {
+        self.initialInputs = initialInputs
         self.medication = medication
         self.species = species
         self.protocolStore = protocolStore
         _patientWeight = State(initialValue: weight > 0 ? MedicationSafety.input(weight) : "")
         _patientWeightUnit = State(initialValue: weightUnit)
+    }
+
+
+    @ViewBuilder private var recentCalculationControls: some View {
+        Button("Save this calculation") {
+            let values:[String:WorkspaceValue] = ["weight":.string(patientWeight),"unit":.string(patientWeightUnit),"preset":.number(Double(selectedPresetIndex)),"strengthIndex":.number(Double(selectedStrengthIndex)),"manualStrength":.string(manualStrength),"concentration":.string(concentration),"potassium":.string(prescribedPotassiumRate),"injectionDose":.string(prescribedInjectionDose),"frequency":.string(selectedFrequency.rawValue),"doseLevel":.string(selectedDoseLevel.rawValue),"recommended":.bool(recommendedDoseSelected),"rounding":.string(solidRounding.rawValue),"days":.number(Double(supplyDays ?? 0)),"priorCourseDoses":.number(Double(priorCourseDoses))]
+            workspace.save(WorkspaceRecord(title:medication.displayName,kind:"calculation",target:WorkspaceTarget.medication(medication).key,value:["platform":.string("ios"),"inputs":.object(values),"result":.string(result?.headline ?? "")]))
+        }.disabled(result?.available != true)
+        Text("Saved inputs are convenience history, not a prescription. Recalculate and verify after reopening.").font(.caption)
+        ForEach(Array(workspace.records.filter{$0.kind=="calculation" && $0.target==WorkspaceTarget.medication(medication).key}.sorted{$0.updatedAt>$1.updatedAt}.prefix(20))) { record in
+            HStack {
+                Button("Reopen " + Date(timeIntervalSince1970:record.updatedAt/1000).formatted(date:.abbreviated,time:.shortened)) {
+                    if record.value["platform"]?.text == "ios" { restoreInputs(record.value["inputs"]?.object ?? [:]) }
+                }.disabled(record.value["platform"]?.text != "ios")
+                Button("Remove") { workspace.remove(record.id) }.buttonStyle(.borderless)
+            }
+        }
+    }
+    private func restoreInputs(_ values:[String:WorkspaceValue]) {
+        selectedPresetIndex = max(0,Int(values["preset"]?.number ?? 0))
+        DispatchQueue.main.async {
+            patientWeight=values["weight"]?.text ?? "";patientWeightUnit=values["unit"]?.text == "kg" ? "kg":"lb"
+            selectedStrengthIndex=max(0,Int(values["strengthIndex"]?.number ?? 0));manualStrength=values["manualStrength"]?.text ?? ""
+            concentration=values["concentration"]?.text ?? "";prescribedPotassiumRate=values["potassium"]?.text ?? "";prescribedInjectionDose=values["injectionDose"]?.text ?? ""
+            selectedFrequency=FrequencyChoice(rawValue:values["frequency"]?.text ?? "") ?? .recommended
+            selectedDoseLevel=DoseSelectionLevel(rawValue:values["doseLevel"]?.text ?? "") ?? .low
+            recommendedDoseSelected=values["recommended"] == .bool(true)
+            solidRounding=SolidDoseRounding(rawValue:values["rounding"]?.text ?? "") ?? .exact
+            let days=Int(values["days"]?.number ?? 0);supplyDays=days>0 ? days:nil;priorCourseDoses=max(0,Int(values["priorCourseDoses"]?.number ?? 0))
+            infusionConcentrationConfirmed=false;priorCourseHistoryConfirmed=false
+            DispatchQueue.main.async { result=nil;exactMathSelected=false }
+        }
     }
 
     private func calculateCandidate() {
@@ -591,6 +637,7 @@ private struct DoseCalculatorSheet: View {
                     .accessibilityIdentifier("dose.calculate")
                 }
 
+                Section("Quick access") { WorkspaceFavorite(target: .medication(medication, species: species)); recentCalculationControls }
                 calculatorResultSections
             }
     }
@@ -599,6 +646,9 @@ private struct DoseCalculatorSheet: View {
     private var calculatorResultSections: some View {
                 if let result {
                     Section("Calculated candidate") {
+                        if result.available, isInjectionCalculation, let volume = selectedAdministrationVolume, volume.unit == "mL" {
+                            Text("Calculated injection volume: \(ClinicalData.format(volume.value)) mL").font(.title2.bold()).foregroundStyle(AppTheme.blue)
+                        }
                         if result.available, let selected = administrationSelection ?? doseSelection {
                             Text("\(ClinicalData.format(selected.selected)) \(selected.unit) • \(activeFrequencyLabel)")
                                 .font(.title3.bold())
@@ -712,6 +762,7 @@ private struct DoseCalculatorSheet: View {
                                 Text("Administration plan blocked: " + reason).foregroundStyle(AppTheme.orange)
                             }
                             if usesGalliprantChart, let chart = galliprantPlan {
+                                TabletAmountVisual(quantity: chart.units)
                                 Text("Product chart: \(ClinicalData.format(chart.units)) × \(ClinicalData.format(chart.strengthMg)) mg tablet, once daily (\(chart.band)).")
                                     .accessibilityIdentifier("dose.galliprant.chart")
                                 Text("Chart reference, not generic whole-tablet rounding. Only 20 mg and 60 mg GALLIPRANT tablets are scored; never halve the 100 mg tablet. Verify labeled age and patient eligibility.").font(.caption)
@@ -722,6 +773,7 @@ private struct DoseCalculatorSheet: View {
 
 
 
+                                if medication.form == .tablet { TabletAmountVisual(quantity: solid.roundedUnits) }
                                 if solid.roundedUnits > 0 {
                                     Text(administrationInstruction(for: solid))
                                         .font(.headline)
@@ -814,6 +866,7 @@ private struct DoseCalculatorSheet: View {
     private func inputObservedCalculator(scrollProxy: ScrollViewProxy) -> some View {
         calculatorToolbar(scrollProxy: scrollProxy)
             .onAppear {
+                if !loadedRecentInputs, let initialInputs { loadedRecentInputs=true;restoreInputs(initialInputs) }
                 resetInjectionDose()
                 if let c = protocolDefinition?.concentration ?? medication.concentration {
                     concentration = MedicationSafety.input(c)

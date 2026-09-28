@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct BreedView: View {
+    @EnvironmentObject private var workspace:WorkspaceStore
     @State private var species: Species = .dog
     @State private var search = ""
 
@@ -40,6 +41,7 @@ struct BreedView: View {
                                 Text(breed.name)
                                     .font(.headline)
                                     .foregroundStyle(AppTheme.blue)
+                                WorkspaceFavorite(target:.breed(breed))
                                 Text(breed.conditions)
                                     .font(.subheadline)
                                     .foregroundStyle(.secondary)
@@ -49,11 +51,13 @@ struct BreedView: View {
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .vetCard()
+                            .onTapGesture { workspace.viewed(.breed(breed)) }
                         }
                     }
                 }
                 .padding(16)
             }
+            .onReceive(workspace.$request){request in guard let request,request.target.kind=="Breed",let breed=ClinicalData.breeds.first(where:{WorkspaceTarget.breed($0).id==request.target.id}) else{return};species=breed.species;search=breed.name}
             .navigationBarHidden(true)
         }
     }

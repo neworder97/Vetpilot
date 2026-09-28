@@ -3,6 +3,8 @@ import PhotosUI
 import UniformTypeIdentifiers
 
 struct CytologyLibraryView: View {
+    @EnvironmentObject private var workspace:WorkspaceStore
+    @State private var openedItem:ClinicProtocol?
     @ObservedObject var store: ClinicStore
     var onSync: (() -> Void)? = nil
     var onAccount: (() -> Void)? = nil
@@ -25,6 +27,7 @@ struct CytologyLibraryView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     Text("Your microscopy learning collection").font(.headline)
+                    CytologyImageTools(store: store)
                     Text("Save images, label what you see, and build a personal reference. Labels are your observations, not an automated diagnosis.").font(.subheadline).foregroundStyle(.secondary)
                     Text(store.syncStatus).font(.caption).accessibilityIdentifier("cytology.sync.status")
                     Text(store.signedInForSync ? "Auto-sync on · every 30 seconds while open and online" : "Auto-sync requires sign-in with the same account as the website").font(.caption).accessibilityIdentifier("cytology.sync.enabled")
@@ -90,6 +93,7 @@ struct CytologyLibraryView: View {
     }
 }
 private struct CytologyDetail: View {
+    @EnvironmentObject private var workspace:WorkspaceStore
     @ObservedObject var store: ClinicStore
     var onSync: (() -> Void)? = nil
     var onAccount: (() -> Void)? = nil
@@ -115,7 +119,7 @@ private struct CytologyDetail: View {
                     Text("User-labeled learning reference").font(.caption).foregroundStyle(.secondary)
                     Button(item.favorite ? "Remove favorite" : "Add to favorites") { store.toggleFavorite(item.id) }
                     Button("Delete entry", role: .destructive) { deleting = true }
-                }.padding() }.navigationTitle(item.title).navigationBarTitleDisplayMode(.inline)
+                }.padding() }.onAppear{workspace.viewed(.clinic(item,kind:"Cytology"))}.navigationTitle(item.title).navigationBarTitleDisplayMode(.inline)
                     .toolbar { Button("Edit") { editing = item } }
             } else { ContentUnavailableView("Entry removed", systemImage: "photo") }
         }
