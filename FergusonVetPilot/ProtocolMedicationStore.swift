@@ -450,6 +450,8 @@ struct ProtocolMedicationEditorView: View {
     @State private var sourceReference: String
     @State private var notes: String
     @State private var approved: Bool
+    private enum InputField: Hashable { case minimum, maximum, strengths, concentration }
+    @FocusState private var focusedField: InputField?
 
     init(
         medication: Medication,
@@ -520,8 +522,10 @@ struct ProtocolMedicationEditorView: View {
                     }
                     TextField("Minimum dose", text: $minDose)
                         .keyboardType(.decimalPad).accessibilityIdentifier("clinicOverride.minimum")
+                        .focused($focusedField, equals: .minimum)
                     TextField("Maximum dose (optional)", text: $maxDose)
                         .keyboardType(.decimalPad).accessibilityIdentifier("clinicOverride.maximum")
+                        .focused($focusedField, equals: .maximum)
                     TextField("Frequency, e.g. q12h", text: $frequency)
                     TextField("Route, e.g. PO / IV / SC", text: $route)
                 }
@@ -530,6 +534,7 @@ struct ProtocolMedicationEditorView: View {
                     Section("Tablet / capsule strengths") {
                         TextField("mg strengths, comma separated", text: $strengthsText)
                             .keyboardType(.numbersAndPunctuation)
+                            .focused($focusedField, equals: .strengths)
                         Text("Leave blank if the product is not dosed by tablet/capsule strength.")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
@@ -540,6 +545,7 @@ struct ProtocolMedicationEditorView: View {
                     Section("Liquid / injectable concentration — \(basis.concentrationLabel)") {
                         TextField(basis.concentrationLabel, text: $concentration)
                             .keyboardType(.decimalPad).accessibilityIdentifier("clinicOverride.concentration")
+                            .focused($focusedField, equals: .concentration)
                         Text("Enter the concentration in exactly \(basis.concentrationLabel). VetPilot uses this only for mathematical volume conversion. Verify the product label or pharmacy concentration before administration.")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
@@ -572,6 +578,11 @@ struct ProtocolMedicationEditorView: View {
             .navigationTitle("Clinic protocol")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") { focusedField = nil }
+                        .accessibilityIdentifier("clinicOverride.keyboard.done")
+                }
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") { dismiss() }
                 }

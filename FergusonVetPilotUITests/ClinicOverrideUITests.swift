@@ -49,7 +49,8 @@ final class ClinicOverrideUITests: XCTestCase {
         field.tap()
         let old = field.value as? String ?? ""
         field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: old.count) + value)
-        app.swipeUp() // The editor dismisses its numeric keyboard on scroll.
+        let done = app.buttons["clinicOverride.keyboard.done"]
+        XCTAssertTrue(done.waitForExistence(timeout: 3)); done.tap()
     }
 
     func testLiquidOverrideSavesDoseAndConcentrationAcrossAppRelaunchAndCanBeDisabled() {
@@ -98,7 +99,8 @@ final class ClinicOverrideUITests: XCTestCase {
         let disable = app.buttons["dose.protocol.disable"]
         XCTAssertTrue(disable.waitForExistence(timeout: 5)); reveal(disable, in: app, towardTop: true)
         disable.tap()
-        XCTAssertTrue(app.buttons["gabapentin.calculate"].waitForExistence(timeout: 5))
+        let calculate = app.buttons["gabapentin.calculate"]
+        reveal(calculate, in: app); XCTAssertTrue(calculate.exists)
     }
 
     func testTabletMedicationExposesClinicOverrideEditor() {
