@@ -1,0 +1,63 @@
+name: VetPilot Validation Diagnostics
+
+on:
+  push:
+    branches: [additive/workspace-enhancements]
+    paths: [.github/workflows/validation-diagnostics.yml]
+  workflow_dispatch:
+    inputs:
+      job_id:
+        description: Completed workflow job whose failure should be summarized
+        required: true
+        default: '108771368362'
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  summarize:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Retrieve existing validation evidence (no rebuild or deployment)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PRIOR_JOB_ID: ${{ inputs.job_id || '108771368362' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$PRIOR_JOB_ID" =~ ^[0-9]+$ ]] || { echo 'Invalid job ID'; exit 1; }
+          curl --fail --silent --show-error --location --max-time 120 \
+            -H 'Accept: application/vnd.github+json' \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H 'X-GitHub-Api-Version: 2026-03-10' \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/jobs/$PRIOR_JOB_ID/logs" \
+            --output "$RUNNER_TEMP/validation-prior.log"
+          python3 - <<'PY'
+          import os, pathlib, re
+          source = pathlib.Path(os.environ['RUNNER_TEMP']) / 'validation-prior.log'
+          lines = source.read_text(errors='replace').splitlines()
+          pattern = re.compile(r'error:|XCTAssert|failed|TEST (FAILED|SUCCEEDED)|Testing failed|Executed [0-9]+ tests|timed out|crash|fatal error', re.I)
+          matches = [i for i, line in enumerate(lines) if pattern.search(line)]
+          selected = set()
+          for index in matches[-45:]:
+              selected.update(range(max(0, index - 1), min(len(lines), index + 2)))
+          selected.update(range(max(0, len(lines) - 12), len(lines)))
+          output = [f'Previous job {os.environ["PRIOR_JOB_ID"]}: {len(lines)} log lines; {len(matches)} diagnostic matches.']
+          output.extend(f'{i + 1}: {lines[i][:1600]}' for i in sorted(selected))
+          text = '\n'.join(output) + '\n'
+          (pathlib.Path(os.environ['RUNNER_TEMP']) / 'validation-failure-summary.txt').write_text(text)
+          for line in output:
+              print('DIAGNOSTIC | ' + line)
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+              summary.write('## Prior validation diagnostics\n\n```text\n' + text.replace('```', "'''") + '```\n')
+          PY
+      - name: Preserve compact failure summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: VetPilot-Validation-Failure-Summary
+          path: ${{ runner.temp }}/validation-failure-summary.txt
+          if-no-files-found: error
+          retention-days: 14
