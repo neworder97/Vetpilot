@@ -161,8 +161,9 @@ final class ProtocolMedicationStore: ObservableObject {
     @Published private(set) var definitions: [ProtocolMedicationDefinition] = []
 
     private let key = "ferguson.vetpilot.protocol-medications.v1"
+    private let defaults: UserDefaults
 
-    init() { load() }
+    init(defaults: UserDefaults = .standard) { self.defaults = defaults; load() }
 
     func definition(for medication: Medication, species: Species) -> ProtocolMedicationDefinition? {
         let key = ProtocolMedicationDefinition.key(for: medication, species: species)
@@ -185,7 +186,7 @@ final class ProtocolMedicationStore: ObservableObject {
     }
 
     private func load() {
-        guard let data = UserDefaults.standard.data(forKey: key),
+        guard let data = defaults.data(forKey: key),
               let decoded = try? JSONDecoder().decode([ProtocolMedicationDefinition].self, from: data) else {
             definitions = []
             return
@@ -195,7 +196,7 @@ final class ProtocolMedicationStore: ObservableObject {
 
     private func persist() {
         guard let data = try? JSONEncoder().encode(definitions) else { return }
-        UserDefaults.standard.set(data, forKey: key)
+        defaults.set(data, forKey: key)
     }
 }
 
@@ -502,7 +503,7 @@ struct ProtocolMedicationEditorView: View {
 
                 if seed != nil, store.definition(for: medication, species: species) == nil {
                     Section("Starting point") {
-                        Label("Prefilled from the selected built-in veterinary reference protocol", systemImage: "doc.text.magnifyingglass")
+                        Label("Prefilled from the current medication settings", systemImage: "doc.text.magnifyingglass")
                             .font(.footnote)
                             .foregroundStyle(AppTheme.blue)
                         Text("Saving creates a clinic override. The built-in reference remains available again if the override is disabled.")
@@ -518,9 +519,9 @@ struct ProtocolMedicationEditorView: View {
                         }
                     }
                     TextField("Minimum dose", text: $minDose)
-                        .keyboardType(.decimalPad)
+                        .keyboardType(.decimalPad).accessibilityIdentifier("clinicOverride.minimum")
                     TextField("Maximum dose (optional)", text: $maxDose)
-                        .keyboardType(.decimalPad)
+                        .keyboardType(.decimalPad).accessibilityIdentifier("clinicOverride.maximum")
                     TextField("Frequency, e.g. q12h", text: $frequency)
                     TextField("Route, e.g. PO / IV / SC", text: $route)
                 }
@@ -538,7 +539,7 @@ struct ProtocolMedicationEditorView: View {
                 if basis.supportsConcentration {
                     Section("Liquid / injectable concentration — \(basis.concentrationLabel)") {
                         TextField(basis.concentrationLabel, text: $concentration)
-                            .keyboardType(.decimalPad)
+                            .keyboardType(.decimalPad).accessibilityIdentifier("clinicOverride.concentration")
                         Text("Enter the concentration in exactly \(basis.concentrationLabel). VetPilot uses this only for mathematical volume conversion. Verify the product label or pharmacy concentration before administration.")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
@@ -552,6 +553,7 @@ struct ProtocolMedicationEditorView: View {
 
                 Section("Enable clinic override") {
                     Toggle("Veterinarian / clinic has reviewed this dose rule", isOn: $approved)
+                        .accessibilityIdentifier("clinicOverride.approved")
                     Text("This enables arithmetic only. It does not make the entered dose appropriate for every indication or patient.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
@@ -566,6 +568,7 @@ struct ProtocolMedicationEditorView: View {
                     }
                 }
             }
+            .scrollDismissesKeyboard(.immediately)
             .navigationTitle("Clinic protocol")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -594,7 +597,7 @@ struct ProtocolMedicationEditorView: View {
                         store.save(def)
                         dismiss()
                     }
-                    .disabled(!valid)
+                    .disabled(!valid).accessibilityIdentifier("clinicOverride.save")
                 }
             }
         }

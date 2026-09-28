@@ -1,12 +1,12 @@
-name: VetPilot Annotation Sync Regression Release
+name: VetPilot Clinic Overrides Regression Release
 on:
   push:
-    branches: [fix/cytology-annotation-save]
+    branches: [fix/cytology-annotation-save, feature/medication-clinic-overrides]
   workflow_dispatch:
 permissions:
   contents: read
 concurrency:
-  group: vetpilot-annotation-save
+  group: vetpilot-clinic-overrides-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   backend-validation:
@@ -76,11 +76,11 @@ jobs:
       - name: Package unsigned Signulous IPA after validation
         run: |
           bash Scripts/package_validated_ipa.sh
-          git archive --format=zip --output=ReleaseArtifacts/VetPilot-0.9.1-Build32-Source.zip "$GITHUB_SHA"
+          git archive --format=zip --output=ReleaseArtifacts/VetPilot-0.9.1-Build33-Source.zip "$GITHUB_SHA"
       - name: Save unsigned IPA and release manifest
         uses: actions/upload-artifact@v4
         with:
-          name: VetPilot-0.9.1-Build32-IPA
+          name: VetPilot-0.9.1-Build33-IPA
           path: ReleaseArtifacts/
           if-no-files-found: error
       - name: Save validation evidence

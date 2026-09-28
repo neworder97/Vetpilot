@@ -135,7 +135,7 @@ struct DoseView: View {
                             } label: {
                                 MedicationRow(
                                     medication: med,
-                                    clinicOverrideEnabled: med.kind == .protocolOnly && protocolStore.definition(for: med, species: species) != nil,
+                                    clinicOverrideEnabled: protocolStore.definition(for: med, species: species) != nil,
                                     builtInAvailable: med.kind == .protocolOnly && BuiltInProtocolCatalog.hasPreset(for: med, species: species)
                                 )
                             }
@@ -204,7 +204,7 @@ private struct MedicationRow: View {
                 Label("Custom automatic math • user source attached", systemImage: "link.circle.fill")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(AppTheme.blue)
-            } else if medication.kind == .protocolOnly && clinicOverrideEnabled {
+            } else if clinicOverrideEnabled {
                 Label("Clinic override enabled", systemImage: "checkmark.circle.fill")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(Color.green)
@@ -407,7 +407,6 @@ private struct DoseCalculatorSheet: View {
     }
 
     private var clinicOverride: ProtocolMedicationDefinition? {
-        guard medication.kind == .protocolOnly else { return nil }
         return protocolStore.definition(for: medication, species: species)
     }
 
@@ -557,8 +556,17 @@ private struct DoseCalculatorSheet: View {
     }
 
     var body: some View {
-        if medication.generic == "Gabapentin" && !medication.source.hasPrefix("USER-SOURCE-BACKED") && !medication.source.hasPrefix("CUSTOM-UNVERIFIED") {
+        if medication.generic == "Gabapentin" && clinicOverride == nil && !medication.source.hasPrefix("USER-SOURCE-BACKED") && !medication.source.hasPrefix("CUSTOM-UNVERIFIED") {
             ClinicGabapentinView(species: species, weight: patientWeight, unit: patientWeightUnit, lockedForm: medication.form.rawValue)
+                .safeAreaInset(edge: .bottom) {
+                    Button("Enter / edit clinic override") { showProtocolEditor = true }
+                        .buttonStyle(.borderedProminent).padding(8)
+                        .accessibilityIdentifier("dose.protocol.override")
+                }
+                .sheet(isPresented: $showProtocolEditor) {
+                    ProtocolMedicationEditorView(medication: medication, species: species, store: protocolStore,
+                        seed: ClinicMedicationOverride.seed(for: medication, species: species, preset: selectedBuiltInPreset))
+                }
         } else { referenceBody }
     }
 
@@ -573,6 +581,14 @@ private struct DoseCalculatorSheet: View {
     private func calculatorForm(scrollProxy: ScrollViewProxy) -> some View {
             Form {
                 medicationProtocolSections
+                if clinicOverride != nil {
+                    Section("Medication clinical information") {
+                        Text(medication.indication)
+                        if !medication.notes.isEmpty { Text(medication.notes) }
+                        Text(medication.source).font(.caption)
+                        Text("Reference information for the original medication. The active dose settings are your clinic override.").font(.caption)
+                    }.accessibilityIdentifier("dose.originalInformation")
+                }
                 patientAndProductSections
                 concentrationSections
                 doseSelectionSection(scrollProxy: scrollProxy)
@@ -891,9 +907,7 @@ private struct DoseCalculatorSheet: View {
             .onAppear {
                 if !loadedRecentInputs, let initialInputs { loadedRecentInputs=true;if initialInputs["protocol"] != nil { restorePortableInputs(initialInputs) } else { restoreInputs(initialInputs) } }
                 resetInjectionDose()
-                if let c = protocolDefinition?.concentration ?? medication.concentration {
-                    concentration = MedicationSafety.input(c)
-                }
+                concentration = ClinicMedicationOverride.concentrationInput(for: medication, definition: protocolDefinition)
             }
             .onChange(of: patientWeight) { _, _ in
                 result = nil; exactMathSelected = false
@@ -926,7 +940,7 @@ private struct DoseCalculatorSheet: View {
                     medication: medication,
                     species: species,
                     store: protocolStore,
-                    seed: selectedBuiltInPreset?.definition
+                    seed: ClinicMedicationOverride.seed(for: medication, species: species, preset: selectedBuiltInPreset)
                 )
             }
     }
@@ -952,11 +966,7 @@ private struct DoseCalculatorSheet: View {
                 selectedStrengthIndex = 0
                 manualStrength = ""
                 recommendedDoseSelected = false
-                if let c = protocolDefinition?.concentration {
-                    concentration = MedicationSafety.input(c)
-                } else if medication.kind == .protocolOnly {
-                    concentration = ""
-                }
+                concentration = ClinicMedicationOverride.concentrationInput(for: medication, definition: protocolDefinition)
             }
             .onChange(of: protocolStore.definitions) { _, _ in
                 resetInjectionDose()
@@ -969,11 +979,7 @@ private struct DoseCalculatorSheet: View {
                 selectedStrengthIndex = 0
                 manualStrength = ""
                 recommendedDoseSelected = false
-                if let c = protocolDefinition?.concentration {
-                    concentration = MedicationSafety.input(c)
-                } else if medication.kind == .protocolOnly {
-                    concentration = ""
-                }
+                concentration = ClinicMedicationOverride.concentrationInput(for: medication, definition: protocolDefinition)
             }
     }
 
@@ -991,7 +997,7 @@ private struct DoseCalculatorSheet: View {
                 Button("0.6 mg/mL · prescribed-dose conversion") { prescribedBuprenorphine = true }
             }
         }
-        if medication.kind == .protocolOnly {
+        Group {
             Section("Medication protocol") {
                 if let clinicOverride {
                     Label("Clinic override enabled for \(species.rawValue)", systemImage: "checkmark.circle.fill")
@@ -1004,11 +1010,12 @@ private struct DoseCalculatorSheet: View {
                         LabeledContent("Route", value: clinicOverride.route)
                     }
                     Button("Edit clinic override") { showProtocolEditor = true }
-                    if !builtInPresets.isEmpty {
-                        Button("Disable override and use preloaded protocols", role: .destructive) {
+                        .accessibilityIdentifier("dose.protocol.override")
+                    if medication.kind != .protocolOnly || !builtInPresets.isEmpty {
+                        Button("Disable override and use built-in settings", role: .destructive) {
                             protocolStore.remove(for: medication, species: species)
                             selectedPresetIndex = 0
-                        }
+                        }.accessibilityIdentifier("dose.protocol.disable")
                     }
                 } else if !builtInPresets.isEmpty {
                     Label("Preloaded calculator available", systemImage: "checkmark.seal.fill")
@@ -1051,13 +1058,17 @@ private struct DoseCalculatorSheet: View {
                     }
                     .buttonStyle(.bordered)
                     .accessibilityIdentifier("dose.protocol.override")
+                } else if medication.kind != .protocolOnly {
+                    Button("Enter / edit clinic override") { showProtocolEditor = true }
+                        .accessibilityIdentifier("dose.protocol.override")
+                    Text("Save your clinic’s dose, strength or concentration for this medication and species.").font(.caption)
                 } else {
                     Text("No preloaded automatic rule is available for this entry.")
                         .foregroundStyle(.secondary)
                     Button {
                         showProtocolEditor = true
                     } label: {
-                        Label("Enable Calculator / Enter Protocol", systemImage: "plus.circle.fill")
+                        Label("Enter / edit clinic override", systemImage: "plus.circle.fill")
                     }
                     .buttonStyle(.borderedProminent)
                     .accessibilityIdentifier("dose.protocol.enable")
@@ -1253,7 +1264,7 @@ private struct DoseCalculatorSheet: View {
     }
 
     private var hasDoseRange: Bool {
-        medication.kind != .robenacoxibCatBand && injectionMinimum > 0 && injectionMaximum > injectionMinimum
+        (protocolDefinition != nil || medication.kind != .robenacoxibCatBand) && injectionMinimum > 0 && injectionMaximum > injectionMinimum
     }
 
     private func doseOptionTitle(_ title: String, value: Double) -> String {
@@ -1550,6 +1561,9 @@ private struct DoseCalculatorSheet: View {
         }
         if usesGalliprantChart, let plan = galliprantPlan {
             return PrescriptionSummary.text(amount: plan.units, unit: "tablet", route: activeRoute, hours: 24 / dosesPerDay, days: days, allowFraction: true) ?? "Verify the administration and quantity."
+        }
+        if requiresRibbonApplication, protocolDefinition != nil {
+            return "The clinic override requires a product-specific ointment application plan. Do not infer ribbon length or liquid volume from the entered dose."
         }
         if requiresRibbonApplication {
             return "\(days) days • \(schedule) • \(administrations) applications using the labeled ribbon length. Do not convert ointment to a liquid volume."
