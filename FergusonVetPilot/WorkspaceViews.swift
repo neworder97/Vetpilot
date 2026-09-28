@@ -15,7 +15,14 @@ struct WorkspaceQuickBar: View {
     @State private var showRecent=false
     @State private var reference=false
     private var entries:[WorkspaceTarget] {
-        (MedicationFormulations.organized+medications.definitions.map(\.asMedication)).map{WorkspaceTarget.medication($0)} + LabworkCatalog.tests.map(WorkspaceTarget.lab) + ClinicalData.breeds.map(WorkspaceTarget.breed) + clinic.items.map{WorkspaceTarget.clinic($0,kind:"My Clinic")} + cytology.items.map{WorkspaceTarget.clinic($0,kind:"Cytology")}
+        var result=MedicationFormulations.organized.map{WorkspaceTarget.medication($0)}
+        result += medications.definitions.map{WorkspaceTarget.medication($0.asMedication)}
+        result += LabworkCatalog.tests.map{WorkspaceTarget.lab($0)}
+        result += ClinicalData.breeds.map{WorkspaceTarget.breed($0)}
+        result += clinic.items.map{WorkspaceTarget.clinic($0,kind:"My Clinic")}
+        result += cytology.items.map{WorkspaceTarget.clinic($0,kind:"Cytology")}
+        result.append(WorkspaceTarget(kind:"Reference",id:"abbreviations",title:"Veterinary abbreviations",detail:AbbreviationReference.entries.map{$0.0+" "+$0.1}.joined(separator:" ")))
+        return result
     }
     private func favorite(_ t:WorkspaceTarget)->Bool { if t.kind=="My Clinic" { return clinic.items.first{$0.id.uuidString.lowercased()==t.id}?.favorite ?? false };if t.kind=="Cytology" { return cytology.items.first{$0.id.uuidString.lowercased()==t.id}?.favorite ?? false };return workspace.favorite(t) }
     private func toggle(_ t:WorkspaceTarget) { if t.kind=="My Clinic",let id=UUID(uuidString:t.id){clinic.toggleFavorite(id)}else if t.kind=="Cytology",let id=UUID(uuidString:t.id){cytology.toggleFavorite(id)}else{workspace.toggle(t)} }
@@ -25,7 +32,7 @@ struct WorkspaceQuickBar: View {
         VStack(alignment:.leading,spacing:4){
             HStack{Button { showing=true } label:{Label("Search VetPilot",systemImage:"magnifyingglass")}.accessibilityIdentifier("workspace.search");Spacer();Button("Recent"){showRecent=true;showing=true}}
             if favorites.isEmpty { Text("Favorite items throughout VetPilot to pin them here.").font(.caption).foregroundStyle(.secondary) }
-            else { ScrollView(.horizontal){HStack{ForEach(favorites,id:\.key){t in Button("★ "+t.title){workspace.open(t)}.buttonStyle(.bordered)}}} }
+            else { ScrollView(.horizontal){HStack{ForEach(favorites,id:\.key){t in Button("★ "+t.title){open(t)}.buttonStyle(.bordered)}}} }
         }.padding(.horizontal,14).padding(.vertical,6)
         .sheet(isPresented:$showing){NavigationStack{List{
             Section { Toggle("Recently viewed",isOn:$showRecent);Button("Veterinary abbreviation reference"){reference=true} }
@@ -35,7 +42,8 @@ struct WorkspaceQuickBar: View {
             Text(workspace.status).font(.caption).foregroundStyle(.secondary)
         }.navigationTitle("VetPilot Search").searchable(text:$query,prompt:"Medication, CBC, breed, protocol…").toolbar{ToolbarItem(placement:.confirmationAction){Button("Done"){showing=false}}}.sheet(isPresented:$reference){NavigationStack{AbbreviationReference().toolbar{ToolbarItem(placement:.confirmationAction){Button("Done"){reference=false}}}}}} }
     }
-    private func row(_ t:WorkspaceTarget)->some View { HStack{Button { showing=false;workspace.open(t) } label:{VStack(alignment:.leading){Text(t.title);Text(t.kind).font(.caption).foregroundStyle(.secondary)}};Spacer();Button { toggle(t) } label:{Image(systemName:favorite(t) ? "star.fill":"star")}.buttonStyle(.borderless).accessibilityLabel("Favorite "+t.title)} }
+    private func open(_ target:WorkspaceTarget) { if target.kind=="Reference" {showing=true;reference=true;workspace.viewed(target)}else{showing=false;workspace.open(target)} }
+    private func row(_ t:WorkspaceTarget)->some View { HStack{Button { open(t) } label:{VStack(alignment:.leading){Text(t.title);Text(t.kind).font(.caption).foregroundStyle(.secondary)}};Spacer();Button { toggle(t) } label:{Image(systemName:favorite(t) ? "star.fill":"star")}.buttonStyle(.borderless).accessibilityLabel("Favorite "+t.title)} }
 }
 struct AbbreviationReference:View {
     @State private var query=""

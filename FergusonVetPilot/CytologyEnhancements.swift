@@ -43,6 +43,7 @@ private struct CytologyImageToolsSheet:View {
             Text("Annotations sync separately with your account. Save an annotated copy to include markings in existing PDF, file, or QR sharing; the original remains available.").font(.caption)
         }
         if !message.isEmpty{Text(message).font(.footnote)}
+        Text(workspace.status).font(.caption)
     }.padding()}.navigationTitle("Cytology image tools").sheet(item:$editing){record in AnnotationEditor(record:record){workspace.save($0);editing=nil}} }
     private func picker(_ title:String,selection:Binding<String>)->some View{Picker(title,selection:selection){Text("Choose an image").tag("");ForEach(choices){p in Text(p.item.title+" — "+p.photo.caption).tag(p.id)}}}
     private func pane(_ p:CytologyPhotoChoice)->some View{VStack{Text(p.item.title).font(.headline);Text(p.photo.caption).font(.caption);if let image=UIImage(data:p.photo.jpeg){WorkspaceZoomImage(image:image).id(p.id).frame(height:320)}}.frame(maxWidth:.infinity)}
@@ -55,10 +56,24 @@ private struct AnnotationEditor:View{
     @Environment(\.dismiss) private var dismiss
     var body:some View{NavigationStack{Form{TextField("Label",text:Binding(get:{record.value["label"]?.text ?? ""},set:{record.value["label"] = .string(String($0.prefix(100)))}));ForEach(["x","y","x2","y2"],id:\.self){key in VStack{Text(key);Slider(value:Binding(get:{record.value[key]?.number ?? 0},set:{record.value[key] = .number($0)}),in:0...1)}};Button("Save annotation"){record.updatedAt=Date().timeIntervalSince1970*1000;save(record)}}.navigationTitle("Edit annotation").toolbar{ToolbarItem(placement:.cancellationAction){Button("Cancel"){dismiss()}}}}}
 }
-private struct WorkspaceZoomImage:UIViewRepresentable{
+private final class WorkspaceImageScroll:UIScrollView {
+    let imageView=UIImageView()
+    private var previousSize=CGSize.zero
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        guard bounds.size != previousSize,bounds.width>0,bounds.height>0 else{return}
+        previousSize=bounds.size;setZoomScale(1,animated:false)
+        imageView.frame=CGRect(origin:.zero,size:bounds.size);contentSize=bounds.size
+    }
+}
+private struct WorkspaceZoomImage:UIViewRepresentable {
     let image:UIImage
     func makeCoordinator()->Coordinator{Coordinator()}
-    func makeUIView(context:Context)->UIScrollView{let scroll=UIScrollView();scroll.minimumZoomScale=1;scroll.maximumZoomScale=6;scroll.delegate=context.coordinator;let view=UIImageView(image:image);view.contentMode = .scaleAspectFit;view.frame=CGRect(x:0,y:0,width:300,height:320);scroll.addSubview(view);scroll.contentSize=view.bounds.size;context.coordinator.image=view;return scroll}
-    func updateUIView(_ scroll:UIScrollView,context:Context){context.coordinator.image?.image=image}
+    func makeUIView(context:Context)->WorkspaceImageScroll {
+        let scroll=WorkspaceImageScroll();scroll.minimumZoomScale=1;scroll.maximumZoomScale=6;scroll.delegate=context.coordinator
+        scroll.imageView.image=image;scroll.imageView.contentMode = .scaleAspectFit;scroll.addSubview(scroll.imageView);context.coordinator.image=scroll.imageView
+        scroll.accessibilityLabel="Cytology image: pinch to zoom and drag to pan";return scroll
+    }
+    func updateUIView(_ scroll:WorkspaceImageScroll,context:Context){scroll.imageView.image=image}
     class Coordinator:NSObject,UIScrollViewDelegate{var image:UIImageView?;func viewForZooming(in scrollView:UIScrollView)->UIView?{image}}
 }

@@ -292,13 +292,13 @@ private struct DoseCalculatorSheet: View {
 
     @ViewBuilder private var recentCalculationControls: some View {
         Button("Save this calculation") {
-            let values:[String:WorkspaceValue] = ["weight":.string(patientWeight),"unit":.string(patientWeightUnit),"preset":.number(Double(selectedPresetIndex)),"strengthIndex":.number(Double(selectedStrengthIndex)),"manualStrength":.string(manualStrength),"concentration":.string(concentration),"potassium":.string(prescribedPotassiumRate),"injectionDose":.string(prescribedInjectionDose),"frequency":.string(selectedFrequency.rawValue),"doseLevel":.string(selectedDoseLevel.rawValue),"recommended":.bool(recommendedDoseSelected),"rounding":.string(solidRounding.rawValue),"days":.number(Double(supplyDays ?? 0)),"priorCourseDoses":.number(Double(priorCourseDoses))]
+            let values:[String:WorkspaceValue] = ["species":.string(species.rawValue),"weight":.string(patientWeight),"unit":.string(patientWeightUnit),"preset":.number(Double(selectedPresetIndex)),"strengthIndex":.number(Double(selectedStrengthIndex)),"manualStrength":.string(manualStrength),"concentration":.string(concentration),"potassium":.string(prescribedPotassiumRate),"injectionDose":.string(prescribedInjectionDose),"frequency":.string(selectedFrequency.rawValue),"doseLevel":.string(selectedDoseLevel.rawValue),"recommended":.bool(recommendedDoseSelected),"rounding":.string(solidRounding.rawValue),"days":.number(Double(supplyDays ?? 0)),"priorCourseDoses":.number(Double(priorCourseDoses))]
             let portable:[String:WorkspaceValue] = ["weight":.string(patientWeight),"unit":.string(patientWeightUnit),"protocol":.string(selectedBuiltInPreset?.id ?? ""),"strength":.string(selectedStrength.map { MedicationSafety.input($0) } ?? manualStrength),"concentration":.string(concentration),"potassium":.string(prescribedPotassiumRate),"injectionDose":.string(prescribedInjectionDose),"frequency":.string(selectedFrequency.dosesPerDay.map { MedicationSafety.input($0) } ?? ""),"level":.string(recommendedDoseSelected || selectedDoseLevel == .middle ? "recommended" : selectedDoseLevel == .high ? "1":"0"),"rounding":.string(solidRounding.rawValue),"days":.string(supplyDays.map(String.init) ?? ""),"species":.string(species.rawValue)]
             workspace.save(WorkspaceRecord(title:medication.displayName,kind:"calculation",target:WorkspaceTarget.medication(medication).key,value:["platform":.string("ios"),"inputs":.object(values),"portable":.object(portable),"result":.string(result?.headline ?? "")]))
         }.disabled(result?.available != true)
         Text("Saved inputs are convenience history, not a prescription. Recalculate and verify after reopening.").font(.caption)
         Text(workspace.status).font(.caption)
-        ForEach(Array(workspace.records.filter{$0.kind=="calculation" && $0.target==WorkspaceTarget.medication(medication).key}.sorted{$0.updatedAt>$1.updatedAt}.prefix(20))) { record in
+        ForEach(Array(workspace.records.filter{$0.kind=="calculation" && $0.target==WorkspaceTarget.medication(medication).key && ($0.value["inputs"]?.object["species"]?.text ?? $0.value["portable"]?.object["species"]?.text ?? species.rawValue)==species.rawValue}.sorted{$0.updatedAt>$1.updatedAt}.prefix(20))) { record in
             HStack {
                 Button("Reopen " + Date(timeIntervalSince1970:record.updatedAt/1000).formatted(date:.abbreviated,time:.shortened)) {
                     if record.value["platform"]?.text == "ios" { restoreInputs(record.value["inputs"]?.object ?? [:]) } else { restorePortableInputs(record.value["inputs"]?.object ?? [:]) }
@@ -308,6 +308,8 @@ private struct DoseCalculatorSheet: View {
         }
     }
     private func restorePortableInputs(_ values:[String:WorkspaceValue]) {
+        guard values["species"]?.text == species.rawValue else { workspace.status="Open this medication for the saved patient species first.";return }
+        guard ["","1","2","3","4"].contains(values["frequency"]?.text ?? "") else { workspace.status="The saved custom frequency cannot be selected here. Enter and verify the prescription manually.";return }
         let protocolID=values["protocol"]?.text ?? ""
         guard protocolID.isEmpty || builtInPresets.contains(where:{$0.id==protocolID}) else { workspace.status="Saved protocol is unavailable. Select and verify a current protocol.";return }
         let index=builtInPresets.firstIndex(where:{$0.id==protocolID}) ?? 0
@@ -323,6 +325,7 @@ private struct DoseCalculatorSheet: View {
         restoreInputs(native)
     }
     private func restoreInputs(_ values:[String:WorkspaceValue]) {
+        if let savedSpecies=values["species"]?.text,savedSpecies != species.rawValue { workspace.status="Open this medication for the saved patient species first.";return }
         func safeInteger(_ key:String) -> Int { let n=values[key]?.number ?? 0;return n.isFinite && n>=0 && n<=100000 ? Int(n):0 }
         let preset=safeInteger("preset")
         guard builtInPresets.isEmpty ? preset==0 : builtInPresets.indices.contains(preset) else { workspace.status="Saved protocol is unavailable. Select and verify a current protocol.";return }

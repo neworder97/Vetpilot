@@ -68,6 +68,8 @@ struct CytologyLibraryView: View {
                     }
                 }.padding()
             }
+            .onReceive(workspace.$request) { request in guard let request,request.target.kind=="Cytology" else{return};openedItem=store.items.first{$0.id.uuidString.lowercased()==request.target.id} }
+            .sheet(item:$openedItem) { item in NavigationStack { CytologyDetail(store:store,itemID:item.id).toolbar { ToolbarItem(placement:.confirmationAction) { Button("Done") { openedItem=nil } } } } }
             .navigationTitle("Cytology Library")
             .searchable(text: $query, prompt: "Find labels, cells or notes")
             .toolbar { ToolbarItem(placement: .topBarTrailing) {

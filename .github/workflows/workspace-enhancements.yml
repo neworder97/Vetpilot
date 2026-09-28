@@ -32,7 +32,7 @@ jobs:
       - name: Database isolation and revision tests
         env:
           PGPASSWORD: vetpilot-ci-only
-        run: psql -h localhost -U postgres -d postgres -f Backend/tests/database.sql
+        run: psql -h localhost -U postgres -d postgres -f Backend/tests/workspace-database.sql
   ios-validation:
     needs: backend-validation
     runs-on: macos-15
