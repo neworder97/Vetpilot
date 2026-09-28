@@ -63,7 +63,8 @@ struct CustomMedicationDefinition: Identifiable, Codable, Equatable {
                 : "CUSTOM-UNVERIFIED • No source attached",
             strengths: [],
             concentration: concentration,
-            controlled: false
+            controlled: false,
+            protocolIdentity: "custom|\(id.uuidString.lowercased())"
         )
     }
 

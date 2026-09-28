@@ -109,4 +109,23 @@ final class ClinicOverrideTests: XCTestCase {
         XCTAssertEqual(seed.strengths, expected.strengths)
         XCTAssertFalse(seed.veterinarianApproved)
     }
+    @MainActor func testSameNamedCustomMedicationsDoNotShareOverridesWithEachOtherOrCatalog() throws {
+        let suite = "ClinicOverrideTests." + UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let store = ProtocolMedicationStore(defaults: defaults)
+        var first = CustomMedicationDefinition(generic: "Fixture", brand: "Test", drugClass: "Test",
+            speciesRaw: Species.dog.rawValue, formRaw: MedicationForm.liquid.rawValue, indication: "Test",
+            doseBasisRaw: CustomDoseBasis.mgKg.rawValue, minDose: 2, maxDose: 4, frequency: "q12h",
+            route: "PO", concentration: 25, sourceReference: "", notes: "")
+        let medication = first.asMedication
+        first.id = UUID()
+        let second = first.asMedication
+        let definition = try XCTUnwrap(ClinicMedicationOverride.seed(for: medication, species: .dog))
+        store.save(definition)
+        XCTAssertEqual(store.definition(for: medication, species: .dog), definition)
+        XCTAssertNil(store.definition(for: second, species: .dog))
+        XCTAssertNil(store.definition(for: fixture(), species: .dog))
+    }
+
 }
