@@ -74,7 +74,14 @@ final class ClinicOverrideUITests: XCTestCase {
         XCTAssertTrue(edit.waitForExistence(timeout: 5)); edit.tap()
         XCTAssertTrue(app.textFields["clinicOverride.minimum"].waitForExistence(timeout: 5))
         XCTAssertEqual(Double(app.textFields["clinicOverride.minimum"].value as? String ?? ""), 10)
-        app.buttons["Cancel"].tap()
+        let approved = app.switches["clinicOverride.approved"]
+        reveal(approved, in: app)
+        if approved.value as? String != "1" { approved.tap() }
+        let save = app.buttons["clinicOverride.save"]
+        XCTAssertTrue(save.isEnabled); save.tap()
+        let disable = app.buttons["dose.protocol.disable"]
+        XCTAssertTrue(disable.waitForExistence(timeout: 5)); reveal(disable, in: app, towardTop: true)
+        disable.tap()
         XCTAssertTrue(app.buttons["gabapentin.calculate"].waitForExistence(timeout: 5))
     }
 
