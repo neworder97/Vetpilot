@@ -66,7 +66,7 @@ final class ClinicOverrideUITests: XCTestCase {
         approve(approved, in: app)
         saveOverride(in: app)
         let concentration = app.textFields["dose.concentration"]
-        XCTAssertTrue(concentration.waitForExistence(timeout: 5)); reveal(concentration, in: app)
+        reveal(concentration, in: app); XCTAssertTrue(concentration.exists)
         XCTAssertEqual(Double(concentration.value as? String ?? ""), 15)
         // The catalog's clinical note remains alongside the clinic-entered equation.
         let note = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Current label advises caution in dogs'")).firstMatch
