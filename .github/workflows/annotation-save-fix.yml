@@ -1,4 +1,4 @@
-name: VetPilot Annotation Save Regression Release
+name: VetPilot Annotation Sync Regression Release
 on:
   push:
     branches: [fix/cytology-annotation-save]
@@ -76,11 +76,11 @@ jobs:
       - name: Package unsigned Signulous IPA after validation
         run: |
           bash Scripts/package_validated_ipa.sh
-          git archive --format=zip --output=ReleaseArtifacts/VetPilot-0.9.1-Build31-Source.zip "$GITHUB_SHA"
+          git archive --format=zip --output=ReleaseArtifacts/VetPilot-0.9.1-Build32-Source.zip "$GITHUB_SHA"
       - name: Save unsigned IPA and release manifest
         uses: actions/upload-artifact@v4
         with:
-          name: VetPilot-0.9.1-Build31-IPA
+          name: VetPilot-0.9.1-Build32-IPA
           path: ReleaseArtifacts/
           if-no-files-found: error
       - name: Save validation evidence

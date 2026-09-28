@@ -11,16 +11,39 @@ final class VetPilotSyncController: ObservableObject {
     let clinic = ClinicStore()
     let medications = CustomMedicationStore()
     let cytology = ClinicStore(collection: "cytology")
+    let workspace = WorkspaceStore()
     @Published private(set) var backgroundStatus = "Background sync runs when iOS allows."
     private var departureToken: UUID?
     private var departureTask: Task<Void, Never>?
     private var departureIdentifier: UIBackgroundTaskIdentifier = .invalid
 
+    init() {
+        workspace.onAnnotationChange = { [weak self] in
+            Task { @MainActor [weak self] in await self?.syncAnnotations() }
+        }
+    }
+
+    func syncAnnotations() async {
+        workspace.switchAccount(account.userID)
+        await workspace.sync(account: account)
+    }
+
+    func syncCytology() async {
+        await syncAnnotations()
+        guard !Task.isCancelled else { return }
+        cytology.switchAccount(account.userID)
+        await cytology.sync(account: account)
+    }
+
     func syncAll() async {
+        workspace.switchAccount(account.userID)
         clinic.switchAccount(account.userID)
         cytology.switchAccount(account.userID)
         medications.switchAccount(account.userID)
         guard account.userID != nil, !Task.isCancelled else { return }
+        // Small annotation records must not wait behind photo transfers.
+        await workspace.sync(account: account)
+        guard !Task.isCancelled else { return }
         await clinic.sync(account: account)
         guard !Task.isCancelled else { return }
         await cytology.sync(account: account)

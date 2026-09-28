@@ -30,16 +30,25 @@ enum WorkspaceMerge {
         return result
     }
 }
+@MainActor protocol WorkspaceSyncAccount: AnyObject {
+    var userID: UUID? { get }
+    func request(path: String, method: String, body: [String: Any]?, authenticated: Bool) async throws -> Data
+}
+extension VetPilotAccount: WorkspaceSyncAccount {}
+
 @MainActor final class WorkspaceStore: ObservableObject {
     @Published private(set) var state=WorkspaceState()
     @Published private(set) var recent:[WorkspaceTarget]=[]
     @Published var request:WorkspaceRequest?
     @Published var status=""
+    // Fired only for local annotation edits, never while applying cloud records.
+    var onAnnotationChange: (() -> Void)?
+    private var syncAgain = false
     private var owner:UUID?; private var loaded=false; private var busy=false; private var generation=0
     private var key:String { "vetpilot."+(owner?.uuidString.lowercased() ?? "guest")+".workspace.v1" }
     var records:[WorkspaceRecord] { state.items }
     init() { load() }
-    func switchAccount(_ id:UUID?) { guard id != owner else{return};generation += 1;owner=id;busy=false;request=nil;load() }
+    func switchAccount(_ id:UUID?) { guard id != owner else{return};generation += 1;owner=id;busy=false;syncAgain=false;request=nil;load() }
     private func load() { loaded=false;state=WorkspaceState();recent=[];do { if let data=UserDefaults.standard.data(forKey:key) { state=try JSONDecoder().decode(WorkspaceState.self,from:data);try validate(state) };if let data=UserDefaults.standard.data(forKey:key+".recent") { recent=Array((try JSONDecoder().decode([WorkspaceTarget].self,from:data)).prefix(20)) };loaded=true;status=owner == nil ? "Quick access saved on this device" : "Quick access sync pending" } catch { status="Saved quick access needs recovery; original data has not been overwritten." } }
     private func validate(_ value:WorkspaceState) throws {
         func invalid() -> ClinicFileError { .invalid("Invalid quick access data. Existing data is preserved.") }
@@ -55,13 +64,48 @@ enum WorkspaceMerge {
         }
     }
     private func persist(_ next:WorkspaceState) throws { try validate(next);let data=try JSONEncoder().encode(next);UserDefaults.standard.set(data,forKey:key);state=next }
-    @discardableResult func save(_ value:WorkspaceRecord) -> Bool { guard loaded else{return false};do { var next=state;next.items.removeAll{$0.id==value.id};next.items.append(value);if value.kind=="calculation" { let keep=Set(next.items.filter{$0.kind=="calculation"}.sorted{$0.updatedAt == $1.updatedAt ? $0.id>$1.id : $0.updatedAt>$1.updatedAt}.prefix(20).map(\.id));next.items.removeAll{$0.kind=="calculation" && !keep.contains($0.id)} };try persist(next);status="Saved locally";return true } catch { status=error.localizedDescription;return false } }
-    func remove(_ id:String) { guard loaded else{return};do { var next=state;next.items.removeAll{$0.id==id};try persist(next) } catch { status=error.localizedDescription } }
+    @discardableResult func save(_ value:WorkspaceRecord) -> Bool { guard loaded else{return false};do { var next=state;next.items.removeAll{$0.id==value.id};next.items.append(value);if value.kind=="calculation" { let keep=Set(next.items.filter{$0.kind=="calculation"}.sorted{$0.updatedAt == $1.updatedAt ? $0.id>$1.id : $0.updatedAt>$1.updatedAt}.prefix(20).map(\.id));next.items.removeAll{$0.kind=="calculation" && !keep.contains($0.id)} };try persist(next);status="Saved locally";if value.kind=="annotation" { onAnnotationChange?() };return true } catch { status=error.localizedDescription;return false } }
+    func remove(_ id:String) { guard loaded else{return};do { let annotation=state.items.contains{$0.id==id && $0.kind=="annotation"};var next=state;next.items.removeAll{$0.id==id};try persist(next);if annotation { onAnnotationChange?() } } catch { status=error.localizedDescription } }
     func favorite(_ target:WorkspaceTarget) -> Bool { state.items.filter{$0.kind=="favorite" && $0.target==target.key}.sorted{$0.updatedAt == $1.updatedAt ? $0.id>$1.id : $0.updatedAt>$1.updatedAt}.first?.value["enabled"] == .bool(true) }
     func toggle(_ target:WorkspaceTarget) { let existing=state.items.first{$0.kind=="favorite" && $0.target==target.key};save(WorkspaceRecord(id:existing?.id ?? UUID().uuidString.lowercased(),title:target.title,kind:"favorite",target:target.key,value:["enabled":.bool(!favorite(target))])) }
     func viewed(_ target:WorkspaceTarget) { recent=Array(([target]+recent.filter{$0.key != target.key}).prefix(20));if let data=try? JSONEncoder().encode(recent) { UserDefaults.standard.set(data,forKey:key+".recent") } }
     func open(_ target:WorkspaceTarget, inputs:[String:WorkspaceValue]?=nil) { viewed(target);request=WorkspaceRequest(target:target,inputs:inputs) }
-    func sync(account:VetPilotAccount) async { guard loaded,!busy,let owner,account.userID==owner else{return};busy=true;let epoch=generation;defer{if epoch==generation{busy=false}}
-        do { struct Row:Decodable{var version:Int;var items:[WorkspaceRecord]};let data=try await account.request(path:"rest/v1/workspace_collections?select=version,items");let rows=try JSONDecoder().decode([Row].self,from:data);guard epoch==generation,account.userID==owner else{return};let remote=rows.first?.items ?? [];let version=rows.first?.version ?? 0;try validate(WorkspaceState(items:remote,baseline:[],version:version));let merged=WorkspaceMerge.merge(state.items,state.baseline,remote);try persist(WorkspaceState(items:merged,baseline:remote,version:version));if merged != remote { let payload=try JSONSerialization.jsonObject(with:JSONEncoder().encode(merged));let response=try await account.request(path:"rest/v1/rpc/save_workspace_collection",method:"POST",body:["expected_version":version,"collection_items":payload]);guard epoch==generation,account.userID==owner else{return};let acknowledged=try JSONDecoder().decode(Int.self,from:response);try persist(WorkspaceState(items:state.items,baseline:merged,version:acknowledged)) };status="Quick access synced" } catch { if epoch==generation { status="Quick access sync pending; local data is preserved. "+error.localizedDescription } }
+    func sync(account: any WorkspaceSyncAccount) async {
+        guard loaded, let owner, account.userID == owner, !Task.isCancelled else { return }
+        guard !busy else { syncAgain = true; return }
+        busy = true
+        let epoch = generation
+        defer { if epoch == generation { busy = false } }
+        do {
+            repeat {
+                syncAgain = false
+                try Task.checkCancellation()
+                struct Row: Decodable { var version: Int; var items: [WorkspaceRecord] }
+                let data = try await account.request(path: "rest/v1/workspace_collections?select=version,items",
+                                                     method: "GET", body: nil, authenticated: true)
+                guard epoch == generation, account.userID == owner else { return }
+                try Task.checkCancellation()
+                let rows = try JSONDecoder().decode([Row].self, from: data)
+                let remote = rows.first?.items ?? [], version = rows.first?.version ?? 0
+                try validate(WorkspaceState(items: remote, baseline: [], version: version))
+                let merged = WorkspaceMerge.merge(state.items, state.baseline, remote)
+                try persist(WorkspaceState(items: merged, baseline: remote, version: version))
+                if merged != remote {
+                    let payload = try JSONSerialization.jsonObject(with: JSONEncoder().encode(merged))
+                    let response = try await account.request(path: "rest/v1/rpc/save_workspace_collection",
+                        method: "POST", body: ["expected_version": version, "collection_items": payload], authenticated: true)
+                    guard epoch == generation, account.userID == owner else { return }
+                    try Task.checkCancellation()
+                    let acknowledged = try JSONDecoder().decode(Int.self, from: response)
+                    // Keep edits made during the upload; only the sent snapshot is acknowledged.
+                    try persist(WorkspaceState(items: state.items, baseline: merged, version: acknowledged))
+                }
+            } while syncAgain || state.items != state.baseline
+            status = "Quick access synced"
+        } catch {
+            if epoch == generation {
+                status = "Quick access sync pending; local data is preserved. " + error.localizedDescription
+            }
+        }
     }
 }

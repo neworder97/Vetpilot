@@ -3,7 +3,7 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var tab = 0
-    @StateObject private var workspace = WorkspaceStore()
+    @EnvironmentObject private var workspace: WorkspaceStore
     @EnvironmentObject private var sync: VetPilotSyncController
     @EnvironmentObject private var account: VetPilotAccount
     private var clinicStore: ClinicStore { sync.clinic }
@@ -35,7 +35,7 @@ struct ContentView: View {
                     .tag(4)
                     .tabItem { Label("Labwork", systemImage: "testtube.2") }
 
-                CytologyLibraryView(store: cytology, onSync: { Task { await cytology.sync(account: account) } }, onAccount: { settings = true }).id(account.userID)
+                CytologyLibraryView(store: cytology, onSync: { Task { await sync.syncCytology() } }, onAccount: { settings = true }).id(account.userID)
                     .tag(5)
                     .tabItem { Label("Cytology", systemImage: "photo.on.rectangle.angled") }
 
@@ -59,7 +59,7 @@ struct ContentView: View {
             clinicStore.switchAccount(account.userID); cytology.switchAccount(account.userID); sync.medications.switchAccount(account.userID)
             sync.scheduleBackgroundRefresh()
             while !Task.isCancelled {
-                if scenePhase == .active { await sync.syncAll(); await workspace.sync(account: account) }
+                if scenePhase == .active { await sync.syncAll() }
                 do { try await Task.sleep(nanoseconds: 30_000_000_000) } catch { break }
             }
         }

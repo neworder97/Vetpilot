@@ -8,6 +8,7 @@ struct FergusonVetPilotApp: App {
             AnimatedRootView()
                 .environmentObject(sync)
                 .environmentObject(sync.account)
+                .environmentObject(sync.workspace)
                 .tint(AppTheme.blue)
                 .preferredColorScheme(.light)
         }
