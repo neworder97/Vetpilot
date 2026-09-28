@@ -2,6 +2,7 @@ name: VetPilot Additive Workspace Validation
 on:
   push:
     branches: [additive/workspace-enhancements]
+    paths-ignore: [.github/workflows/package-validated-workspace.yml]
   workflow_dispatch:
 permissions:
   contents: read
@@ -78,7 +79,7 @@ jobs:
       - name: Save unsigned IPA and release manifest
         uses: actions/upload-artifact@v4
         with:
-          name: VetPilot-0.8.0-Signulous-IPA
+          name: VetPilot-0.8.16-Signulous-IPA
           path: ReleaseArtifacts/
           if-no-files-found: error
       - name: Save validation evidence
