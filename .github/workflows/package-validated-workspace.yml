@@ -1,0 +1,162 @@
+name: VetPilot Validated Workspace Packaging
+on:
+  push:
+    branches: [additive/workspace-enhancements]
+    paths: [.github/workflows/package-validated-workspace.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: vetpilot-workspace-package-recovery
+  cancel-in-progress: false
+jobs:
+  package-unchanged-validated-source:
+    runs-on: macos-15
+    timeout-minutes: 55
+    env:
+      VALIDATED_SOURCE_COMMIT: 15c6feb1e3bb524e4064534d222b57406a4a3e76
+      VALIDATION_WORKFLOW_RUN: '36375670566'
+      VALIDATION_MODE: Same-source simulator evidence reused after verified packaging-only changes; device and arithmetic gates rerun
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Require identical application and test sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor "$VALIDATED_SOURCE_COMMIT" "$GITHUB_SHA"
+          python3 - <<'PY'
+          import os, pathlib, subprocess
+          allowed = {'Scripts/package_validated_ipa.sh', '.github/workflows/workspace-enhancements.yml', '.github/workflows/package-validated-workspace.yml'}
+          changed = set(subprocess.check_output(['git', 'diff', '--name-only', os.environ['VALIDATED_SOURCE_COMMIT'], os.environ['GITHUB_SHA']], text=True).splitlines())
+          assert changed <= allowed, 'Application/test changes require a new full validation: ' + repr(sorted(changed - allowed))
+          pathlib.Path('ValidationResults').mkdir(exist_ok=True)
+          pathlib.Path('ValidationResults/packaging-only-diff.txt').write_text('\n'.join(sorted(changed)) + '\n')
+          print('Application, backend, clinical data, resources, project settings and test sources are unchanged.')
+          print('Packaging-only differences: ' + ', '.join(sorted(changed)))
+          PY
+      - name: Verify completed source gates and retain exact test evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, re, subprocess, time
+          root = pathlib.Path('ValidationResults')
+          repo = os.environ['GITHUB_REPOSITORY']
+          run_id = os.environ['VALIDATION_WORKFLOW_RUN']
+          sha = os.environ['VALIDATED_SOURCE_COMMIT']
+          def fetch(path):
+              return subprocess.check_output(['curl', '--fail', '--silent', '--show-error', '--location', '--retry', '2', '--max-time', '120', '-H', 'Accept: application/vnd.github+json', '-H', 'Authorization: Bearer ' + os.environ['GH_TOKEN'], 'https://api.github.com/repos/' + repo + '/' + path])
+          def api(path):
+              return json.loads(fetch(path))
+          def verify_jobs(jobs):
+              backend = next(j for j in jobs if j['name'] == 'backend-validation')
+              ios = next(j for j in jobs if j['name'] == 'ios-validation')
+              assert backend['status'] == 'completed' and backend['conclusion'] == 'success', 'Backend validation did not pass'
+              required = ['Independent arithmetic and extracted-core regression gate', 'Simulator unit and UI tests', 'Compile physical-device app', 'Verify website logo and preserved original source artwork']
+              for name in required:
+                  step = next(s for s in ios['steps'] if s['name'] == name)
+                  assert step['status'] == 'completed' and step['conclusion'] == 'success', 'Source gate did not pass: ' + name
+              bad = [s['name'] for s in ios['steps'] if s.get('conclusion') in ('failure', 'cancelled', 'timed_out')]
+              assert not bad or bad == ['Package unsigned Signulous IPA after validation'], 'Non-packaging failure: ' + repr(bad)
+              return backend, ios
+          deadline = time.monotonic() + 40 * 60
+          while True:
+              run = api('actions/runs/' + run_id)
+              assert run['head_sha'] == sha and run['head_branch'] == 'additive/workspace-enhancements', 'Wrong validation source'
+              assert run['path'] == '.github/workflows/workspace-enhancements.yml', 'Wrong validation workflow'
+              if run['status'] == 'completed':
+                  break
+              assert time.monotonic() < deadline, 'Source validation has not completed; no IPA can be packaged'
+              print('Source validation is still running; packaging remains blocked.', flush=True)
+              time.sleep(30)
+          assert run['conclusion'] in ('success', 'failure'), 'Cancelled or incomplete validation cannot be reused'
+          jobs = api('actions/runs/' + run_id + '/jobs?filter=latest&per_page=100')
+          assert jobs['total_count'] == len(jobs['jobs']), 'Incomplete job listing'
+          backend, ios = verify_jobs(jobs['jobs'])
+          logs = {}
+          for key, job in [('backend', backend), ('ios', ios)]:
+              raw = fetch('actions/jobs/' + str(job['id']) + '/logs')
+              (root / ('source-' + key + '-validation.log')).write_bytes(raw)
+              logs[key] = re.sub(r'^\ufeff?\d{4}-\d{2}-\d{2}T\S+Z ?', '', raw.decode('utf-8-sig', errors='replace'), flags=re.M)
+          text = logs['ios']
+          assert text.count('** TEST SUCCEEDED **') == 2, 'Both simulator test commands must pass'
+          assert '** TEST FAILED **' not in text, 'Simulator failure cannot be reused'
+          assert not re.search(r'^Test Case .* (failed|skipped) \(', text, re.M), 'Failed or skipped tests cannot be reused'
+          if run['conclusion'] == 'failure':
+              assert "AssertionError: ('version', '0.8.16')" in text, 'Failure was not the verified old-version packaging mismatch'
+          required_tests = ['testCalculationRecallReusesInputsAndRequiresRecalculation', 'testGlobalSearchOpensExistingBreedAndLabAndPersistsFavorite', 'testNutritionTabDogAndCatSmokeFlow', 'testNutritionIntakeOverrideFloorAndRecovery']
+          for test in required_tests:
+              assert re.search(r"^Test Case .*" + re.escape(test) + r".* passed \(", text, re.M), 'Missing passing regression: ' + test
+          current_xcode = subprocess.check_output(['xcodebuild', '-version'], text=True).strip()
+          assert current_xcode in text, 'Xcode differs from the simulator validation environment'
+          (root / 'xcode-version.txt').write_text(current_xcode + '\n')
+          counts = re.findall(r'Executed (\d+) tests?, with (\d+) failures?', text)
+          assert counts and all(int(failures) == 0 for _, failures in counts), 'Nonzero test failure count'
+          assert any(int(count) >= 175 for count, _ in counts), 'Full unit-test evidence is missing'
+          proof = {'validated_source_commit': sha, 'packaging_source_commit': os.environ['GITHUB_SHA'], 'validation_workflow_run': run_id, 'source_run_conclusion': run['conclusion'], 'source_ios_job': ios['id'], 'source_backend_job': backend['id'], 'simulator_commands_passed': 2, 'required_regressions_passed': required_tests, 'executed_test_group_counts': counts, 'xcode': current_xcode, 'source_ios_log_sha256': hashlib.sha256((root / 'source-ios-validation.log').read_bytes()).hexdigest(), 'application_and_test_sources_unchanged': True}
+          (root / 'source-validation-proof.json').write_text(json.dumps(proof, indent=2) + '\n')
+          print(json.dumps(proof, indent=2))
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+              summary.write('## Verified packaging-only recovery\n\nSource: `' + sha + '`; completed test run: `' + run_id + '`. Both simulator commands and required regression tests passed. All application, backend, resource, configuration and test sources are unchanged. Only release packaging files differ.\n')
+          PY
+      - name: Repeat independent arithmetic and extracted-core gate
+        run: python3 ValidationArithmetic/run_local_audit.py
+      - name: Configure the existing public cloud connection
+        env:
+          CLOUD_URL: ${{ vars.VETPILOT_SUPABASE_URL }}
+          CLOUD_KEY: ${{ vars.VETPILOT_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          python3 - <<'PY'
+          import base64,json,os,pathlib
+          url=os.environ.get('CLOUD_URL','');key=os.environ.get('CLOUD_KEY','')
+          if url and key:
+              assert not key.startswith('sb_secret_'), 'Secret keys must not be bundled'
+              if key.count('.') == 2:
+                  assert json.loads(base64.urlsafe_b64decode(key.split('.')[1]+'===' )).get('role')=='anon'
+              else:
+                  assert key.startswith('sb_publishable_')
+              pathlib.Path('FergusonVetPilot/VetPilotCloud.json').write_text(json.dumps({'url':url,'publishableKey':key}))
+          PY
+      - run: brew install xcodegen
+      - name: Rebuild unchanged application for physical iPhone
+        run: |
+          set -euo pipefail
+          xcodegen generate
+          xcodebuild build -project FergusonVetPilot.xcodeproj -scheme FergusonVetPilot -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath .build CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='' 2>&1 | tee ValidationResults/device-build.log
+      - name: Recheck original artwork and current logo
+        run: |
+          set -euo pipefail
+          APP=$(find .build/Build/Products/Release-iphoneos -maxdepth 1 -name '*.app' -print -quit)
+          test -n "$APP"
+          bash Scripts/restore_original_bundle_resources.sh "$APP" --website-logo
+          cmp PreservedOriginalBundleResources/VetPilotLogoSource.jpg "$APP/VetPilotLogoSource.jpg"
+      - name: Package version 0.8.16 build 29 with validation provenance
+        run: |
+          set -euo pipefail
+          bash Scripts/package_validated_ipa.sh
+          cp ValidationResults/source-validation-proof.json ReleaseArtifacts/
+          git archive --format=zip --output=ReleaseArtifacts/VetPilot-0.8.16-Source.zip "$GITHUB_SHA"
+      - name: Save unsigned IPA, source archive and release manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: VetPilot-0.8.16-Signulous-IPA
+          path: ReleaseArtifacts/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Save release verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: VetPilot-0.8.16-Packaging-Evidence
+          path: |
+            ValidationResults/
+            ValidationArithmetic/evidence/
+            ValidationArithmetic/candidate-independent-numeric-audit.json
+            ValidationArithmetic/candidate-rendered-oracle.json
+          retention-days: 30
