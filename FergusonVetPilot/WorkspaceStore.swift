@@ -41,9 +41,21 @@ enum WorkspaceMerge {
     init() { load() }
     func switchAccount(_ id:UUID?) { guard id != owner else{return};generation += 1;owner=id;busy=false;request=nil;load() }
     private func load() { loaded=false;state=WorkspaceState();recent=[];do { if let data=UserDefaults.standard.data(forKey:key) { state=try JSONDecoder().decode(WorkspaceState.self,from:data);try validate(state) };if let data=UserDefaults.standard.data(forKey:key+".recent") { recent=Array((try JSONDecoder().decode([WorkspaceTarget].self,from:data)).prefix(20)) };loaded=true;status=owner == nil ? "Quick access saved on this device" : "Quick access sync pending" } catch { status="Saved quick access needs recovery; original data has not been overwritten." } }
-    private func validate(_ value:WorkspaceState) throws { guard value.version>=0,value.items.count<=3000,value.baseline.count<=3000,Set(value.items.map(\.id)).count==value.items.count,Set(value.baseline.map(\.id)).count==value.baseline.count,try JSONEncoder().encode(value).count<=4_000_000 else { throw ClinicFileError.invalid("Quick access storage limit or invalid saved data. Existing data is preserved.") } }
+    private func validate(_ value:WorkspaceState) throws {
+        func invalid() -> ClinicFileError { .invalid("Invalid quick access data. Existing data is preserved.") }
+        guard value.version>=0,value.items.count<=3000,value.baseline.count<=3000,Set(value.items.map(\.id)).count==value.items.count,Set(value.baseline.map(\.id)).count==value.baseline.count,try JSONEncoder().encode(value).count<=4_000_000 else { throw invalid() }
+        for record in value.items + value.baseline {
+            guard UUID(uuidString:record.id) != nil,["favorite","calculation","annotation"].contains(record.kind),record.target.count<=3000,record.title.count<=20000,record.updatedAt.isFinite,record.updatedAt>=0,record.updatedAt<=8_640_000_000_000_000 else { throw invalid() }
+            if record.kind=="favorite" { guard case .bool? = record.value["enabled"] else { throw invalid() } }
+            if record.kind=="calculation" { guard case .object? = record.value["inputs"] else { throw invalid() } }
+            if record.kind=="annotation" {
+                guard ["arrow","circle","label"].contains(record.value["shape"]?.text ?? ""),case .string(let label)?=record.value["label"],label.count<=100 else { throw invalid() }
+                for key in ["x","y","x2","y2"] { guard case .number(let n)?=record.value[key],n.isFinite,n>=0,n<=1 else { throw invalid() } }
+            }
+        }
+    }
     private func persist(_ next:WorkspaceState) throws { try validate(next);let data=try JSONEncoder().encode(next);UserDefaults.standard.set(data,forKey:key);state=next }
-    func save(_ value:WorkspaceRecord) { guard loaded else{return};do { var next=state;next.items.removeAll{$0.id==value.id};next.items.append(value);try persist(next) } catch { status=error.localizedDescription } }
+    @discardableResult func save(_ value:WorkspaceRecord) -> Bool { guard loaded else{return false};do { var next=state;next.items.removeAll{$0.id==value.id};next.items.append(value);if value.kind=="calculation" { let keep=Set(next.items.filter{$0.kind=="calculation"}.sorted{$0.updatedAt == $1.updatedAt ? $0.id>$1.id : $0.updatedAt>$1.updatedAt}.prefix(20).map(\.id));next.items.removeAll{$0.kind=="calculation" && !keep.contains($0.id)} };try persist(next);status="Saved locally";return true } catch { status=error.localizedDescription;return false } }
     func remove(_ id:String) { guard loaded else{return};do { var next=state;next.items.removeAll{$0.id==id};try persist(next) } catch { status=error.localizedDescription } }
     func favorite(_ target:WorkspaceTarget) -> Bool { state.items.filter{$0.kind=="favorite" && $0.target==target.key}.sorted{$0.updatedAt == $1.updatedAt ? $0.id>$1.id : $0.updatedAt>$1.updatedAt}.first?.value["enabled"] == .bool(true) }
     func toggle(_ target:WorkspaceTarget) { let existing=state.items.first{$0.kind=="favorite" && $0.target==target.key};save(WorkspaceRecord(id:existing?.id ?? UUID().uuidString.lowercased(),title:target.title,kind:"favorite",target:target.key,value:["enabled":.bool(!favorite(target))])) }

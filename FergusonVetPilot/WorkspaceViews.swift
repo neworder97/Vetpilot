@@ -34,6 +34,7 @@ struct WorkspaceQuickBar: View {
             else { Section("Search results"){ForEach(matches,id:\.key){row($0)};if matches.isEmpty{Text("No matching items.")}} }
             Text(workspace.status).font(.caption).foregroundStyle(.secondary)
         }.navigationTitle("VetPilot Search").searchable(text:$query,prompt:"Medication, CBC, breed, protocol…").toolbar{ToolbarItem(placement:.confirmationAction){Button("Done"){showing=false}}}.sheet(isPresented:$reference){NavigationStack{AbbreviationReference().toolbar{ToolbarItem(placement:.confirmationAction){Button("Done"){reference=false}}}}}} }
+    }
     private func row(_ t:WorkspaceTarget)->some View { HStack{Button { showing=false;workspace.open(t) } label:{VStack(alignment:.leading){Text(t.title);Text(t.kind).font(.caption).foregroundStyle(.secondary)}};Spacer();Button { toggle(t) } label:{Image(systemName:favorite(t) ? "star.fill":"star")}.buttonStyle(.borderless).accessibilityLabel("Favorite "+t.title)} }
 }
 struct AbbreviationReference:View {

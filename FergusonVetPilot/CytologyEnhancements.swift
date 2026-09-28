@@ -5,6 +5,7 @@ struct CytologyImageTools:View {
     @ObservedObject var store:ClinicStore
     @State private var showing=false
     var body:some View { VStack(alignment:.leading){Button("Compare / annotate images"){showing=true}.buttonStyle(.bordered).accessibilityIdentifier("cytology.imageTools");DisclosureGroup("Microscope photography tips"){Text("Clean the eyepiece and camera lens. Focus the microscope first, center and steady the camera, and adjust illumination/exposure to avoid glare. Capture an overview and a closer view; record specimen, stain and magnification. Keep originals and avoid filters that change cell appearance.").font(.footnote)}}.sheet(isPresented:$showing){NavigationStack{CytologyImageToolsSheet(store:store).toolbar{ToolbarItem(placement:.confirmationAction){Button("Return to Cytology"){showing=false}}}}} }
+}
 private struct CytologyPhotoChoice:Identifiable { var item:ClinicProtocol;var photo:ClinicPhoto;var id:String{item.id.uuidString+"|"+photo.id.uuidString} }
 private struct CytologyImageToolsSheet:View {
     @EnvironmentObject var workspace:WorkspaceStore
