@@ -20,7 +20,7 @@ final class WorkspaceEnhancementUITests:XCTestCase {
         let app=XCUIApplication();app.launch()
         XCTAssertTrue(app.buttons["workspace.search"].waitForExistence(timeout:8));app.buttons["workspace.search"].tap()
         let search=app.searchFields.firstMatch;XCTAssertTrue(search.waitForExistence(timeout:5));search.tap();search.typeText("Carprofen")
-        let medication=app.buttons.containing(.staticText,identifier:"Carprofen · Tablet").firstMatch
+        let medication=app.buttons.matching(NSPredicate(format:"label BEGINSWITH 'Carprofen'")).firstMatch
         XCTAssertTrue(medication.waitForExistence(timeout:5));medication.tap()
         let weight=app.textFields["dose.sheet.weight"];XCTAssertTrue(weight.waitForExistence(timeout:5));weight.tap();weight.typeText("10")
         if app.buttons["dose.keyboard.done"].exists {app.buttons["dose.keyboard.done"].tap()}
