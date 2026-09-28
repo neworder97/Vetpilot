@@ -26,7 +26,7 @@ with zipfile.ZipFile(ipa) as z:
     assert info['CFBundleDisplayName']=='VetPilot'
     assert info['CFBundleName']=='VetPilot'
     assert info['CFBundleShortVersionString']=='0.9.1', ('version',info['CFBundleShortVersionString'])
-    assert info['CFBundleVersion']=='30', ('build',info['CFBundleVersion'])
+    assert info['CFBundleVersion']=='31', ('build',info['CFBundleVersion'])
     assert 'iPhoneOS' in info['CFBundleSupportedPlatforms']
     assert 'fetch' in info.get('UIBackgroundModes', [])
     assert 'com.ferguson.vetpilot.collection-refresh' in info.get('BGTaskSchedulerPermittedIdentifiers', [])

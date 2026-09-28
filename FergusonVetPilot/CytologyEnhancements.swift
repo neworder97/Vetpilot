@@ -48,23 +48,63 @@ private struct CytologyImageToolsSheet:View {
     private func picker(_ title:String,selection:Binding<String>)->some View{Picker(title,selection:selection){Text("Choose an image").tag("");ForEach(choices){p in Text(p.item.title+" — "+p.photo.caption).tag(p.id)}}}
     private func pane(_ p:CytologyPhotoChoice)->some View{VStack{Text(p.item.title).font(.headline);Text(p.photo.caption).font(.caption);if let image=UIImage(data:p.photo.jpeg){WorkspaceZoomImage(image:image).id(p.id).frame(height:320)}}.frame(maxWidth:.infinity)}
     private func draw(_ record:WorkspaceRecord,in context:inout GraphicsContext,size:CGSize){let v=record.value;let x=(v["x"]?.number ?? 0)*size.width,y=(v["y"]?.number ?? 0)*size.height,x2=(v["x2"]?.number ?? 0)*size.width,y2=(v["y2"]?.number ?? 0)*size.height;let shape=v["shape"]?.text ?? "arrow";if shape=="label" {context.draw(Text(v["label"]?.text ?? "").font(.system(size:max(12,size.width/35))).foregroundColor(.yellow),at:CGPoint(x:x,y:y),anchor:.leading);return};var path=Path();if shape=="circle"{path.addEllipse(in:CGRect(x:min(x,x2),y:min(y,y2),width:max(2,abs(x2-x)),height:max(2,abs(y2-y))))}else{path.move(to:CGPoint(x:x,y:y));path.addLine(to:CGPoint(x:x2,y:y2));let angle=atan2(y2-y,x2-x),length=size.width/25;path.move(to:CGPoint(x:x2-length*cos(angle-0.5),y:y2-length*sin(angle-0.5)));path.addLine(to:CGPoint(x:x2,y:y2));path.addLine(to:CGPoint(x:x2-length*cos(angle+0.5),y:y2-length*sin(angle+0.5)))};context.stroke(path,with:.color(.yellow),lineWidth:2)}
-    private func annotatedJPEGForStorage(_ image:UIImage)->Data? {
-        let limit=2_000_000
-        for quality in stride(from:0.85,through:0.45,by:-0.10) { if let data=image.jpegData(compressionQuality:quality),data.count<=limit{return data} }
-        var current=image
-        for _ in 0..<8 {
-            let longest=max(current.size.width,current.size.height)
-            guard longest>900 else{break}
-            let scale=max(900/longest,0.82)
-            let size=CGSize(width:max(1,floor(current.size.width*scale)),height:max(1,floor(current.size.height*scale)))
-            let format=UIGraphicsImageRendererFormat();format.scale=1;format.opaque=true
-            current=UIGraphicsImageRenderer(size:size,format:format).image{_ in current.draw(in:CGRect(origin:.zero,size:size))}
-            for quality in stride(from:0.80,through:0.40,by:-0.10) { if let data=current.jpegData(compressionQuality:quality),data.count<=limit{return data} }
-        }
-        return current.jpegData(compressionQuality:0.35).flatMap{$0.count<=limit ? $0:nil}
+    private func saveCopy(_ choice:CytologyPhotoChoice,image:UIImage) {
+        do {
+            try CytologyAnnotatedCopy.save(photo:choice.photo,in:choice.item,image:image,marks:marks,store:store)
+            message="Annotated copy saved. Original unchanged; use existing sharing controls."
+        } catch { message=error.localizedDescription }
     }
-    private func saveCopy(_ choice:CytologyPhotoChoice,image:UIImage){do{guard choice.item.photos.count<8 else{throw ClinicFileError.invalid("This entry already has eight photos. Original images were preserved.")};let renderer=UIGraphicsImageRenderer(size:image.size);let output=renderer.image{context in image.draw(at:.zero);let c=context.cgContext;c.setStrokeColor(UIColor.yellow.cgColor);c.setLineWidth(max(3,image.size.width/220));for record in marks{let v=record.value,x=(v["x"]?.number ?? 0)*image.size.width,y=(v["y"]?.number ?? 0)*image.size.height,x2=(v["x2"]?.number ?? 0)*image.size.width,y2=(v["y2"]?.number ?? 0)*image.size.height;switch v["shape"]?.text{case "label":((v["label"]?.text ?? "") as NSString).draw(at:CGPoint(x:x,y:y),withAttributes:[.foregroundColor:UIColor.yellow,.font:UIFont.systemFont(ofSize:max(18,image.size.width/35))]);case "circle":c.strokeEllipse(in:CGRect(x:min(x,x2),y:min(y,y2),width:max(2,abs(x2-x)),height:max(2,abs(y2-y))));default:c.move(to:CGPoint(x:x,y:y));c.addLine(to:CGPoint(x:x2,y:y2));let angle=atan2(y2-y,x2-x),length=image.size.width/40;c.move(to:CGPoint(x:x2-length*cos(angle-0.5),y:y2-length*sin(angle-0.5)));c.addLine(to:CGPoint(x:x2,y:y2));c.addLine(to:CGPoint(x:x2-length*cos(angle+0.5),y:y2-length*sin(angle+0.5)));c.strokePath()}}};guard let jpeg=annotatedJPEGForStorage(output) else{throw ClinicFileError.invalid("Annotated copy could not be reduced to the storage limit. Original unchanged.")};var item=choice.item;item.photos.append(ClinicPhoto(caption:String((choice.photo.caption+" — annotated copy").prefix(20000)),jpeg:jpeg));try store.save(item,basedOn:choice.item);message="Annotated copy saved. Original unchanged; use existing sharing controls."}catch{message=error.localizedDescription}}
 }
+// Only derived annotation copies use this renderer. Originals and editable marks are untouched.
+@MainActor
+enum CytologyAnnotatedCopy {
+    static func jpeg(image: UIImage, marks: [WorkspaceRecord], maxBytes: Int = 2_000_000) throws -> Data {
+        guard maxBytes > 0 else { throw ClinicFileError.invalid("This entry has reached its photo storage limit. Original image and annotations are preserved.") }
+        let limit = min(maxBytes, 2_000_000)
+        let width = image.size.width * image.scale, height = image.size.height * image.scale
+        guard width.isFinite, height.isFinite, width > 0, height > 0 else {
+            throw ClinicFileError.invalid("Could not create the annotated image. Original unchanged.")
+        }
+        let ratio = min(1, 4096 / max(width, height))
+        let size = CGSize(width: max(1, floor(width * ratio)), height: max(1, floor(height * ratio)))
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1 // Canvas sizes are pixels, never multiplied by the phone's 2x/3x display scale.
+        format.opaque = true
+        let renderer = UIGraphicsImageRenderer(size: size, format: format)
+        let output=renderer.image{context in image.draw(in:CGRect(origin:.zero,size:size));let c=context.cgContext;c.setStrokeColor(UIColor.yellow.cgColor);c.setLineWidth(max(3,size.width/220));for record in marks{let v=record.value,x=(v["x"]?.number ?? 0)*size.width,y=(v["y"]?.number ?? 0)*size.height,x2=(v["x2"]?.number ?? 0)*size.width,y2=(v["y2"]?.number ?? 0)*size.height;switch v["shape"]?.text{case "label":((v["label"]?.text ?? "") as NSString).draw(at:CGPoint(x:x,y:y),withAttributes:[.foregroundColor:UIColor.yellow,.font:UIFont.systemFont(ofSize:max(18,size.width/35))]);case "circle":c.strokeEllipse(in:CGRect(x:min(x,x2),y:min(y,y2),width:max(2,abs(x2-x)),height:max(2,abs(y2-y))));default:c.move(to:CGPoint(x:x,y:y));c.addLine(to:CGPoint(x:x2,y:y2));let angle=atan2(y2-y,x2-x),length=size.width/40;c.move(to:CGPoint(x:x2-length*cos(angle-0.5),y:y2-length*sin(angle-0.5)));c.addLine(to:CGPoint(x:x2,y:y2));c.addLine(to:CGPoint(x:x2-length*cos(angle+0.5),y:y2-length*sin(angle+0.5)));c.strokePath()}}}
+        var current = output
+        for attempt in 0..<10 {
+            for quality in [0.85, 0.75, 0.65, 0.55] {
+                if let data = current.jpegData(compressionQuality: quality), !data.isEmpty, data.count <= limit {
+                    // Check encoded pixel dimensions with the exact validator used by save/import/share.
+                    var check = ClinicProtocol()
+                    check.photos = [ClinicPhoto(caption: "Annotated copy", jpeg: data)]
+                    try ClinicTransfer.validatePhotos([check])
+                    return data
+                }
+            }
+            guard attempt < 9 else { break }
+            let smaller = CGSize(width: max(1, floor(current.size.width * 0.75)), height: max(1, floor(current.size.height * 0.75)))
+            guard smaller != current.size else { break }
+            current = UIGraphicsImageRenderer(size: smaller, format: format).image { _ in
+                output.draw(in: CGRect(origin: .zero, size: smaller))
+            }
+        }
+        throw ClinicFileError.invalid("Annotated copy could not fit this entry’s photo limit. Original image and annotations are preserved.")
+    }
+
+    static func save(photo: ClinicPhoto, in original: ClinicProtocol, image: UIImage, marks: [WorkspaceRecord], store: ClinicStore) throws {
+        guard original.photos.count < 8 else {
+            throw ClinicFileError.invalid("This entry already has eight photos. Original images were preserved.")
+        }
+        let available = min(2_000_000, 8_000_000 - original.photos.reduce(0) { $0 + $1.jpeg.count })
+        let data = try jpeg(image: image, marks: marks, maxBytes: available)
+        var item = original
+        item.photos.append(ClinicPhoto(caption: String((photo.caption + " — annotated copy").prefix(20000)), jpeg: data))
+        try store.save(item, basedOn: original)
+    }
+}
+
 private struct AnnotationEditor:View{
     @State var record:WorkspaceRecord
     let save:(WorkspaceRecord)->Void
