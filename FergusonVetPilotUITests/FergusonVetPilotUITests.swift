@@ -530,12 +530,24 @@ final class FergusonVetPilotUITests: XCTestCase {
 
     private func scrollNutritionTo(_ element: XCUIElement, towardTop: Bool = false,
                                    file: StaticString = #filePath, line: UInt = #line) {
-        for _ in 0..<8 {
-            if element.exists && element.isHittable { return }
-            if towardTop { app.swipeDown() } else { app.swipeUp() }
+        // Full-screen flicks can skip an entire row of the lazy BCS grid.
+        // Use bounded drags and correct direction when a materialized target
+        // is above the viewport. Do not change any clinical expectations.
+        let top = app.frame.minY + 130
+        let bottom = app.frame.maxY - 100
+        for _ in 0..<32 {
+            let exists = element.exists
+            let frame = exists ? element.frame : .zero
+            if exists && element.isHittable && frame.minY >= top && frame.maxY <= bottom { return }
+            let down = exists && !frame.isEmpty ? frame.minY < top : towardTop
+            let start = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: down ? 0.46 : 0.64))
+            let end = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: down ? 0.64 : 0.46))
+            start.press(forDuration: 0.05, thenDragTo: end)
         }
         XCTAssertTrue(element.exists && element.isHittable,
                       "Nutrition control did not become visible: \(element)", file: file, line: line)
+        XCTAssertGreaterThanOrEqual(element.frame.minY, top, file: file, line: line)
+        XCTAssertLessThanOrEqual(element.frame.maxY, bottom, file: file, line: line)
     }
 
     private func replaceNutritionText(_ field: XCUIElement, with text: String,
