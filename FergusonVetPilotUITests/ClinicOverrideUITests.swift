@@ -2,6 +2,26 @@ import XCTest
 
 final class ClinicOverrideUITests: XCTestCase {
     override func setUpWithError() throws { continueAfterFailure = false }
+    override func tearDownWithError() throws {
+        if testRun?.hasSucceeded == false { print("CLINIC_OVERRIDE_UI_FAILURE=" + XCUIApplication().debugDescription) }
+    }
+
+    private func approve(_ control: XCUIElement, in app: XCUIApplication) {
+        reveal(control, in: app)
+        if control.value as? String != "1" {
+            // SwiftUI exposes the whole labeled row as a switch; tap the actual toggle.
+            control.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+        }
+        let checked = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == '1'"), object: control)
+        XCTAssertEqual(XCTWaiter.wait(for: [checked], timeout: 5), .completed)
+    }
+
+    private func saveOverride(in app: XCUIApplication) {
+        let save = app.buttons["clinicOverride.save"]
+        let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "enabled == true"), object: save)
+        XCTAssertEqual(XCTWaiter.wait(for: [enabled], timeout: 5), .completed)
+        save.tap()
+    }
 
     private func reveal(_ element: XCUIElement, in app: XCUIApplication, towardTop: Bool = false) {
         for _ in 0..<30 {
@@ -42,10 +62,8 @@ final class ClinicOverrideUITests: XCTestCase {
         replace(app.textFields["clinicOverride.maximum"], with: "3", in: app)
         replace(app.textFields["clinicOverride.concentration"], with: "15", in: app)
         let approved = app.switches["clinicOverride.approved"]
-        reveal(approved, in: app)
-        if approved.value as? String != "1" { approved.tap() }
-        let save = app.buttons["clinicOverride.save"]
-        XCTAssertTrue(save.isEnabled); save.tap()
+        approve(approved, in: app)
+        saveOverride(in: app)
         let concentration = app.textFields["dose.concentration"]
         XCTAssertTrue(concentration.waitForExistence(timeout: 5)); reveal(concentration, in: app)
         XCTAssertEqual(Double(concentration.value as? String ?? ""), 15)
@@ -75,10 +93,8 @@ final class ClinicOverrideUITests: XCTestCase {
         XCTAssertTrue(app.textFields["clinicOverride.minimum"].waitForExistence(timeout: 5))
         XCTAssertEqual(Double(app.textFields["clinicOverride.minimum"].value as? String ?? ""), 10)
         let approved = app.switches["clinicOverride.approved"]
-        reveal(approved, in: app)
-        if approved.value as? String != "1" { approved.tap() }
-        let save = app.buttons["clinicOverride.save"]
-        XCTAssertTrue(save.isEnabled); save.tap()
+        approve(approved, in: app)
+        saveOverride(in: app)
         let disable = app.buttons["dose.protocol.disable"]
         XCTAssertTrue(disable.waitForExistence(timeout: 5)); reveal(disable, in: app, towardTop: true)
         disable.tap()
